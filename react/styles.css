@@ -1,0 +1,6 @@
+.tag > button > div > div {
+  display: none;
+}
+.tag > button:focus {
+  outline: none;
+}

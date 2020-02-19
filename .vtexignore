@@ -1,10 +1,7 @@
-.git/
-react/node_modules/
-.eslintrc
-.gitignore
-package.json
-README.md
-CHANGELOG.md
+node_modules
 react/**/__tests__/**
 react/**/__mocks__/**
-react/testUtils/**
+react/**/*.test.js
+react/**/*.test.ts
+react/**/*.test.tsx
+coverage/

@@ -1,0 +1,7 @@
+type Refids {
+  itemsReturned: [ItemsRefId]
+}
+type ItemsRefId {
+  sku: String
+  refid: String
+}

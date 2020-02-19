@@ -1,0 +1,5 @@
+type Query {
+  skuFromRefIds(
+    refids: [String]
+  ): Refids @cacheControl(scope: SEGMENT, maxAge: MEDIUM) @withSegment
+}

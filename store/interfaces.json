@@ -1,0 +1,10 @@
+{
+  "quickorder": {
+    "component": "QuickOrder"
+  },
+  "store.quickorder": {
+    "required": [
+      "quickorder"
+    ]
+  }
+}

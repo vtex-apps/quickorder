@@ -1,0 +1,14 @@
+{
+  "store.quickorder": {
+    "blocks": [
+      "quickorder"
+    ]
+  },
+  "quickorder": {
+    "props": {
+      "title": "Quickorder",
+      "showCopyPaste": "on",
+      "showAutocomplete": "on"
+    }
+  }
+}
