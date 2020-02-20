@@ -1,10 +1,10 @@
 {
   "editor.quickorder.title": "Quickorder",
   "editor.quickorder.description": "Cambiar las características del quickorder",
-  "editor.quickorder.title.title":"Titulo",
-  "editor.quickorder.title.description":"Titulo principal del quickorder",
-  "editor.quickorder.autocomplete.title":"Mostrar búsqueda de autocompletar",
-  "editor.quickorder.autocomplete.description":"Habilita el componente de autocompletar, para que pueda agregar productos uno por uno",
+  "editor.quickorder.title.title": "Titulo",
+  "editor.quickorder.title.description": "Titulo principal del quickorder",
+  "editor.quickorder.autocomplete.title": "Mostrar búsqueda de autocompletar",
+  "editor.quickorder.autocomplete.description": "Habilita el componente de autocompletar, para que pueda agregar productos uno por uno",
   "editor.quickorder.textarea.title": "Mostrar area de texto",
   "editor.quickorder.textarea.description": "Le permite pegar una lista de SKU y Cantidades para la adición de lotes",
   "quickorder.textarea.label": "Copiar/Pegar Skus",
@@ -15,13 +15,14 @@
   "quickorder.autocomplete.label": "1 a 1",
   "quickorder.autocomplete.helper": "Ingrese el nombre del producto, seleccione la cantidad, SKU (si está disponible) y agréguelo al carrito",
   "quickorder.autocomplete.addButton": "Agregar",
+  "quickorder.autocomplete.selectSku": "Por favor, seleccione un SKU",
 
   "quickorder.review.label.lineNumber": "#",
   "quickorder.review.label.content": "Contenido",
   "quickorder.review.label.sku": "SKU",
   "quickorder.review.label.quantity": "Cantidad",
   "quickorder.review.label.status": "Estado",
-  
+
   "quickorder.skuNotFound": "SKU no encontrado",
   "quickorder.invalidPattern": "Formato no válido",
   "quickorder.valid": "Válido",

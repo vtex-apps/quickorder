@@ -70,8 +70,6 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         error = true
       }
 
-      console.log('validateRefids', reviewed)
-
       const items = reviewed.map((item: any) => {
         return {
           ...item,
@@ -84,7 +82,6 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         const item = items.find((curr: any) => {
           return original.sku === curr.sku
         })
-        console.log('Merge', item)
         return item ? item : original
       }
 
@@ -93,7 +90,6 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       })
 
       onReviewItems(updated)
-      console.log('setReviewState #1', updated)
       setReviewState({
         ...state,
         reviewItems: updated,
@@ -103,7 +99,6 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   }
 
   const getRefIds = async (refids: any, reviewed: any) => {
-    console.log('getRefIds', reviewed)
     onRefidLoading(true)
     const query = {
       query: getRefIdTranslation,
@@ -117,7 +112,6 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   }
 
   const convertRefIds = (items: any) => {
-    console.log('convertRefIds', items)
     const refids = items
       .filter((item: any) => {
         return item.error === null
@@ -129,7 +123,6 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   }
 
   const checkValidatedItems = () => {
-    console.log('checkValidatedItems')
     const items: [any] = reviewItems.filter((item: any) => {
       return item.sku !== null && item.error === null && !item.vtexSku
     })
@@ -151,7 +144,6 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     })
 
     onReviewItems(items)
-    console.log('setReviewState #2', items)
     setReviewState({
       ...state,
       reviewItems: items,
@@ -161,7 +153,6 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   const updateLineContent = (line: number, content: string) => {
     let items = reviewItems
     items[line]['content'] = content
-    console.log('setReviewState #3', items)
     setReviewState({
       ...state,
       reviewItems: items,
@@ -173,12 +164,10 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     let reviewd: any = ParseText(joinLines)
 
     if (reviewd[line].error === null) {
-      console.log('setReviewState #4', JSON.stringify(reviewd))
       setReviewState({
         ...state,
         reviewItems: reviewd,
       })
-      // convertRefIds(reviewd)
     }
   }
 

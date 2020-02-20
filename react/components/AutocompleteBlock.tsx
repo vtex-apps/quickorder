@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react'
-import { FormattedMessage } from 'react-intl'
-import { Button, Tag, Input } from 'vtex.styleguide'
+import React, { useState, useContext } from 'react'
+import { FormattedMessage, WrappedComponentProps, injectIntl } from 'react-intl'
+import { Button, Tag, Input, ToastContext } from 'vtex.styleguide'
 import PropTypes from 'prop-types'
 import QuickOrderAutocomplete from './QuickOrderAutocomplete'
 import styles from '../styles.css'
@@ -9,17 +9,28 @@ import { useCssHandles } from 'vtex.css-handles'
 import { useApolloClient } from 'react-apollo'
 import productQuery from '../queries/product.gql'
 
-const AutocompleteBlock: StorefrontFunctionComponent<any> = ({
-  onAddToCart,
-  loading,
-  success,
-}) => {
+const AutocompleteBlock: StorefrontFunctionComponent<any &
+  WrappedComponentProps> = ({ onAddToCart, loading, success, intl }) => {
   const client = useApolloClient()
-
+  const { showToast } = useContext(ToastContext)
   const [state, setState] = useState<any>({
     selectedItem: null,
     quantitySelected: 1,
   })
+
+  const translateMessage = (message: MessageDescriptor) => {
+    return intl.formatMessage(message)
+  }
+
+  const toastMessage = (messsageKey: string) => {
+    const message = translateMessage({
+      id: messsageKey,
+    })
+
+    const action = undefined
+
+    showToast({ message, action })
+  }
 
   const { selectedItem, quantitySelected } = state
 
@@ -55,22 +66,26 @@ const AutocompleteBlock: StorefrontFunctionComponent<any> = ({
   }
 
   const callAddUnitToCart = () => {
-    const items = [
-      {
-        id: selectedItem.value,
-        quantity: quantitySelected,
-        seller: '1',
-      },
-    ]
-    onAddToCart(items).then(() => {
-      if (!loading && success) {
-        setState({
-          ...state,
-          selectedItem: null,
-          quantitySelected: 1,
-        })
-      }
-    })
+    if (selectedItem && selectedItem.value) {
+      const items = [
+        {
+          id: selectedItem.value,
+          quantity: quantitySelected,
+          seller: '1',
+        },
+      ]
+      onAddToCart(items).then(() => {
+        if (!loading && success) {
+          setState({
+            ...state,
+            selectedItem: null,
+            quantitySelected: 1,
+          })
+        }
+      })
+    } else {
+      toastMessage('quickorder.autocomplete.selectSku')
+    }
   }
 
   const CSS_HANDLES = [
@@ -97,56 +112,58 @@ const AutocompleteBlock: StorefrontFunctionComponent<any> = ({
       <div className="w-two-thirds-l w-100-ns fr-l">
         <div className="w-100 mb5">
           <div className="bg-base t-body c-on-base pa7 br3 b--muted-4 ba">
-            <div className={'flex flex-column w-60'}>
+            <div className={'flex flex-column w-100'}>
               {!selectedItem && <QuickOrderAutocomplete onSelect={onSelect} />}
               {!!selectedItem && (
                 <div>
-                  <div
-                    className={`flex flex-column w-10 fl ${handles.productThumb}`}
-                  >
-                    <img
-                      src={selectedItem.thumb}
-                      width="25"
-                      height="25"
-                      alt=""
-                    />
-                  </div>
-                  <div
-                    className={`flex flex-column w-60 fl ${handles.productLabel}`}
-                  >
-                    {selectedItem.label}
-                  </div>
-                  <div
-                    className={`flex flex-column w-10 fl ${handles.inputQuantity}`}
-                  >
-                    <Input
-                      value={quantitySelected}
-                      size={'3'}
-                      onChange={(e: any) => {
-                        setState({
-                          ...state,
-                          quantitySelected: e.target.value,
-                        })
-                      }}
-                    />
-                  </div>
-                  <div
-                    className={`flex flex-column w-20 fl ${handles.buttonAdd}`}
-                  >
-                    <Button
-                      variation="primary"
-                      size="small"
-                      isLoading={loading}
-                      onClick={() => {
-                        callAddUnitToCart()
-                      }}
+                  <div className={`flex flex-row`}>
+                    <div
+                      className={`flex flex-column w-10 fl ${handles.productThumb}`}
                     >
-                      <FormattedMessage id="quickorder.autocomplete.addButton" />
-                    </Button>
+                      <img
+                        src={selectedItem.thumb}
+                        width="25"
+                        height="25"
+                        alt=""
+                      />
+                    </div>
+                    <div
+                      className={`flex flex-column w-60 fl ${handles.productLabel}`}
+                    >
+                      {selectedItem.label}
+                    </div>
+                    <div
+                      className={`flex flex-column w-10 ph5-l ph2 p fl ${handles.inputQuantity}`}
+                    >
+                      <Input
+                        value={quantitySelected}
+                        size="small"
+                        onChange={(e: any) => {
+                          setState({
+                            ...state,
+                            quantitySelected: e.target.value,
+                          })
+                        }}
+                      />
+                    </div>
+                    <div
+                      className={`flex flex-column w-20 fl ${handles.buttonAdd}`}
+                    >
+                      <Button
+                        variation="primary"
+                        size="small"
+                        isLoading={loading}
+                        onClick={() => {
+                          callAddUnitToCart()
+                        }}
+                      >
+                        <FormattedMessage id="quickorder.autocomplete.addButton" />
+                      </Button>
+                    </div>
                   </div>
                   {!!selectedItem &&
                     selectedItem.data.product.items.length > 1 && (
-                      <div>
+                      <div className={`flex flex-row`}>
                         {selectedItem.data.product.items.map((item: any) => {
                           return (
                             <span
@@ -187,4 +204,10 @@ AutocompleteBlock.propTypes = {
   success: PropTypes.bool,
 }
 
-export default AutocompleteBlock
+interface MessageDescriptor {
+  id: string
+  description?: string | object
+  defaultMessage?: string
+}
+
+export default injectIntl(AutocompleteBlock)

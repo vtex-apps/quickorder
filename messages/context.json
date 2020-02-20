@@ -1,10 +1,10 @@
 {
   "editor.quickorder.title": "Quickorder",
   "editor.quickorder.description": "Change quickorder properties",
-  "editor.quickorder.title.title":"Title",
-  "editor.quickorder.title.description":"Main title for this App",
-  "editor.quickorder.autocomplete.title":"Show autocomplete",
-  "editor.quickorder.autocomplete.description":"Enable autocomplete component that ables you add product one by one",
+  "editor.quickorder.title.title": "Title",
+  "editor.quickorder.title.description": "Main title for this App",
+  "editor.quickorder.autocomplete.title": "Show autocomplete",
+  "editor.quickorder.autocomplete.description": "Enable autocomplete component that ables you add product one by one",
   "editor.quickorder.textarea.title": "Show textarea",
   "editor.quickorder.textarea.description": "Enable textarea field, you can copy and paste a list of SKU and Quantity",
   "quickorder.textarea.label": "Copy/Paste Skus",
@@ -15,13 +15,14 @@
   "quickorder.autocomplete.label": "One by One",
   "quickorder.autocomplete.helper": "Type the product name, select, enter quantity, add to the cart",
   "quickorder.autocomplete.addButton": "Add",
+  "quickorder.autocomplete.selectSku": "Please select one SKU",
 
   "quickorder.review.label.lineNumber": "#",
   "quickorder.review.label.content": "Content",
   "quickorder.review.label.sku": "SKU",
   "quickorder.review.label.quantity": "Quantity",
   "quickorder.review.label.status": "Status",
-  
+
   "quickorder.skuNotFound": "SKU Not Found",
   "quickorder.invalidPattern": "Invalid pattern",
   "quickorder.valid": "Valid",
