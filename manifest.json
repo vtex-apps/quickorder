@@ -2,7 +2,7 @@
   "vendor": "vtex",
   "name": "quickorder",
   "version": "0.5.5",
-  "title": "Quick Order Component",
+  "title": "Quickorder APP",
   "description": "Allow users to add multiple products to the cart at once",
   "defaultLocale": "pt-BR",
   "builders": {
@@ -51,5 +51,9 @@
       }
     }
   ],
+  "billingOptions": {
+    "free": true
+  },
+  "settingsSchema": {},
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }

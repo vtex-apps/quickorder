@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import { FormattedMessage, WrappedComponentProps, injectIntl } from 'react-intl'
-import { PageBlock, Button, Textarea } from 'vtex.styleguide'
+import { FormattedMessage } from 'react-intl'
+import { Button, Textarea } from 'vtex.styleguide'
 import { useCssHandles } from 'vtex.css-handles'
 import { ParseText } from '../utils'
 
-const TextAreaBlock: StorefrontFunctionComponent<WrappedComponentProps &
-  TextAreaBlockInterface> = ({ value, onReviewItems, intl }: any) => {
+const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface> = ({
+  value,
+  onReviewItems,
+}: any) => {
   const [state, setState] = useState<any>({
     textAreaValue: value || '',
     reviewItems: [],
@@ -40,29 +42,41 @@ const TextAreaBlock: StorefrontFunctionComponent<WrappedComponentProps &
   const handles = useCssHandles(CSS_HANDLES)
 
   return (
-    <PageBlock
-      variation="annotated"
-      title={intl.formatMessage({ id: 'quickorder.textarea.label' })}
-      subtitle={intl.formatMessage({ id: 'quickorder.textarea.helper' })}
-    >
-      <Textarea
-        value={textAreaValue}
-        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-          setTextareaValue(e.target.value)
-        }
-      ></Textarea>
-      <div className={`mb4 flex justify-end ${handles.buttonValidate}`}>
-        <Button
-          variation="secondary"
-          size="regular"
-          onClick={() => {
-            parseText()
-          }}
-        >
-          <FormattedMessage id="quickorder.validate" />
-        </Button>
+    <div>
+      <div className="w-third-l w-100-ns">
+        <div className="flex-grow-1">
+          <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">
+            <FormattedMessage id="quickorder.textarea.label" />
+          </h2>
+          <div className="t-body lh-copy c-muted-1 mb7 ml3 false">
+            <FormattedMessage id="quickorder.textarea.helper" />
+          </div>
+        </div>
       </div>
-    </PageBlock>
+      <div className="w-two-thirds-l w-100-ns">
+        <div className="w-100 mb5">
+          <div className="bg-base t-body c-on-base pa7 br3 b--muted-4 ba">
+            <Textarea
+              value={textAreaValue}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                setTextareaValue(e.target.value)
+              }
+            ></Textarea>
+            <div className={`mt2 flex justify-end ${handles.buttonValidate}`}>
+              <Button
+                variation="secondary"
+                size="regular"
+                onClick={() => {
+                  parseText()
+                }}
+              >
+                <FormattedMessage id="quickorder.validate" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -72,4 +86,4 @@ interface TextAreaBlockInterface {
   onRefidLoading: any
 }
 
-export default injectIntl(TextAreaBlock)
+export default TextAreaBlock
