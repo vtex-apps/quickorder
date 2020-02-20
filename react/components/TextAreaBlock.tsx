@@ -43,7 +43,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface> = ({
 
   return (
     <div>
-      <div className="w-third-l w-100-ns">
+      <div className="w-third-l w-100-ns fl-l">
         <div className="flex-grow-1">
           <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">
             <FormattedMessage id="quickorder.textarea.label" />
@@ -53,7 +53,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface> = ({
           </div>
         </div>
       </div>
-      <div className="w-two-thirds-l w-100-ns">
+      <div className="w-two-thirds-l w-100-ns fr-l">
         <div className="w-100 mb5">
           <div className="bg-base t-body c-on-base pa7 br3 b--muted-4 ba">
             <Textarea
