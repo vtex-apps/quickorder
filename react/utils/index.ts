@@ -40,6 +40,5 @@ export const ParseText = (textAreaValue: string) => {
         error: 'quickorder.invalidPattern',
       }
     })
-  console.log('Items', items)
   return items
 }

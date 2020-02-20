@@ -167,7 +167,6 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
 
   const onRefidLoading = (refidLoading: any) => {
     console.log('onRefidLoading', refidLoading)
-    console.log('setState #2', reviewItems)
   }
 
   const backList = () => {
@@ -287,13 +286,13 @@ QuickOrder.schema = {
       title: 'editor.quickorder.autocomplete.title',
       description: 'editor.quickorder.autocomplete.description',
       type: 'boolean',
-      default: null,
+      default: true,
     },
     showCopyPaste: {
       title: 'editor.quickorder.textarea.title',
       description: 'editor.quickorder.textarea.description',
       type: 'boolean',
-      default: null,
+      default: true,
     },
   },
 }
