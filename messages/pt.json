@@ -16,17 +16,14 @@
   "quickorder.autocomplete.helper": "Digite o nome do produto, selecione a quantidade, SKU (se disponível) e adicione ao carrinho",
   "quickorder.autocomplete.addButton": "Adicionar",
   "quickorder.autocomplete.selectSku": "Por favor, selecione um SKU",
-
   "quickorder.review.label.lineNumber": "#",
   "quickorder.review.label.content": "Conteúdo",
   "quickorder.review.label.sku": "SKU",
   "quickorder.review.label.quantity": "Quantidade",
   "quickorder.review.label.status": "Status",
-
   "quickorder.skuNotFound": "SKU não encontrado",
   "quickorder.invalidPattern": "Formato inválido",
   "quickorder.valid": "Válido",
-
   "toaster.cart.success": "Produtos adicionados com sucesso",
   "toaster.cart.error": "Erro adicionando produtos ao carrinho",
   "toaster.cart.duplicated": "Item duplicado",

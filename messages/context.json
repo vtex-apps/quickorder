@@ -16,17 +16,14 @@
   "quickorder.autocomplete.helper": "Type the product name, select, enter quantity, add to the cart",
   "quickorder.autocomplete.addButton": "Add",
   "quickorder.autocomplete.selectSku": "Please select one SKU",
-
   "quickorder.review.label.lineNumber": "#",
   "quickorder.review.label.content": "Content",
   "quickorder.review.label.sku": "SKU",
   "quickorder.review.label.quantity": "Quantity",
   "quickorder.review.label.status": "Status",
-
   "quickorder.skuNotFound": "SKU Not Found",
   "quickorder.invalidPattern": "Invalid pattern",
   "quickorder.valid": "Valid",
-
   "toaster.cart.success": "Products successfuly added to the cart",
   "toaster.cart.error": "Error adding products to the cart",
   "toaster.cart.duplicated": "Item duplicated",
