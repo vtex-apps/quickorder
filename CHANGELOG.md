@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.5.8-beta] - 2020-02-21
+
 ## [0.5.5] - 2020-02-19
 ### Added
 -  Initial release with Copy/Paste and One by One modules.
