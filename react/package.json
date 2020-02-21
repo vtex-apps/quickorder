@@ -1,4 +1,5 @@
 {
+  "private": true,
   "scripts": {
     "test": "vtex-test-tools test",
     "lint": "tsc --noEmit && eslint --ext ts,tsx ."
@@ -32,6 +33,5 @@
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "3.7.3"
   },
-  "name": "vtex-quickorder",
   "version": "0.2.1"
 }
