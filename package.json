@@ -1,11 +1,8 @@
 {
-  "version": "0.0.0",
-  "name": "CHANGE_ME",
+  "version": "0.5.7",
+  "name": "quickorder",
   "private": true,
   "license": "UNLICENSED",
-  "workspaces": [
-    "react"
-  ],
   "scripts": {
     "lint": "eslint --ext js,jsx,ts,tsx .",
     "format": "prettier --write \"**/*.{ts,js,json}\"",
