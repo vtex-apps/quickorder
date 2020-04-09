@@ -7,8 +7,38 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- New interface option to add items from categories
+
+### Changed
+
+- Translation keys pattern
+
 ## [0.5.8] - 2020-02-24
 
-## [0.5.5] - 2020-02-19
+- Doc update
+
+## [0.5.7] - 2020-02-24
+
+### Changed
+
+- App's title to only Quickorder (visible at the Admin)
+- Autocomplete's layout adjustments (responsive)
+
 ### Added
--  Initial release with Copy/Paste and One by One modules.
+
+- Toast message when user needs to select one SKU
+
+## [0.5.6] - 2020-02-20
+
+### Fixed
+
+- Merging validated items with the current list
+- Preventing app to "re-check" an item's refid if it was already checked
+
+## [0.5.5] - 2020-02-19
+
+### Added
+
+- Initial release with Copy/Paste and One by One modules.

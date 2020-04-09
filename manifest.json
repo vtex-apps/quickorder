@@ -19,9 +19,12 @@
   },
   "credentialType": "absolute",
   "dependencies": {
+    "vtex.checkout": "0.x",
+    "vtex.render-runtime": "7.x",
     "vtex.store": "2.x",
     "vtex.styleguide": "9.x",
     "vtex.search": "0.x",
+    "vtex.store-graphql": "2.x",
     "vtex.search-graphql": "0.x",
     "vtex.checkout-graphql": "0.x",
     "vtex.apps-graphql": "2.x",

@@ -4,3 +4,6 @@
 .tag > button:focus {
   outline: none;
 }
+.pcc {
+  place-content: center;
+}

@@ -1,0 +1,14 @@
+query SearchByCategory($categoryId: String) {
+  productSearch(category: $categoryId)
+    @context(provider: "vtex.store-graphql") {
+    products {
+      items {
+        itemId
+        nameComplete
+        referenceId {
+          Value
+        }
+      }
+    }
+  }
+}

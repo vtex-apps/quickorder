@@ -17,6 +17,7 @@ import { useCssHandles } from 'vtex.css-handles'
 import TranslatedTitle from './components/TranslatedTitle'
 import AutocompleteBlock from './components/AutocompleteBlock'
 import TextAreaBlock from './components/TextAreaBlock'
+import CategoryBlock from './components/CategoryBlock'
 import ReviewBlock from './components/ReviewBlock'
 import styles from './styles.css'
 import { GetText } from './utils'
@@ -26,9 +27,14 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   customToastUrl,
   title,
   showCopyPaste,
+  showCategory,
   showAutocomplete,
   intl,
 }: any) => {
+  console.log('showCategory', showCategory)
+  console.log('showCopyPaste', showCopyPaste)
+  console.log('showAutocomplete', showAutocomplete)
+
   const { showToast } = useContext(ToastContext)
 
   const [state, setState] = useState<any>({
@@ -182,6 +188,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     'copyPasteBlock',
     'autocompleteBlock',
     'reviewBlock',
+    'categoryBlock',
     'buttonsBlock',
   ] as const
   const handles = useCssHandles(CSS_HANDLES)
@@ -207,6 +214,16 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
       {!reviewState && showAutocomplete && (
         <div className={`pa6 bg-muted-5 ${handles.autocompleteBlock}`}>
           <AutocompleteBlock
+            onAddToCart={callAddToCart}
+            loading={mutationLoading}
+            success={!mutationError}
+          />
+        </div>
+      )}
+
+      {!reviewState && showCategory && (
+        <div className={`pa6 bg-muted-5 ${handles.categoryBlock}`}>
+          <CategoryBlock
             onAddToCart={callAddToCart}
             loading={mutationLoading}
             success={!mutationError}
@@ -266,8 +283,9 @@ interface MessageDescriptor {
 
 interface QuickOrderProps {
   title?: string
-  showCopyPaste?: string
-  showAutocomplete?: string
+  showCopyPaste?: boolean
+  showAutocomplete?: boolean
+  showCategory?: boolean
   customToastUrl?: string
 }
 
@@ -291,6 +309,12 @@ QuickOrder.schema = {
     showCopyPaste: {
       title: 'editor.quickorder.textarea.title',
       description: 'editor.quickorder.textarea.description',
+      type: 'boolean',
+      default: true,
+    },
+    showCategory: {
+      title: 'editor.quickorder.category.title',
+      description: 'editor.quickorder.category.description',
       type: 'boolean',
       default: true,
     },

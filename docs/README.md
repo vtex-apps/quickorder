@@ -8,9 +8,12 @@ The VTEX Quickorder app is a store component that enables a B2B buyer to speedup
 
 ## Release schedule
 
-| Release |       Status        | Initial Release | Maintenance LTS Start | End-of-life | Store Compatibility |
-| :-----: | :-----------------: | :-------------: | :-------------------: | :---------: | :-----------------: |
-| [0.5.5] | **Current Release** |   2020-02-19    |                       |             |         2.x         |
+| Release |       Status        | Release Date | Store Compatibility |
+| :-----: | :-----------------: | :----------: | :-----------------: |
+| [0.5.8] | **Current Release** |  2020-02-24  |         2.x         |
+| [0.5.7] |   **Deprecated**    |  2020-02-20  |         2.x         |
+| [0.5.6] |   **Deprecated**    |  2020-02-20  |         2.x         |
+| [0.5.5] |   **Deprecated**    |  2020-02-19  |         2.x         |
 
 See our [LTS policy](https://github.com/vtex-apps/awesome-io#lts-policy) for more information.
 

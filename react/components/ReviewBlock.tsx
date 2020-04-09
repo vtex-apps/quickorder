@@ -41,7 +41,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
           : []
 
       const vtexSku = (item: any) => {
-        let ret = null
+        let ret: any = null
         if (!!refidData && !!refidData.skuFromRefIds.itemsReturned) {
           ret = refidData.skuFromRefIds.itemsReturned.find((curr: any) => {
             return !!item.sku && item.sku === curr.refid
