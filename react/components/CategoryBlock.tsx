@@ -6,8 +6,6 @@ import { FormattedMessage, WrappedComponentProps } from 'react-intl'
 import { Collapsible, Input, Button, ToastContext } from 'vtex.styleguide'
 import { useCssHandles } from 'vtex.css-handles'
 import { graphql, useApolloClient, compose } from 'react-apollo'
-import { useRuntime } from 'vtex.render-runtime'
-// import { compose } from 'ramda'
 import _ from 'lodash'
 
 import styles from '../styles.css'
@@ -21,8 +19,6 @@ const CategoryBlock: StorefrontFunctionComponent<any &
     categoryItems: {},
     quantitySelected: {},
   })
-
-  const { navigate } = useRuntime()
 
   const { showToast } = useContext(ToastContext)
 
@@ -116,9 +112,7 @@ const CategoryBlock: StorefrontFunctionComponent<any &
             quantitySelected: quantitiesCopy,
           })
           setTimeout(() => {
-            navigate({
-              to: '/checkout',
-            })
+            window.location.href = '/checkout'
           }, 1000)
         }
         return true
