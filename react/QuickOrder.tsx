@@ -17,6 +17,7 @@ import { useCssHandles } from 'vtex.css-handles'
 import TranslatedTitle from './components/TranslatedTitle'
 import AutocompleteBlock from './components/AutocompleteBlock'
 import TextAreaBlock from './components/TextAreaBlock'
+import CategoryBlock from './components/CategoryBlock'
 import ReviewBlock from './components/ReviewBlock'
 import styles from './styles.css'
 import { GetText } from './utils'
@@ -26,6 +27,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   customToastUrl,
   title,
   showCopyPaste,
+  showCategory,
   showAutocomplete,
   intl,
 }: any) => {
@@ -54,10 +56,22 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   const { orderForm, setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
 
   const messages = defineMessages({
-    success: { id: 'toaster.cart.success', defaultMessage: '', label: '' },
-    duplicate: { id: 'toaster.cart.duplicated', defaultMessage: '', label: '' },
-    error: { id: 'toaster.cart.error', defaultMessage: '', label: '' },
-    seeCart: { id: 'toaster.cart.seeCart', defaultMessage: '', label: '' },
+    success: {
+      id: 'store/toaster.cart.success',
+      defaultMessage: '',
+      label: '',
+    },
+    duplicate: {
+      id: 'store/toaster.cart.duplicated',
+      defaultMessage: '',
+      label: '',
+    },
+    error: { id: 'store/toaster.cart.error', defaultMessage: '', label: '' },
+    seeCart: {
+      id: 'store/toaster.cart.seeCart',
+      defaultMessage: '',
+      label: '',
+    },
   })
 
   const translateMessage = (message: MessageDescriptor) => {
@@ -165,8 +179,8 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     }
   }
 
-  const onRefidLoading = (refidLoading: any) => {
-    console.log('onRefidLoading', refidLoading)
+  const onRefidLoading = (data: any) => {
+    console.log('onRefidLoading', data)
   }
 
   const backList = () => {
@@ -182,6 +196,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     'copyPasteBlock',
     'autocompleteBlock',
     'reviewBlock',
+    'categoryBlock',
     'buttonsBlock',
   ] as const
   const handles = useCssHandles(CSS_HANDLES)
@@ -214,6 +229,16 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
         </div>
       )}
 
+      {!reviewState && showCategory && (
+        <div className={`pa6 bg-muted-5 ${handles.categoryBlock}`}>
+          <CategoryBlock
+            onAddToCart={callAddToCart}
+            loading={mutationLoading}
+            success={!mutationError}
+          />
+        </div>
+      )}
+
       {reviewState && (
         <div className={`pa6 ${handles.reviewBlock}`}>
           <ReviewBlock
@@ -231,7 +256,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
                 backList()
               }}
             >
-              <FormattedMessage id="quickorder.back" />
+              <FormattedMessage id="store/quickorder.back" />
             </Button>
             {showAddToCart && (
               <Button
@@ -242,7 +267,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
                   addToCartCopyNPaste()
                 }}
               >
-                <FormattedMessage id="quickorder.addToCart" />
+                <FormattedMessage id="store/quickorder.addToCart" />
               </Button>
             )}
           </div>
@@ -266,31 +291,38 @@ interface MessageDescriptor {
 
 interface QuickOrderProps {
   title?: string
-  showCopyPaste?: string
-  showAutocomplete?: string
+  showCopyPaste?: boolean
+  showAutocomplete?: boolean
+  showCategory?: boolean
   customToastUrl?: string
 }
 
 QuickOrder.schema = {
-  title: 'editor.quickorder.title',
-  description: 'editor.quickorder.description',
+  title: 'editor/quickorder.title',
+  description: 'editor/quickorder.description',
   type: 'object',
   properties: {
     title: {
-      title: 'editor.quickorder.title.title',
-      description: 'editor.quickorder.title.description',
+      title: 'editor/quickorder.title.title',
+      description: 'editor/quickorder.title.description',
       type: 'string',
       default: null,
     },
     showAutocomplete: {
-      title: 'editor.quickorder.autocomplete.title',
-      description: 'editor.quickorder.autocomplete.description',
+      title: 'editor/quickorder.autocomplete.title',
+      description: 'editor/quickorder.autocomplete.description',
       type: 'boolean',
       default: true,
     },
     showCopyPaste: {
-      title: 'editor.quickorder.textarea.title',
-      description: 'editor.quickorder.textarea.description',
+      title: 'editor/quickorder.textarea.title',
+      description: 'editor/quickorder.textarea.description',
+      type: 'boolean',
+      default: true,
+    },
+    showCategory: {
+      title: 'editor/quickorder.category.title',
+      description: 'editor/quickorder.category.description',
       type: 'boolean',
       default: true,
     },

@@ -37,7 +37,7 @@ export const ParseText = (textAreaValue: string) => {
         content: line,
         sku: null,
         quantity: null,
-        error: 'quickorder.invalidPattern',
+        error: 'store/quickorder.invalidPattern',
       }
     })
   return items

@@ -46,10 +46,10 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface> = ({
       <div className="w-third-l w-100-ns fl-l">
         <div className="flex-grow-1">
           <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">
-            <FormattedMessage id="quickorder.textarea.label" />
+            <FormattedMessage id="store/quickorder.textarea.label" />
           </h2>
           <div className="t-body lh-copy c-muted-1 mb7 ml3 false">
-            <FormattedMessage id="quickorder.textarea.helper" />
+            <FormattedMessage id="store/quickorder.textarea.helper" />
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface> = ({
                   parseText()
                 }}
               >
-                <FormattedMessage id="quickorder.validate" />
+                <FormattedMessage id="store/quickorder.validate" />
               </Button>
             </div>
           </div>

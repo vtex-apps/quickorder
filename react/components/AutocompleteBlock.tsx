@@ -84,7 +84,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
         }
       })
     } else {
-      toastMessage('quickorder.autocomplete.selectSku')
+      toastMessage('store/quickorder.autocomplete.selectSku')
     }
   }
 
@@ -102,10 +102,10 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
       <div className="w-third-l w-100-ns fl-l">
         <div className="flex-grow-1">
           <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">
-            <FormattedMessage id="quickorder.autocomplete.label" />
+            <FormattedMessage id="store/quickorder.autocomplete.label" />
           </h2>
           <div className="t-body lh-copy c-muted-1 mb7 ml3 false">
-            <FormattedMessage id="quickorder.autocomplete.helper" />
+            <FormattedMessage id="store/quickorder.autocomplete.helper" />
           </div>
         </div>
       </div>
@@ -157,7 +157,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
                           callAddUnitToCart()
                         }}
                       >
-                        <FormattedMessage id="quickorder.autocomplete.addButton" />
+                        <FormattedMessage id="store/quickorder.autocomplete.addButton" />
                       </Button>
                     </div>
                   </div>
