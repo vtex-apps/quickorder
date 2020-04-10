@@ -62,7 +62,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         const found = refIdFound.find((curr: any) => {
           return curr.refid === item.sku && curr.sku !== null
         })
-        ret = notfound ? 'quickorder.skuNotFound' : found ? null : item.error
+        ret = notfound ? 'store/quickorder.skuNotFound' : found ? null : item.error
         return ret
       }
 
@@ -175,7 +175,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     properties: {
       line: {
         type: 'object',
-        title: intl.formatMessage({ id: 'quickorder.review.label.lineNumber' }),
+        title: intl.formatMessage({ id: 'store/quickorder.review.label.lineNumber' }),
         // eslint-disable-next-line react/display-name
         cellRenderer: ({ rowData }: any) => {
           return <div>{rowData.line + 1}</div>
@@ -183,7 +183,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       },
       content: {
         type: 'object',
-        title: intl.formatMessage({ id: 'quickorder.review.label.content' }),
+        title: intl.formatMessage({ id: 'store/quickorder.review.label.content' }),
         // eslint-disable-next-line react/display-name
         cellRenderer: ({ cellData, rowData }: any) => {
           if (rowData.error) {
@@ -206,19 +206,19 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       },
       sku: {
         type: 'string',
-        title: intl.formatMessage({ id: 'quickorder.review.label.sku' }),
+        title: intl.formatMessage({ id: 'store/quickorder.review.label.sku' }),
       },
       quantity: {
         type: 'string',
-        title: intl.formatMessage({ id: 'quickorder.review.label.quantity' }),
+        title: intl.formatMessage({ id: 'store/quickorder.review.label.quantity' }),
       },
       error: {
         type: 'string',
-        title: intl.formatMessage({ id: 'quickorder.review.label.status' }),
+        title: intl.formatMessage({ id: 'store/quickorder.review.label.status' }),
         cellRenderer: ({ cellData, rowData }: any) => {
           if (rowData.error) {
             const text = intl.formatMessage({
-              id: String(cellData || 'quickorder.valid'),
+              id: String(cellData || 'store/quickorder.valid'),
             })
             return (
               <span
@@ -228,7 +228,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
               </span>
             )
           }
-          return intl.formatMessage({ id: 'quickorder.valid' })
+          return intl.formatMessage({ id: 'store/quickorder.valid' })
         },
       },
       delete: {

@@ -10,10 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - New interface option to add items from categories
+- New CSS Handles for category component
 
 ### Changed
 
 - Translation keys pattern
+- Doc update
 
 ## [0.5.8] - 2020-02-24
 

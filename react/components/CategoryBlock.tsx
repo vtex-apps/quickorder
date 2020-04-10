@@ -6,6 +6,7 @@ import { FormattedMessage, WrappedComponentProps } from 'react-intl'
 import { Collapsible, Input, Button, ToastContext } from 'vtex.styleguide'
 import { useCssHandles } from 'vtex.css-handles'
 import { graphql, useApolloClient, compose } from 'react-apollo'
+import { useRuntime } from 'vtex.render-runtime'
 // import { compose } from 'ramda'
 import _ from 'lodash'
 
@@ -20,6 +21,8 @@ const CategoryBlock: StorefrontFunctionComponent<any &
     categoryItems: {},
     quantitySelected: {},
   })
+
+  const { navigate } = useRuntime()
 
   const { showToast } = useContext(ToastContext)
 
@@ -42,10 +45,15 @@ const CategoryBlock: StorefrontFunctionComponent<any &
   }
 
   const CSS_HANDLES = [
+    'categoryContainer',
     'categoryTitle',
-    'productLabel',
-    'inputQuantity',
-    'buttonAdd',
+    'categoryHelper',
+    'categoryProductLabel',
+    'categoryInputQuantity',
+    'categoryButtonAdd',
+    'categoriesSubCategory',
+    'categoriesProductContainer',
+    'categoryLoadingProducts',
   ] as const
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -107,11 +115,16 @@ const CategoryBlock: StorefrontFunctionComponent<any &
           _setState({
             quantitySelected: quantitiesCopy,
           })
+          setTimeout(() => {
+            navigate({
+              to: '/checkout',
+            })
+          }, 1000)
         }
         return true
       })
     } else {
-      toastMessage('quickorder.category.noneSelection')
+      toastMessage('store/quickorder.category.noneSelection')
     }
   }
 
@@ -123,12 +136,12 @@ const CategoryBlock: StorefrontFunctionComponent<any &
               return (
                 <div className="flex flex-row pa2 pl4 bg-white hover-bg-near-white">
                   <div
-                    className={`flex flex-column w-90 ${styles.pcc} fl ${handles.productLabel}`}
+                    className={`flex flex-column w-90 ${styles.pcc} fl ${handles.categoryProductLabel}`}
                   >
                     {content.nameComplete}
                   </div>
                   <div
-                    className={`flex flex-column w-10 ph5-l ph2 p fl ${handles.inputQuantity}`}
+                    className={`flex flex-column w-10 ph5-l ph2 p fl ${handles.categoryInputQuantity}`}
                   >
                     <Input
                       value={quantitySelected[content.itemId] || 0}
@@ -184,14 +197,18 @@ const CategoryBlock: StorefrontFunctionComponent<any &
           openClose(item.id)
         }}
       >
-        <div>
-          {(!categoryItems || !categoryItems[item.id]) && 'Loading...'}
+        <div className={`${handles.categoriesProductContainer}`}>
+          {(!categoryItems || !categoryItems[item.id]) && (
+            <span className={`${handles.categoryLoadingProducts}`}>
+              <FormattedMessage id="store/quickorder.category.loading" />
+            </span>
+          )}
           {!!categoryItems &&
             !!categoryItems[item.id] &&
             drawProducts(categoryItems[item.id])}
         </div>
         {item.hasChildren && (
-          <div className="pl5">
+          <div className={`${handles.categoriesSubCategory} pl5`}>
             {item.children.map((child: any) => {
               return collapsible(child)
             })}
@@ -202,18 +219,18 @@ const CategoryBlock: StorefrontFunctionComponent<any &
   }
 
   return (
-    <div>
+    <div className={`${handles.categoryContainer}`}>
       <div className="w-third-l w-100-ns fl-l">
         <div className="flex-grow-1">
           <h2
             className={`t-heading-3 mb3 ml5 ml3-ns mt4 ${handles.categoryTitle}`}
           >
-            <FormattedMessage id="quickorder.category.label" />
+            <FormattedMessage id="store/quickorder.category.label" />
           </h2>
           <div
             className={`t-body lh-copy c-muted-1 mb7 ml3 false ${handles.categoryHelper}`}
           >
-            <FormattedMessage id="quickorder.category.helper" />
+            <FormattedMessage id="store/quickorder.category.helper" />
           </div>
         </div>
       </div>
@@ -222,7 +239,7 @@ const CategoryBlock: StorefrontFunctionComponent<any &
           <div>
             <div className="flex flex-row">
               <div
-                className={`flex flex-column w-100 items-end fl ${handles.buttonAdd}`}
+                className={`flex flex-column w-100 items-end fl ${handles.categoryButtonAdd}`}
               >
                 <Button
                   variation="primary"
@@ -232,7 +249,7 @@ const CategoryBlock: StorefrontFunctionComponent<any &
                     callAddToCart()
                   }}
                 >
-                  <FormattedMessage id="quickorder.category.addButton" />
+                  <FormattedMessage id="store/quickorder.category.addButton" />
                 </Button>
               </div>
             </div>

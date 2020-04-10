@@ -31,10 +31,6 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   showAutocomplete,
   intl,
 }: any) => {
-  console.log('showCategory', showCategory)
-  console.log('showCopyPaste', showCopyPaste)
-  console.log('showAutocomplete', showAutocomplete)
-
   const { showToast } = useContext(ToastContext)
 
   const [state, setState] = useState<any>({
@@ -60,10 +56,22 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   const { orderForm, setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
 
   const messages = defineMessages({
-    success: { id: 'toaster.cart.success', defaultMessage: '', label: '' },
-    duplicate: { id: 'toaster.cart.duplicated', defaultMessage: '', label: '' },
-    error: { id: 'toaster.cart.error', defaultMessage: '', label: '' },
-    seeCart: { id: 'toaster.cart.seeCart', defaultMessage: '', label: '' },
+    success: {
+      id: 'store/toaster.cart.success',
+      defaultMessage: '',
+      label: '',
+    },
+    duplicate: {
+      id: 'store/toaster.cart.duplicated',
+      defaultMessage: '',
+      label: '',
+    },
+    error: { id: 'store/toaster.cart.error', defaultMessage: '', label: '' },
+    seeCart: {
+      id: 'store/toaster.cart.seeCart',
+      defaultMessage: '',
+      label: '',
+    },
   })
 
   const translateMessage = (message: MessageDescriptor) => {
@@ -171,8 +179,8 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     }
   }
 
-  const onRefidLoading = (refidLoading: any) => {
-    console.log('onRefidLoading', refidLoading)
+  const onRefidLoading = (data: any) => {
+    console.log('onRefidLoading', data)
   }
 
   const backList = () => {
@@ -248,7 +256,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
                 backList()
               }}
             >
-              <FormattedMessage id="quickorder.back" />
+              <FormattedMessage id="store/quickorder.back" />
             </Button>
             {showAddToCart && (
               <Button
@@ -259,7 +267,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
                   addToCartCopyNPaste()
                 }}
               >
-                <FormattedMessage id="quickorder.addToCart" />
+                <FormattedMessage id="store/quickorder.addToCart" />
               </Button>
             )}
           </div>
@@ -290,31 +298,31 @@ interface QuickOrderProps {
 }
 
 QuickOrder.schema = {
-  title: 'editor.quickorder.title',
-  description: 'editor.quickorder.description',
+  title: 'editor/quickorder.title',
+  description: 'editor/quickorder.description',
   type: 'object',
   properties: {
     title: {
-      title: 'editor.quickorder.title.title',
-      description: 'editor.quickorder.title.description',
+      title: 'editor/quickorder.title.title',
+      description: 'editor/quickorder.title.description',
       type: 'string',
       default: null,
     },
     showAutocomplete: {
-      title: 'editor.quickorder.autocomplete.title',
-      description: 'editor.quickorder.autocomplete.description',
+      title: 'editor/quickorder.autocomplete.title',
+      description: 'editor/quickorder.autocomplete.description',
       type: 'boolean',
       default: true,
     },
     showCopyPaste: {
-      title: 'editor.quickorder.textarea.title',
-      description: 'editor.quickorder.textarea.description',
+      title: 'editor/quickorder.textarea.title',
+      description: 'editor/quickorder.textarea.description',
       type: 'boolean',
       default: true,
     },
     showCategory: {
-      title: 'editor.quickorder.category.title',
-      description: 'editor.quickorder.category.description',
+      title: 'editor/quickorder.category.title',
+      description: 'editor/quickorder.category.description',
       type: 'boolean',
       default: true,
     },
