@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- New interface option to add items using spreadsheet file
+- New CSS Handles for upload component
+
+### Changed
+
+- Doc update
+
+### Fixed
+
+- Translation keys for the editor at the admin
+
 ## [0.6.0] - 2020-04-10
 
 ### Added

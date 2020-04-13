@@ -2,7 +2,7 @@
 
 ## Description
 
-The VTEX Quickorder app is a store component that enables a B2B buyer to speedup buying process by ofering tools to bulk order, and this app is used by store theme.
+The VTEX Quickorder app is a store component that enables a B2B buyer to speedup buying process by ofering tools to bulk order.
 
 :loudspeaker: **Disclaimer:** Don't fork this project, use, contribute, or open issue with your feature request.
 
@@ -10,8 +10,9 @@ The VTEX Quickorder app is a store component that enables a B2B buyer to speedup
 
 | Release |       Status        | Release Date | Store Compatibility |
 | :-----: | :-----------------: | :----------: | :-----------------: |
-| [0.6.0] | **Current Release** |  2020-04-13  |         2.x         |
-| [0.5.8] |     **Active**      |  2020-02-24  |         2.x         |
+| [0.7.0] | **Current Release** |  2020-04-14  |         2.x         |
+| [0.6.0] |   **Deprecated**    |  2020-04-13  |         2.x         |
+| [0.5.8] |   **Deprecated**    |  2020-02-24  |         2.x         |
 | [0.5.7] |   **Deprecated**    |  2020-02-20  |         2.x         |
 | [0.5.6] |   **Deprecated**    |  2020-02-20  |         2.x         |
 | [0.5.5] |   **Deprecated**    |  2020-02-19  |         2.x         |
@@ -20,11 +21,42 @@ See our [LTS policy](https://github.com/vtex-apps/awesome-io#lts-policy) for mor
 
 ## Table of Contents
 
+- [Features](#features)
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [CSS namespaces](#css-namespaces)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
+
+## Features
+
+To enable/disable these features, check the [Usage](#usage) section
+
+### One by One
+
+Type the product name, select, inform the quantity and add to the cart
+
+![One by One](./image/One-by-One.gif)
+
+### Copy & Paste
+
+Copy a list containing two columns (SKU, Quantity) and Paste it inside the text area
+
+![Copy & Paste](./image/Copy-n-Paste.gif)
+
+### Categories
+
+This feature is only recommended if you don't have more than 50 SKUs by category, if your store is eligible, open the categories, choose the quantities and add all at once
+
+![Category](./image/Category.gif)
+
+### Upload
+
+You can also upload a Spreadsheet containing two columns (SKU, Quantity) as shown below
+
+![Spreadsheet](./image/Spreadsheet.png)
+
+![Upload](./image/Upload.gif)
 
 ## Usage
 
@@ -49,6 +81,7 @@ You can also configure it in your store, to do so, add `quickorder` block into y
 #### Configuration
 
 To change any configuration aspect, please navigate to `/admin/cms/site-editor/quickorder` to activate/inactivate modules or change the title
+![Admin View](./image/Editor-Admin.png)
 
 #### CSS namespaces
 
@@ -77,6 +110,9 @@ Below, we describe the namespaces that are defined in the _quickorder_.
 | `categoriesSubCategory`      | Sub-category containerr              |
 | `categoriesProductContainer` | Products list container              |
 | `categoryLoadingProducts`    | Products "Loading" message           |
+| `dropzoneContainer`          | Dropzone file/upload container       |
+| `dropzoneText`               | Dropzone text                        |
+| `dropzoneLink`               | Dropzone link                        |
 
 ## Troubleshooting
 

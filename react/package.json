@@ -12,7 +12,8 @@
     "prop-types": "^15.7.2",
     "ramda": "^0.26.1",
     "react-dom": "^16.9.2",
-    "react-intl": "3.9.1"
+    "react-intl": "3.9.1",
+    "xlsx": "^0.15.6"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.7",
