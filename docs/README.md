@@ -35,21 +35,25 @@ To enable/disable these features, check the [Usage](#usage) section
 ### One by One
 
 Type the product name, select, inform the quantity and add to the cart
+
 ![One by One](./image/One-by-One.gif)
 
 ### Copy & Paste
 
 Copy a list containing two columns (SKU, Quantity) and Paste it inside the text area
+
 ![Copy & Paste](./image/Copy-n-Paste.gif)
 
 ### Categories
 
 This feature is only recommended if you don't have more than 50 SKUs by category, if your store is eligible, open the categories, choose the quantities and add all at once
+
 ![Category](./image/Category.gif)
 
 ### Upload
 
 You can also upload a Spreadsheet containing two columns (SKU, Quantity) as shown below
+
 ![Spreadsheet](./image/Spreadsheet.png)
 
 ![Upload](./image/Upload.gif)
