@@ -17,6 +17,7 @@ import { useCssHandles } from 'vtex.css-handles'
 import TranslatedTitle from './components/TranslatedTitle'
 import AutocompleteBlock from './components/AutocompleteBlock'
 import TextAreaBlock from './components/TextAreaBlock'
+import UploadBlock from './components/UploadBlock'
 import CategoryBlock from './components/CategoryBlock'
 import ReviewBlock from './components/ReviewBlock'
 import styles from './styles.css'
@@ -28,6 +29,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   title,
   showCopyPaste,
   showCategory,
+  showUpload,
   showAutocomplete,
   intl,
 }: any) => {
@@ -123,6 +125,9 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
       compareObjects(mutationResult.data.addToCart, orderForm)
     ) {
       toastMessage({ success: true, isNewItem: false })
+      setTimeout(() => {
+        window.location.href = '/checkout'
+      }, 1000)
       return
     }
 
@@ -239,6 +244,15 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
         </div>
       )}
 
+      {!reviewState && showUpload && (
+        <div className={`pa6 bg-muted-5 ${handles.uploadBlock}`}>
+          <UploadBlock
+            onReviewItems={onReviewItems}
+            onRefidLoading={onRefidLoading}
+          />
+        </div>
+      )}
+
       {reviewState && (
         <div className={`pa6 ${handles.reviewBlock}`}>
           <ReviewBlock
@@ -298,31 +312,37 @@ interface QuickOrderProps {
 }
 
 QuickOrder.schema = {
-  title: 'editor/quickorder.title',
-  description: 'editor/quickorder.description',
+  title: 'editor.quickorder.title',
+  description: 'editor.quickorder.description',
   type: 'object',
   properties: {
     title: {
-      title: 'editor/quickorder.title.title',
-      description: 'editor/quickorder.title.description',
+      title: 'editor.quickorder.title.title',
+      description: 'editor.quickorder.title.description',
       type: 'string',
       default: null,
     },
     showAutocomplete: {
-      title: 'editor/quickorder.autocomplete.title',
-      description: 'editor/quickorder.autocomplete.description',
+      title: 'editor.quickorder.autocomplete.title',
+      description: 'editor.quickorder.autocomplete.description',
       type: 'boolean',
       default: true,
     },
     showCopyPaste: {
-      title: 'editor/quickorder.textarea.title',
-      description: 'editor/quickorder.textarea.description',
+      title: 'editor.quickorder.textarea.title',
+      description: 'editor.quickorder.textarea.description',
       type: 'boolean',
       default: true,
     },
     showCategory: {
-      title: 'editor/quickorder.category.title',
-      description: 'editor/quickorder.category.description',
+      title: 'editor.quickorder.category.title',
+      description: 'editor.quickorder.category.description',
+      type: 'boolean',
+      default: true,
+    },
+    showUpload: {
+      title: 'editor.quickorder.upload.title',
+      description: 'editor.quickorder.upload.description',
       type: 'boolean',
       default: true,
     },
