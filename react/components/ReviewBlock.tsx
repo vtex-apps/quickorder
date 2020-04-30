@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react'
 import { Table, Input, ButtonWithIcon, IconDelete } from 'vtex.styleguide'
-import { WrappedComponentProps, injectIntl } from 'react-intl'
+import { WrappedComponentProps, injectIntl, defineMessages } from 'react-intl'
 import PropTypes from 'prop-types'
 import { ParseText, GetText } from '../utils'
 import { useApolloClient } from 'react-apollo'
@@ -23,8 +23,22 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   })
   const { reviewItems } = state
 
-  const translateMessage = (message: MessageDescriptor) => {
-    return intl.formatMessage(message)
+  const messages = defineMessages({
+    valid: {
+      id: 'store/quickorder.valid',
+    },
+    invalidPattern: {
+      id: 'store/quickorder.invalidPattern',
+    },
+    skuNotFound: {
+      id: 'store/quickorder.skuNotFound',
+    },
+  })
+
+  const errorMessage = {
+    'store/quickorder.valid': messages.valid,
+    'store/quickorder.invalidPattern': messages.invalidPattern,
+    'store/quickorder.skuNotFound': messages.skuNotFound,
   }
 
   const validateRefids = (refidData: any, reviewed: any) => {
@@ -230,12 +244,14 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       },
       error: {
         type: 'string',
-        title: intl.formatMessage({ id: 'store/quickorder.review.label.status' }),
+        title: intl.formatMessage({
+          id: 'store/quickorder.review.label.status',
+        }),
         cellRenderer: ({ cellData, rowData }: any) => {
           if (rowData.error) {
-            const text = translateMessage({
-              id: String(cellData || 'store/quickorder.valid'),
-            })
+            const text = intl.formatMessage(
+              errorMessage[cellData || 'store/quickorder.valid']
+            )
             return (
               <span
                 className={`pa3 br2 bg-danger--faded hover-bg-danger-faded active-bg-danger-faded c-danger hover-c-danger active-c-danger dib mr5 mv0 ba b--danger hover-b-danger active-b-danger`}
@@ -279,9 +295,5 @@ ReviewBlock.propTypes = {
   reviewItems: PropTypes.array,
   onRefidLoading: PropTypes.func,
 }
-interface MessageDescriptor {
-  id: string
-  description?: string | object
-  defaultMessage?: string
-}
+
 export default injectIntl(ReviewBlock)
