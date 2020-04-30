@@ -9,6 +9,17 @@ import { useApolloClient } from 'react-apollo'
 import getRefIdTranslation from '../queries/refids.gql'
 
 const remove = <IconDelete />
+const messages = defineMessages({
+  valid: {
+    id: 'store/quickorder.valid',
+  },
+  invalidPattern: {
+    id: 'store/quickorder.invalidPattern',
+  },
+  skuNotFound: {
+    id: 'store/quickorder.skuNotFound',
+  },
+})
 
 const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   onReviewItems,
@@ -22,18 +33,6 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     reviewItems: reviewedItems || [],
   })
   const { reviewItems } = state
-
-  const messages = defineMessages({
-    valid: {
-      id: 'store/quickorder.valid',
-    },
-    invalidPattern: {
-      id: 'store/quickorder.invalidPattern',
-    },
-    skuNotFound: {
-      id: 'store/quickorder.skuNotFound',
-    },
-  })
 
   const errorMessage = {
     'store/quickorder.valid': messages.valid,
