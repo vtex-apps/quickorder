@@ -1,13 +1,25 @@
+/* eslint-disable vtex/prefer-early-return */
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react'
 import { Table, Input, ButtonWithIcon, IconDelete } from 'vtex.styleguide'
-import { WrappedComponentProps, injectIntl } from 'react-intl'
+import { WrappedComponentProps, injectIntl, defineMessages } from 'react-intl'
 import PropTypes from 'prop-types'
 import { ParseText, GetText } from '../utils'
 import { useApolloClient } from 'react-apollo'
 import getRefIdTranslation from '../queries/refids.gql'
 
 const remove = <IconDelete />
+const messages = defineMessages({
+  valid: {
+    id: 'store/quickorder.valid',
+  },
+  invalidPattern: {
+    id: 'store/quickorder.invalidPattern',
+  },
+  skuNotFound: {
+    id: 'store/quickorder.skuNotFound',
+  },
+})
 
 const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   onReviewItems,
@@ -21,6 +33,12 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     reviewItems: reviewedItems || [],
   })
   const { reviewItems } = state
+
+  const errorMessage = {
+    'store/quickorder.valid': messages.valid,
+    'store/quickorder.invalidPattern': messages.invalidPattern,
+    'store/quickorder.skuNotFound': messages.skuNotFound,
+  }
 
   const validateRefids = (refidData: any, reviewed: any) => {
     let error = false
@@ -62,7 +80,11 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         const found = refIdFound.find((curr: any) => {
           return curr.refid === item.sku && curr.sku !== null
         })
-        ret = notfound ? 'store/quickorder.skuNotFound' : found ? null : item.error
+        ret = notfound
+          ? 'store/quickorder.skuNotFound'
+          : found
+          ? null
+          : item.error
         return ret
       }
 
@@ -82,7 +104,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         const item = items.find((curr: any) => {
           return original.sku === curr.sku
         })
-        return item ? item : original
+        return item || original
       }
 
       const updated = reviewItems.map((item: any) => {
@@ -136,8 +158,9 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   })
 
   const removeLine = (line: number) => {
-    let items: [any] = reviewItems.filter((item: any, pos: number) => {
+    const items: [any] = reviewItems.filter((item: any, pos: number) => {
       ;() => {
+        // eslint-disable-next-line no-void
         void item
       }
       return pos !== line
@@ -151,8 +174,8 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   }
 
   const updateLineContent = (line: number, content: string) => {
-    let items = reviewItems
-    items[line]['content'] = content
+    const items = reviewItems
+    items[line].content = content
     setReviewState({
       ...state,
       reviewItems: items,
@@ -160,8 +183,8 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   }
 
   const onBlurField = (line: number) => {
-    let joinLines = GetText(reviewItems)
-    let reviewd: any = ParseText(joinLines)
+    const joinLines = GetText(reviewItems)
+    const reviewd: any = ParseText(joinLines)
 
     if (reviewd[line].error === null) {
       setReviewState({
@@ -175,15 +198,19 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     properties: {
       line: {
         type: 'object',
-        title: intl.formatMessage({ id: 'store/quickorder.review.label.lineNumber' }),
+        title: intl.formatMessage({
+          id: 'store/quickorder.review.label.lineNumber',
+        }),
         // eslint-disable-next-line react/display-name
         cellRenderer: ({ rowData }: any) => {
-          return <div>{rowData.line + 1}</div>
+          return <div>{parseInt(rowData.line, 10) + 1}</div>
         },
       },
       content: {
         type: 'object',
-        title: intl.formatMessage({ id: 'store/quickorder.review.label.content' }),
+        title: intl.formatMessage({
+          id: 'store/quickorder.review.label.content',
+        }),
         // eslint-disable-next-line react/display-name
         cellRenderer: ({ cellData, rowData }: any) => {
           if (rowData.error) {
@@ -210,16 +237,20 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       },
       quantity: {
         type: 'string',
-        title: intl.formatMessage({ id: 'store/quickorder.review.label.quantity' }),
+        title: intl.formatMessage({
+          id: 'store/quickorder.review.label.quantity',
+        }),
       },
       error: {
         type: 'string',
-        title: intl.formatMessage({ id: 'store/quickorder.review.label.status' }),
+        title: intl.formatMessage({
+          id: 'store/quickorder.review.label.status',
+        }),
         cellRenderer: ({ cellData, rowData }: any) => {
           if (rowData.error) {
-            const text = intl.formatMessage({
-              id: String(cellData || 'store/quickorder.valid'),
-            })
+            const text = intl.formatMessage(
+              errorMessage[cellData || 'store/quickorder.valid']
+            )
             return (
               <span
                 className={`pa3 br2 bg-danger--faded hover-bg-danger-faded active-bg-danger-faded c-danger hover-c-danger active-c-danger dib mr5 mv0 ba b--danger hover-b-danger active-b-danger`}

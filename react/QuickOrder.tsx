@@ -159,8 +159,8 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   const addToCartCopyNPaste = () => {
     const items: any = reviewItems.map(({ vtexSku, quantity }: any) => {
       return {
-        id: vtexSku,
-        quantity,
+        id: parseInt(vtexSku, 10),
+        quantity: parseFloat(quantity),
         seller: '1',
       }
     })

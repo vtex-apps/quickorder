@@ -96,8 +96,8 @@ const CategoryBlock: StorefrontFunctionComponent<any &
     if (skus?.length) {
       const items = skus.map((item: any) => {
         return {
-          id: item,
-          quantity: quantitySelected[item],
+          id: parseInt(item, 10),
+          quantity: parseFloat(quantitySelected[item]),
           seller: '1',
         }
       })

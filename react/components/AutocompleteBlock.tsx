@@ -69,8 +69,8 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     if (selectedItem && selectedItem.value) {
       const items = [
         {
-          id: selectedItem.value,
-          quantity: quantitySelected,
+          id: parseInt(selectedItem.value, 10),
+          quantity: parseFloat(quantitySelected),
           seller: '1',
         },
       ]
