@@ -1319,10 +1319,10 @@
     semver "^6.3.0"
     tsutils "^3.17.1"
 
-"@vtex/api@6.24.4":
-  version "6.24.4"
-  resolved "https://registry.yarnpkg.com/@vtex/api/-/api-6.24.4.tgz#e39c5c87c01fe287ce0aaac9acc7c7acd224f7a1"
-  integrity sha512-w/wSmNQjvG0CQBGic/KPGD4l+yGIam2LMORlubt68bb6qA5j/21Fijfy8N9HFEwo+rmQAYnutMJGVzSQUlBh9A==
+"@vtex/api@6.27.0":
+  version "6.27.0"
+  resolved "https://registry.yarnpkg.com/@vtex/api/-/api-6.27.0.tgz#c19634181915363bc9fa9e1150c5c15aa4b3f25e"
+  integrity sha512-yNkEbjSvKnC2VSAypYK5WaGW/tKmDgvO4kNaI8ZKU5anG3U82QjWWYlqsFZXh0ycvlP9l4+Og2BMHat4YKy+uA==
   dependencies:
     "@types/koa" "^2.11.0"
     "@types/koa-compose" "^3.2.3"
