@@ -185,17 +185,17 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     properties: {
       line: {
         type: 'object',
-        title: translateMessage({
+        title: intl.formatMessage({
           id: 'store/quickorder.review.label.lineNumber',
         }),
         // eslint-disable-next-line react/display-name
         cellRenderer: ({ rowData }: any) => {
-          return <div>{parseInt(rowData.line, 0) + 1}</div>
+          return <div>{parseInt(rowData.line, 10) + 1}</div>
         },
       },
       content: {
         type: 'object',
-        title: translateMessage({
+        title: intl.formatMessage({
           id: 'store/quickorder.review.label.content',
         }),
         // eslint-disable-next-line react/display-name
@@ -220,17 +220,17 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       },
       sku: {
         type: 'string',
-        title: translateMessage({ id: 'store/quickorder.review.label.sku' }),
+        title: intl.formatMessage({ id: 'store/quickorder.review.label.sku' }),
       },
       quantity: {
         type: 'string',
-        title: translateMessage({
+        title: intl.formatMessage({
           id: 'store/quickorder.review.label.quantity',
         }),
       },
       error: {
         type: 'string',
-        title: translateMessage({ id: 'store/quickorder.review.label.status' }),
+        title: intl.formatMessage({ id: 'store/quickorder.review.label.status' }),
         cellRenderer: ({ cellData, rowData }: any) => {
           if (rowData.error) {
             const text = translateMessage({
@@ -244,7 +244,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
               </span>
             )
           }
-          return translateMessage({ id: 'store/quickorder.valid' })
+          return intl.formatMessage({ id: 'store/quickorder.valid' })
         },
       },
       delete: {
