@@ -1,123 +1,135 @@
-# VTEX Quickorder
+📢 Use this project, [contribute](https://github.com/vtex-apps/quickorder) to it or open issues to help evolve it using [Store Discussion](https://github.com/vtex-apps/store-discussion).
 
-## Description
+# Quickorder
 
-The VTEX Quickorder app is a store component that enables a B2B buyer to speedup buying process by ofering tools to bulk order.
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-:loudspeaker: **Disclaimer:** Don't fork this project, use, contribute, or open issue with your feature request.
+The Quickorder app is entirely designed for **B2B scenarios**. It creates a custom page in your store aimed at purchases in bulk, offering tools such as uploading a spreadsheet to make bulk orders more agile.
 
-## Release schedule
+![quick-order](https://user-images.githubusercontent.com/52087100/82382559-8fb77b00-9a02-11ea-8803-1d36c4cf5d13.png)
+*Example of a quick order page without customization*
 
-| Release |       Status        | Release Date | Store Compatibility |
-| :-----: | :-----------------: | :----------: | :-----------------: |
-| [0.7.0] | **Current Release** |  2020-04-14  |         2.x         |
-| [0.6.0] |   **Deprecated**    |  2020-04-13  |         2.x         |
-| [0.5.8] |   **Deprecated**    |  2020-02-24  |         2.x         |
-| [0.5.7] |   **Deprecated**    |  2020-02-20  |         2.x         |
-| [0.5.6] |   **Deprecated**    |  2020-02-20  |         2.x         |
-| [0.5.5] |   **Deprecated**    |  2020-02-19  |         2.x         |
+## Configuration
 
-See our [LTS policy](https://github.com/vtex-apps/awesome-io#lts-policy) for more information.
+1. Add the Quickorder app to your theme's dependencies in `manifest.json`. For example:
 
-## Table of Contents
-
-- [Features](#features)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [CSS namespaces](#css-namespaces)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-
-## Features
-
-To enable/disable these features, check the [Usage](#usage) section
-
-### One by One
-
-Type the product name, select, inform the quantity and add to the cart
-
-![One by One](./image/One-by-One.gif)
-
-### Copy & Paste
-
-Copy a list containing two columns (SKU, Quantity) and Paste it inside the text area
-
-![Copy & Paste](./image/Copy-n-Paste.gif)
-
-### Categories
-
-This feature is only recommended if you don't have more than 50 SKUs by category, if your store is eligible, open the categories, choose the quantities and add all at once
-
-![Category](./image/Category.gif)
-
-### Upload
-
-You can also upload a Spreadsheet containing two columns (SKU, Quantity) as shown below
-
-![Spreadsheet](./image/Spreadsheet.png)
-
-![Upload](./image/Upload.gif)
-
-## Usage
-
-You can also simply install by running `vtex install vtex.quickorder` on your environment
-
-**_OR_**
-
-This app uses our store builder with the blocks architecture. To know more about the Store Builder [click here](https://help.vtex.com/en/tutorial/understanding-storebuilder-and-stylesbuilder#structuring-and-configuring-our-store-with-object-object).
-
-To configure or customize this app, you need to import it in your dependencies in `manifest.json`.
-
-```json
+```diff
   dependencies: {
-    "vtex.quickorder": "0.x"
++   "vtex.quickorder": "0.x"
   }
 ```
 
-Both ways will make available its own Route `/quickorder`, in order to create a different route, please configure it at `/admin/cms/pages`.
+Once Quickorder is added as a dependency, a new route called `/quickorder` will be automatically created for your store, creating the Quickorder custom page that allows bulk orders. 
 
-You can also configure it in your store, to do so, add `quickorder` block into your app theme as we do in our [Store theme app](https://github.com/vtex-apps/store-theme/blob/master/store/blocks.json).
+2. Access the admin of the VTEX account in which your are working to access the CMS section. Then, enter **Site Editor**;
+3. In the admin's Site Editor, look up the `/quickorder` route in the Site Editor's `URL` field;
+4. Edit the page's Quickorder block according to the desired scenarios and save your changes. You can change the page title, as well as define which bulk order options will be made available to users: `autocomplete`, `textarea`, `category` or `upload`.
 
-#### Configuration
-
-To change any configuration aspect, please navigate to `/admin/cms/site-editor/quickorder` to activate/inactivate modules or change the title
 ![Admin View](./image/Editor-Admin.png)
 
-#### CSS namespaces
+For more on each of the available options and their respective functionalities, check the Modus Operandi section below.
 
-Below, we describe the namespaces that are defined in the _quickorder_.
+## Modus Operandi
 
-| Class name                   | Description                          |
-| ---------------------------- | ------------------------------------ |
-| `container`                  | The main container of quickorder     |
-| `title`                      | Main title of the component          |
-| `copyPasteBlock`             | Copy & Paste Block                   |
-| `autocompleteBlock`          | Autocomplete Block                   |
-| `reviewBlock`                | Review Block                         |
-| `buttonsBlock`               | Review Buttons container             |
-| `buttonValidate`             | Copy & Paste "Validate" button       |
-| `skuSelection`               | Autocomplete SKU items for selection |
-| `productThumb`               | Autocomplete product thumb image     |
-| `productLabel`               | Autocomplete product label           |
-| `inputQuantity`              | Autocomplete product quantity field  |
-| `buttonAdd`                  | Autocomplete Add to the Cart button  |
-| `categoryContainer`          | Category container                   |
-| `categoryTitle`              | Category Title                       |
-| `categoryHelper`             | Category Helper                      |
-| `categoryProductLabel`       | Product name on the list             |
-| `categoryInputQuantity`      | Input quantity container             |
-| `categoryButtonAdd`          | Add button at the product list       |
-| `categoriesSubCategory`      | Sub-category containerr              |
-| `categoriesProductContainer` | Products list container              |
-| `categoryLoadingProducts`    | Products "Loading" message           |
-| `dropzoneContainer`          | Dropzone file/upload container       |
-| `dropzoneText`               | Dropzone text                        |
-| `dropzoneLink`               | Dropzone link                        |
+In practice, the QuickOrder custom page works just like any other store page - with a unique route and its own components.
 
-## Troubleshooting
+This means that you can display a link to it in components from other pages, such as the Homepage, so that your users can access it faster.
 
-You can check if others are passing through similar issues [here](https://github.com/vtex-apps/quickorder/issues). Also feel free to [open issues](https://github.com/vtex-apps/quickorder/issues/new) or contribute with pull requests.
+When configuring the page itself, we recommend that you **choose a maximum of 2 bulk order options** (from the total of 4 available) to establish clear communication with users. Remember: the more options on the UI, the more complex the order process becomes.
 
-## Contributing
+The available options are as follows:
 
-Check it out [how to contribute](https://github.com/vtex-apps/awesome-io#contributing) with this project.
+### Copy/Paste SKU
+
+The Copy/Paste SKU allows user to paste a list of desired SKUs in a text box following the structure `[Sku's Code],[Quantity]`, where:
+- `SKU'S code` = SKU Reference ID SKU (be aware that this is not the SKU ID displayed in your admin's catalog);
+- `Quantity` = SKU quantity you wish to add to the cart.
+
+For example:
+
+![Copy & Paste](./image/Copy-n-Paste.gif)
+
+:information_source: *Remember that you need to validate the list after pasting it. Validating the Reference IDs will let you know if the selected SKUs are in fact available for purchase.*
+ 
+### One By One
+
+The One By One option works as a custom search bar. Simply add the name of the desired SKU, then select it and set the amount you wish to add to the cart.
+
+Remember to add each selected item to the cart by clicking on `Add`.
+
+![One by One](./image/One-by-One.gif)
+
+:information_source: *This option does not require any validation, since selecting the SKUs using a search bar already ensures that they are available to purchase.*
+ 
+### Categories
+
+The Categories option allow users to choose their desired SKUs and respective quantities using the store's categories tree, adding all the selected options to the cart at once.
+
+![Category](./image/Category.gif)
+
+Be careful however: this option is only recommended if you don't have more than 50 SKUs for each category in your catalog, otherwise the component will take too long to load and will negatively affect your store's UX.
+
+:information_source: *This scenario also does not require validating the SKUs that you've added to the cart, since selecting them directly from the store's categories tree ensures their availability.*
+
+### Upload
+
+Another possible option that replaces the Copy/Paste SKU option is to upload a spreadsheet containing two columns (SKU and Quantity) to the Upload component.
+
+![Spreadsheet](./image/Spreadsheet.png)
+
+The spreadsheet will work in the same way as the list pasted using the Copy/Paste SKU option, as follows:
+
+- `SKU` column = SKU Reference ID (be aware that this is not the SKU ID displayed in your admin's catalog);
+- `Quantity` column = SKU quantity you wish to add to the cart.
+
+:information_source: *Once uploaded, the spreadsheet is then validated. Based on the filled in Reference IDs, Quickorder will confirm whether the SKUs are in fact available for purchase.*
+
+## Customization
+
+In order to apply CSS customizations to this and other blocks, follow the instructions given in the recipe on [Using CSS Handles for store customization](https://vtex.io/docs/recipes/style/using-css-handles-for-store-customization).
+
+| CSS Handles |
+| ---------------------------- |
+| `container` |
+| `title` |
+| `copyPasteBlock` |
+| `autocompleteBlock` |
+| `reviewBlock` |
+| `buttonsBlock` |
+| `buttonValidate` |
+| `skuSelection` |
+| `productThumb` |
+| `productLabel` |
+| `inputQuantity` |
+| `buttonAdd` |
+| `categoryContainer` |
+| `categoryTitle` |
+| `categoryHelper` |
+| `categoryProductLabel` |
+| `categoryInputQuantity` |
+| `categoryButtonAdd` |
+| `categoriesSubCategory` |
+| `categoriesProductContainer` |
+| `categoryLoadingProducts` |
+| `dropzoneContainer` |
+| `dropzoneText` |
+| `dropzoneLink` |
+  
+<!-- DOCS-IGNORE:start -->
+
+## Contributors ✨
+
+Thanks goes to these wonderful people:
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind are welcome!
+
+<!-- DOCS-IGNORE:end -->
