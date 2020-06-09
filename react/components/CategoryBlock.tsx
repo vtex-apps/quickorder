@@ -13,7 +13,15 @@ import getCategories from '../queries/categoriesQuery.gql'
 import SearchByCategory from '../queries/productsByCategory.gql'
 
 const CategoryBlock: StorefrontFunctionComponent<any &
-  WrappedComponentProps> = ({ onAddToCart, loading, success, intl, data }) => {
+  WrappedComponentProps> = ({
+  onAddToCart,
+  text,
+  description,
+  loading,
+  success,
+  intl,
+  data,
+}) => {
   const [state, setState] = useState<any>({
     categories: data.categories || [],
     categoryItems: {},
@@ -219,12 +227,12 @@ const CategoryBlock: StorefrontFunctionComponent<any &
           <h2
             className={`t-heading-3 mb3 ml5 ml3-ns mt4 ${handles.categoryTitle}`}
           >
-            <FormattedMessage id="store/quickorder.category.label" />
+            {text}
           </h2>
           <div
             className={`t-body lh-copy c-muted-1 mb7 ml3 false ${handles.categoryHelper}`}
           >
-            <FormattedMessage id="store/quickorder.category.helper" />
+            {description}
           </div>
         </div>
       </div>
@@ -261,6 +269,8 @@ CategoryBlock.propTypes = {
   onAddToCart: PropTypes.func,
   loading: PropTypes.bool,
   success: PropTypes.bool,
+  text: PropTypes.string,
+  description: PropTypes.string,
   data: PropTypes.shape({
     loading: PropTypes.bool,
     success: PropTypes.bool,

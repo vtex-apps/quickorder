@@ -31,6 +31,14 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   showCategory,
   showUpload,
   showAutocomplete,
+  copyText,
+  copyDescription,
+  oneText,
+  oneDescription,
+  catText,
+  catDescription,
+  uploadText,
+  uploadDescription,
   intl,
 }: any) => {
   const { showToast } = useContext(ToastContext)
@@ -217,6 +225,8 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
       {!reviewState && showCopyPaste && (
         <div className={`pa6 bg-muted-5 ${handles.copyPasteBlock}`}>
           <TextAreaBlock
+            text={copyText}
+            description={copyDescription}
             value={textAreaValue}
             onReviewItems={onReviewItems}
             onRefidLoading={onRefidLoading}
@@ -227,6 +237,8 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
       {!reviewState && showAutocomplete && (
         <div className={`pa6 bg-muted-5 ${handles.autocompleteBlock}`}>
           <AutocompleteBlock
+            text={oneText}
+            description={oneDescription}
             onAddToCart={callAddToCart}
             loading={mutationLoading}
             success={!mutationError}
@@ -237,6 +249,8 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
       {!reviewState && showCategory && (
         <div className={`pa6 bg-muted-5 ${handles.categoryBlock}`}>
           <CategoryBlock
+            text={catText}
+            description={catDescription}
             onAddToCart={callAddToCart}
             loading={mutationLoading}
             success={!mutationError}
@@ -247,6 +261,8 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
       {!reviewState && showUpload && (
         <div className={`pa6 bg-muted-5 ${handles.uploadBlock}`}>
           <UploadBlock
+            text={uploadText}
+            description={uploadDescription}
             onReviewItems={onReviewItems}
             onRefidLoading={onRefidLoading}
           />
@@ -309,6 +325,14 @@ interface QuickOrderProps {
   showAutocomplete?: boolean
   showCategory?: boolean
   customToastUrl?: string
+  copyText?: string
+  copyDescription?: string
+  oneText?: string
+  oneDescription?: string
+  catText?: string
+  catDescription?: string
+  uploadText?: string
+  uploadDescription?: string
 }
 
 QuickOrder.schema = {
@@ -320,31 +344,79 @@ QuickOrder.schema = {
       title: 'editor.quickorder.title.title',
       description: 'editor.quickorder.title.description',
       type: 'string',
+      default: '',
+    },
+    showCopyPaste: {
+      title: 'editor.quickorder.textarea.title',
+      description: '',
+      type: 'boolean',
+      default: true,
+    },
+    copyText: {
+      title: 'editor.quickorder.textarea.label',
+      description: '',
+      type: 'string',
+      default: null,
+    },
+    copyDescription: {
+      title: 'editor.quickorder.textarea.helper',
+      description: '',
+      type: 'string',
       default: null,
     },
     showAutocomplete: {
       title: 'editor.quickorder.autocomplete.title',
-      description: 'editor.quickorder.autocomplete.description',
+      description: '',
       type: 'boolean',
       default: true,
     },
-    showCopyPaste: {
-      title: 'editor.quickorder.textarea.title',
-      description: 'editor.quickorder.textarea.description',
-      type: 'boolean',
-      default: true,
+    oneText: {
+      title: 'editor.quickorder.autocomplete.label',
+      description: '',
+      type: 'string',
+      default: null,
+    },
+    oneDescription: {
+      title: 'editor.quickorder.autocomplete.helper',
+      description: '',
+      type: 'string',
+      default: null,
     },
     showCategory: {
       title: 'editor.quickorder.category.title',
-      description: 'editor.quickorder.category.description',
+      description: '',
       type: 'boolean',
       default: true,
     },
+    catText: {
+      title: 'editor.quickorder.category.label',
+      description: '',
+      type: 'string',
+      default: null,
+    },
+    catDescription: {
+      title: 'editor.quickorder.category.helper',
+      description: '',
+      type: 'string',
+      default: null,
+    },
     showUpload: {
       title: 'editor.quickorder.upload.title',
-      description: 'editor.quickorder.upload.description',
+      description: '',
       type: 'boolean',
       default: true,
+    },
+    uploadText: {
+      title: 'editor.quickorder.upload.label',
+      description: '',
+      type: 'string',
+      default: null,
+    },
+    uploadDescription: {
+      title: 'editor.quickorder.upload.helper',
+      description: '',
+      type: 'string',
+      default: null,
     },
   },
 }

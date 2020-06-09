@@ -3,13 +3,15 @@
 # Quickorder
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 The Quickorder app is entirely designed for **B2B scenarios**. It creates a custom page in your store aimed at purchases in bulk, offering tools such as uploading a spreadsheet to make bulk orders more agile.
 
 ![quick-order](https://user-images.githubusercontent.com/52087100/82382559-8fb77b00-9a02-11ea-8803-1d36c4cf5d13.png)
-*Example of a quick order page without customization*
+_Example of a quick order page without customization_
 
 ## Configuration
 
@@ -21,13 +23,13 @@ The Quickorder app is entirely designed for **B2B scenarios**. It creates a cust
   }
 ```
 
-Once Quickorder is added as a dependency, a new route called `/quickorder` will be automatically created for your store, creating the Quickorder custom page that allows bulk orders. 
+Once Quickorder is added as a dependency, a new route called `/quickorder` will be automatically created for your store, creating the Quickorder custom page that allows bulk orders.
 
 2. Access the admin of the VTEX account in which your are working to access the CMS section. Then, enter **Site Editor**;
 3. In the admin's Site Editor, look up the `/quickorder` route in the Site Editor's `URL` field;
 4. Edit the page's Quickorder block according to the desired scenarios and save your changes. You can change the page title, as well as define which bulk order options will be made available to users: `autocomplete`, `textarea`, `category` or `upload`.
 
-![Admin View](./image/Editor-Admin.png)
+![Admin View](./image/Editor-Admin_2.png)
 
 For more on each of the available options and their respective functionalities, check the Modus Operandi section below.
 
@@ -44,6 +46,7 @@ The available options are as follows:
 ### Copy/Paste SKU
 
 The Copy/Paste SKU allows user to paste a list of desired SKUs in a text box following the structure `[Sku's Code],[Quantity]`, where:
+
 - `SKU'S code` = SKU Reference ID SKU (be aware that this is not the SKU ID displayed in your admin's catalog);
 - `Quantity` = SKU quantity you wish to add to the cart.
 
@@ -51,8 +54,8 @@ For example:
 
 ![Copy & Paste](./image/Copy-n-Paste.gif)
 
-:information_source: *Remember that you need to validate the list after pasting it. Validating the Reference IDs will let you know if the selected SKUs are in fact available for purchase.*
- 
+:information_source: _Remember that you need to validate the list after pasting it. Validating the Reference IDs will let you know if the selected SKUs are in fact available for purchase._
+
 ### One By One
 
 The One By One option works as a custom search bar. Simply add the name of the desired SKU, then select it and set the amount you wish to add to the cart.
@@ -61,8 +64,8 @@ Remember to add each selected item to the cart by clicking on `Add`.
 
 ![One by One](./image/One-by-One.gif)
 
-:information_source: *This option does not require any validation, since selecting the SKUs using a search bar already ensures that they are available to purchase.*
- 
+:information_source: _This option does not require any validation, since selecting the SKUs using a search bar already ensures that they are available to purchase._
+
 ### Categories
 
 The Categories option allow users to choose their desired SKUs and respective quantities using the store's categories tree, adding all the selected options to the cart at once.
@@ -71,7 +74,7 @@ The Categories option allow users to choose their desired SKUs and respective qu
 
 Be careful however: this option is only recommended if you don't have more than 50 SKUs for each category in your catalog, otherwise the component will take too long to load and will negatively affect your store's UX.
 
-:information_source: *This scenario also does not require validating the SKUs that you've added to the cart, since selecting them directly from the store's categories tree ensures their availability.*
+:information_source: _This scenario also does not require validating the SKUs that you've added to the cart, since selecting them directly from the store's categories tree ensures their availability._
 
 ### Upload
 
@@ -84,39 +87,39 @@ The spreadsheet will work in the same way as the list pasted using the Copy/Past
 - `SKU` column = SKU Reference ID (be aware that this is not the SKU ID displayed in your admin's catalog);
 - `Quantity` column = SKU quantity you wish to add to the cart.
 
-:information_source: *Once uploaded, the spreadsheet is then validated. Based on the filled in Reference IDs, Quickorder will confirm whether the SKUs are in fact available for purchase.*
+:information_source: _Once uploaded, the spreadsheet is then validated. Based on the filled in Reference IDs, Quickorder will confirm whether the SKUs are in fact available for purchase._
 
 ## Customization
 
 In order to apply CSS customizations to this and other blocks, follow the instructions given in the recipe on [Using CSS Handles for store customization](https://vtex.io/docs/recipes/style/using-css-handles-for-store-customization).
 
-| CSS Handles |
+| CSS Handles                  |
 | ---------------------------- |
-| `container` |
-| `title` |
-| `copyPasteBlock` |
-| `autocompleteBlock` |
-| `reviewBlock` |
-| `buttonsBlock` |
-| `buttonValidate` |
-| `skuSelection` |
-| `productThumb` |
-| `productLabel` |
-| `inputQuantity` |
-| `buttonAdd` |
-| `categoryContainer` |
-| `categoryTitle` |
-| `categoryHelper` |
-| `categoryProductLabel` |
-| `categoryInputQuantity` |
-| `categoryButtonAdd` |
-| `categoriesSubCategory` |
+| `container`                  |
+| `title`                      |
+| `copyPasteBlock`             |
+| `autocompleteBlock`          |
+| `reviewBlock`                |
+| `buttonsBlock`               |
+| `buttonValidate`             |
+| `skuSelection`               |
+| `productThumb`               |
+| `productLabel`               |
+| `inputQuantity`              |
+| `buttonAdd`                  |
+| `categoryContainer`          |
+| `categoryTitle`              |
+| `categoryHelper`             |
+| `categoryProductLabel`       |
+| `categoryInputQuantity`      |
+| `categoryButtonAdd`          |
+| `categoriesSubCategory`      |
 | `categoriesProductContainer` |
-| `categoryLoadingProducts` |
-| `dropzoneContainer` |
-| `dropzoneText` |
-| `dropzoneLink` |
-  
+| `categoryLoadingProducts`    |
+| `dropzoneContainer`          |
+| `dropzoneText`               |
+| `dropzoneLink`               |
+
 <!-- DOCS-IGNORE:start -->
 
 ## Contributors ✨
@@ -128,6 +131,7 @@ Thanks goes to these wonderful people:
 <!-- markdownlint-disable -->
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind are welcome!
