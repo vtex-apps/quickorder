@@ -348,7 +348,7 @@ QuickOrder.schema = {
     },
     showCopyPaste: {
       title: 'editor.quickorder.textarea.title',
-      description: 'editor.quickorder.textarea.description',
+      description: '',
       type: 'boolean',
       default: true,
     },
@@ -364,10 +364,9 @@ QuickOrder.schema = {
       type: 'string',
       default: null,
     },
-
     showAutocomplete: {
       title: 'editor.quickorder.autocomplete.title',
-      description: 'editor.quickorder.autocomplete.description',
+      description: '',
       type: 'boolean',
       default: true,
     },
@@ -383,10 +382,9 @@ QuickOrder.schema = {
       type: 'string',
       default: null,
     },
-
     showCategory: {
       title: 'editor.quickorder.category.title',
-      description: 'editor.quickorder.category.description',
+      description: '',
       type: 'boolean',
       default: true,
     },
@@ -402,10 +400,9 @@ QuickOrder.schema = {
       type: 'string',
       default: null,
     },
-
     showUpload: {
       title: 'editor.quickorder.upload.title',
-      description: 'editor.quickorder.upload.description',
+      description: '',
       type: 'boolean',
       default: true,
     },
