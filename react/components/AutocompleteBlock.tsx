@@ -10,7 +10,14 @@ import { useApolloClient } from 'react-apollo'
 import productQuery from '../queries/product.gql'
 
 const AutocompleteBlock: StorefrontFunctionComponent<any &
-  WrappedComponentProps> = ({ onAddToCart, loading, success, intl }) => {
+  WrappedComponentProps> = ({
+  onAddToCart,
+  text,
+  description,
+  loading,
+  success,
+  intl,
+}) => {
   const client = useApolloClient()
   const { showToast } = useContext(ToastContext)
   const [state, setState] = useState<any>({
@@ -101,11 +108,9 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     <div>
       <div className="w-third-l w-100-ns fl-l">
         <div className="flex-grow-1">
-          <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">
-            <FormattedMessage id="store/quickorder.autocomplete.label" />
-          </h2>
+          <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">{text}</h2>
           <div className="t-body lh-copy c-muted-1 mb7 ml3 false">
-            <FormattedMessage id="store/quickorder.autocomplete.helper" />
+            {description}
           </div>
         </div>
       </div>
@@ -202,6 +207,8 @@ AutocompleteBlock.propTypes = {
   onAddToCart: PropTypes.func,
   loading: PropTypes.bool,
   success: PropTypes.bool,
+  text: PropTypes.string,
+  description: PropTypes.string,
 }
 
 interface MessageDescriptor {

@@ -9,6 +9,8 @@ import { ParseText } from '../utils'
 
 const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface> = ({
   onReviewItems,
+  text,
+  description,
 }: any) => {
   let productsArray: any = []
   const [state, setState] = useState<any>({
@@ -114,11 +116,9 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface> = ({
     <div>
       <div className="w-third-l w-100-ns fl-l">
         <div className="flex-grow-1">
-          <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">
-            <FormattedMessage id="store/quickorder.upload.label" />
-          </h2>
+          <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">{text}</h2>
           <div className="t-body lh-copy c-muted-1 mb7 ml3 false">
-            <FormattedMessage id="store/quickorder.upload.helper" />
+            {description}
           </div>
         </div>
       </div>
@@ -163,6 +163,8 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface> = ({
 interface UploadBlockInterface {
   onReviewItems: any
   onRefidLoading: any
+  text: string
+  description: string
 }
 
 export default UploadBlock

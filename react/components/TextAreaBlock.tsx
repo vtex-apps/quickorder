@@ -2,10 +2,13 @@ import React, { useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { Button, Textarea } from 'vtex.styleguide'
 import { useCssHandles } from 'vtex.css-handles'
+
 import { ParseText } from '../utils'
 
 const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface> = ({
   value,
+  text,
+  description,
   onReviewItems,
 }: any) => {
   const [state, setState] = useState<any>({
@@ -17,7 +20,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface> = ({
 
   const parseText = () => {
     const items: any = ParseText(textAreaValue) || []
-    let error = !!items.filter((item: any) => {
+    const error = !!items.filter((item: any) => {
       return item.error !== null
     }).length
 
@@ -45,11 +48,9 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface> = ({
     <div>
       <div className="w-third-l w-100-ns fl-l">
         <div className="flex-grow-1">
-          <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">
-            <FormattedMessage id="store/quickorder.textarea.label" />
-          </h2>
+          <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">{text}</h2>
           <div className="t-body lh-copy c-muted-1 mb7 ml3 false">
-            <FormattedMessage id="store/quickorder.textarea.helper" />
+            {description}
           </div>
         </div>
       </div>
@@ -61,7 +62,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface> = ({
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                 setTextareaValue(e.target.value)
               }
-            ></Textarea>
+            />
             <div className={`mt2 flex justify-end ${handles.buttonValidate}`}>
               <Button
                 variation="secondary"
@@ -84,6 +85,8 @@ interface TextAreaBlockInterface {
   value: string
   onReviewItems: any
   onRefidLoading: any
+  text: string
+  description: string
 }
 
 export default TextAreaBlock
