@@ -39,6 +39,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   catDescription,
   uploadText,
   uploadDescription,
+  downloadText,
   intl,
 }: any) => {
   const { showToast } = useContext(ToastContext)
@@ -265,6 +266,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
             description={uploadDescription}
             onReviewItems={onReviewItems}
             onRefidLoading={onRefidLoading}
+            downloadText={downloadText}
           />
         </div>
       )}
@@ -333,6 +335,7 @@ interface QuickOrderProps {
   catDescription?: string
   uploadText?: string
   uploadDescription?: string
+  downloadText?: string
 }
 
 QuickOrder.schema = {
@@ -414,6 +417,12 @@ QuickOrder.schema = {
     },
     uploadDescription: {
       title: 'editor.quickorder.upload.helper',
+      description: '',
+      type: 'string',
+      default: null,
+    },
+    downloadText: {
+      title: 'editor.quickorder.upload.downloadText',
       description: '',
       type: 'string',
       default: null,

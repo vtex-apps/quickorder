@@ -16,7 +16,8 @@
       "catDescription": "Add products directly from their categories",
       "showUpload": "on",
       "uploadText": "Upload",
-      "uploadDescription": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order"
+      "uploadDescription": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order",
+      "downloadText": "Click here to download a spreadsheet model"
     }
   }
 }
