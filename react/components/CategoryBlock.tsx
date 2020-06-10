@@ -3,7 +3,13 @@
 import PropTypes from 'prop-types'
 import React, { useState, useContext } from 'react'
 import { FormattedMessage, WrappedComponentProps } from 'react-intl'
-import { Collapsible, Input, Button, ToastContext } from 'vtex.styleguide'
+import {
+  Collapsible,
+  Input,
+  Button,
+  ToastContext,
+  Spinner,
+} from 'vtex.styleguide'
 import { useCssHandles } from 'vtex.css-handles'
 import { graphql, useApolloClient, compose } from 'react-apollo'
 import _ from 'lodash'
@@ -202,6 +208,7 @@ const CategoryBlock: StorefrontFunctionComponent<any &
         <div className={`${handles.categoriesProductContainer}`}>
           {(!categoryItems || !categoryItems[item.id]) && (
             <span className={`${handles.categoryLoadingProducts}`}>
+              <Spinner size={10} />{' '}
               <FormattedMessage id="store/quickorder.category.loading" />
             </span>
           )}
@@ -237,6 +244,11 @@ const CategoryBlock: StorefrontFunctionComponent<any &
         </div>
       </div>
       <div className="w-two-thirds-l w-100-ns fr-l">
+        {!categories && (
+          <div>
+            <Spinner />
+          </div>
+        )}
         {categories && (
           <div>
             <div className="flex flex-row">
