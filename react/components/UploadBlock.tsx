@@ -11,6 +11,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface> = ({
   onReviewItems,
   text,
   description,
+  downloadText,
 }: any) => {
   let productsArray: any = []
   const [state, setState] = useState<any>({
@@ -23,11 +24,29 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface> = ({
   console.log('reviewItems', reviewItems)
   console.log('hasError', hasError)
 
+  const download = () => {
+    const finalHeaders = ['SKU', 'Quantity']
+    const data = [
+      { SKU: 'AB120', Quantity: 2 },
+      { SKU: 'AB121', Quantity: 3 },
+      { SKU: 'AB122', Quantity: 5 },
+      { SKU: 'AB123', Quantity: 10 },
+      { SKU: 'AB124', Quantity: 1 },
+      { SKU: 'AB125', Quantity: 20 },
+    ]
+
+    const ws = XLSX.utils.json_to_sheet(data, { header: finalHeaders })
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'SheetJS')
+    const exportFileName = `model-quickorder.xls`
+    XLSX.writeFile(wb, exportFileName)
+  }
+
   const parseText = () => {
-    let textAreaValue: any = ''
+    let textAreaValue = ''
 
     productsArray.forEach(element => {
-      textAreaValue += element[0] + ',' + element[1] + '\n'
+      textAreaValue += `${element[0]},${element[1]}\n`
     })
 
     const items: any = ParseText(textAreaValue) || []
@@ -109,6 +128,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface> = ({
     'dropzoneContainer',
     'dropzoneText',
     'dropzoneLink',
+    'downloadLink',
   ] as const
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -118,7 +138,17 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface> = ({
         <div className="flex-grow-1">
           <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">{text}</h2>
           <div className="t-body lh-copy c-muted-1 mb7 ml3 false">
-            {description}
+            {description}{' '}
+            {downloadText && (
+              <button
+                className={`${handles.downloadLink} pointer c-link hover-c-link active-c-link no-underline underline-hover bn bg-transparent`}
+                onClick={() => {
+                  download()
+                }}
+              >
+                {downloadText}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -165,6 +195,7 @@ interface UploadBlockInterface {
   onRefidLoading: any
   text: string
   description: string
+  downloadText?: string
 }
 
 export default UploadBlock

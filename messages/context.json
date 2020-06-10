@@ -17,6 +17,7 @@
   "editor.quickorder.textarea.description": "Enable textarea field, you can copy and paste a list of SKU and Quantity",
   "editor.quickorder.upload.title": "Show Upload",
   "editor.quickorder.upload.description": "Enable upload area, to bulk order using Spreadsheet",
+  "editor.quickorder.upload.downloadText": "Click here to download a spreadsheet model",
   "editor.quickorder.category.title": "Show category",
   "editor.quickorder.category.description": "Enable product selection by category",
   "store/quickorder.addToCart": "Add to Cart",

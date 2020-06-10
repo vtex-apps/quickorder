@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Download a spreadsheet model for the Upload component
+- CSS Handle `downloadLink`
+- Dynamic text for the download link (can be updated from Site Editor)
+
 ## [0.8.1] - 2020-06-10
 
 ### Added

@@ -54,7 +54,7 @@ For example:
 
 ![Copy & Paste](./image/Copy-n-Paste.gif)
 
-:information_source: _Remember that you need to validate the list after pasting it. Validating the Reference IDs will let you know if the selected SKUs are in fact available for purchase._
+:information_source: Remember that you need to validate the list after pasting it. Validating the Reference IDs will let you know if the selected SKUs are in fact available for purchase.
 
 ### One By One
 
@@ -64,7 +64,7 @@ Remember to add each selected item to the cart by clicking on `Add`.
 
 ![One by One](./image/One-by-One.gif)
 
-:information_source: _This option does not require any validation, since selecting the SKUs using a search bar already ensures that they are available to purchase._
+:information_source: This option does not require any validation, since selecting the SKUs using a search bar already ensures that they are available to purchase.
 
 ### Categories
 
@@ -74,7 +74,7 @@ The Categories option allow users to choose their desired SKUs and respective qu
 
 Be careful however: this option is only recommended if you don't have more than 50 SKUs for each category in your catalog, otherwise the component will take too long to load and will negatively affect your store's UX.
 
-:information_source: _This scenario also does not require validating the SKUs that you've added to the cart, since selecting them directly from the store's categories tree ensures their availability._
+:information_source: This scenario also does not require validating the SKUs that you've added to the cart, since selecting them directly from the store's categories tree ensures their availability.
 
 ### Upload
 
@@ -87,7 +87,7 @@ The spreadsheet will work in the same way as the list pasted using the Copy/Past
 - `SKU` column = SKU Reference ID (be aware that this is not the SKU ID displayed in your admin's catalog);
 - `Quantity` column = SKU quantity you wish to add to the cart.
 
-:information_source: _Once uploaded, the spreadsheet is then validated. Based on the filled in Reference IDs, Quickorder will confirm whether the SKUs are in fact available for purchase._
+:information_source: Once uploaded, the spreadsheet is then validated. Based on the filled in Reference IDs, Quickorder will confirm whether the SKUs are in fact available for purchase.
 
 ## Customization
 
@@ -119,6 +119,7 @@ In order to apply CSS customizations to this and other blocks, follow the instru
 | `dropzoneContainer`          |
 | `dropzoneText`               |
 | `dropzoneLink`               |
+| `downloadLink`               |
 
 <!-- DOCS-IGNORE:start -->
 
