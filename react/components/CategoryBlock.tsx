@@ -112,7 +112,6 @@ const CategoryBlock: StorefrontFunctionComponent<any &
         return {
           id: parseInt(item, 10),
           quantity: parseFloat(quantitySelected[item]),
-          seller: '1',
         }
       })
       onAddToCart(items).then(() => {

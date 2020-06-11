@@ -12,8 +12,8 @@ import { useMutation } from 'react-apollo'
 import { OrderForm } from 'vtex.order-manager'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
-import { compareObjects } from './modules/compareObjects'
 import { useCssHandles } from 'vtex.css-handles'
+
 import TranslatedTitle from './components/TranslatedTitle'
 import AutocompleteBlock from './components/AutocompleteBlock'
 import TextAreaBlock from './components/TextAreaBlock'
@@ -64,7 +64,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   const { settings = {}, showInstallPrompt = undefined } = usePWA() || {}
   const { promptOnCustomEvent } = settings
 
-  const { orderForm, setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
+  const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
 
   const messages = defineMessages({
     success: {
@@ -121,22 +121,14 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
 
   const callAddToCart = async (items: any) => {
     const mutationResult = await addToCart({
-      variables: { items },
+      variables: {
+        items,
+      },
     })
 
     if (mutationError) {
       console.error(mutationError)
       toastMessage({ success: false, isNewItem: false })
-      return
-    }
-    if (
-      mutationResult.data &&
-      compareObjects(mutationResult.data.addToCart, orderForm)
-    ) {
-      toastMessage({ success: true, isNewItem: false })
-      setTimeout(() => {
-        window.location.href = '/checkout'
-      }, 1000)
       return
     }
 
@@ -156,7 +148,22 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
       items: pixelEventItems,
     })
 
-    toastMessage({ success: true, isNewItem: true })
+    if (
+      mutationResult.data?.addToCart?.messages?.generalMessages &&
+      mutationResult.data.addToCart.messages.generalMessages.length
+    ) {
+      const message = mutationResult.data.addToCart.messages.generalMessages.map(
+        (msg: any) => {
+          return `${msg.text} \n`
+        }
+      )
+      showToast({ message, action: undefined, duration: 30000 })
+    } else {
+      toastMessage({ success: true, isNewItem: true })
+      setTimeout(() => {
+        window.location.href = '/checkout'
+      }, 1000)
+    }
 
     if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
       showInstallPrompt()

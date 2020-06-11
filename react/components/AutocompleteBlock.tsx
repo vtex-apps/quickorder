@@ -78,7 +78,6 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
         {
           id: parseInt(selectedItem.value, 10),
           quantity: parseFloat(quantitySelected),
-          seller: '1',
         },
       ]
       onAddToCart(items).then(() => {
