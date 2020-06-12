@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl'
 const TranslatedTile: FunctionComponent<TranslatedTileProps> = ({ title }) => {
   const titleText = title || <FormattedMessage id="editor.quickorder.title" />
   return (
-    <div className="flex flex-grow-1 justify-center b-s">
+    <div className="flex flex-grow-1 b-s">
       <span className="t-heading-4">{titleText}</span>
     </div>
   )

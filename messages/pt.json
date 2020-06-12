@@ -20,6 +20,7 @@
   "editor.quickorder.upload.downloadText": "Clique aqui para baixar um modelo de planilha",
   "editor.quickorder.category.title": "Exibir category",
   "editor.quickorder.category.description": "Habilita seleção de produto por categoria",
+  "store/quickorder.seller": "Seller",
   "store/quickorder.addToCart": "Adicionar ao Carrinho",
   "store/quickorder.validate": "Validar",
   "store/quickorder.back": "Voltar",

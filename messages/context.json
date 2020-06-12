@@ -20,6 +20,7 @@
   "editor.quickorder.upload.downloadText": "Click here to download a spreadsheet model",
   "editor.quickorder.category.title": "Show category",
   "editor.quickorder.category.description": "Enable product selection by category",
+  "store/quickorder.seller": "Seller",
   "store/quickorder.addToCart": "Add to Cart",
   "store/quickorder.validate": "Validate",
   "store/quickorder.back": "Back",

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { UserInputError } from '@vtex/api'
 
 import { resolvers as refidsResolvers } from './refids'
@@ -21,6 +22,18 @@ export const queries = {
     })
     return {
       cacheId: args.refids,
+      itemsReturned,
+    }
+  },
+  sellers: async (_: any, args: {}, ctx: Context) => {
+    console.log(args)
+    const {
+      clients: { search },
+    } = ctx
+
+    const itemsReturned = await search.sellers()
+    return {
+      cacheId: 'sellers',
       itemsReturned,
     }
   },
