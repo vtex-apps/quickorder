@@ -1,14 +1,13 @@
 /* eslint-disable no-console */
 import React, { useState, useContext } from 'react'
-import { Button, ToastContext } from 'vtex.styleguide'
+import { Button, ToastContext, Dropdown } from 'vtex.styleguide'
 import {
   FormattedMessage,
-  injectIntl,
   defineMessages,
   WrappedComponentProps,
 } from 'react-intl'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
-import { useMutation } from 'react-apollo'
+import { useMutation, graphql, compose } from 'react-apollo'
 import { OrderForm } from 'vtex.order-manager'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
@@ -20,11 +19,13 @@ import TextAreaBlock from './components/TextAreaBlock'
 import UploadBlock from './components/UploadBlock'
 import CategoryBlock from './components/CategoryBlock'
 import ReviewBlock from './components/ReviewBlock'
+import getSellers from './queries/sellers.gql'
 import styles from './styles.css'
 import { GetText } from './utils'
 
 const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
-  WrappedComponentProps> = ({
+  WrappedComponentProps &
+  unknown> = ({
   customToastUrl,
   title,
   showCopyPaste,
@@ -40,6 +41,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   uploadText,
   uploadDescription,
   downloadText,
+  data,
   intl,
 }: any) => {
   const { showToast } = useContext(ToastContext)
@@ -50,6 +52,14 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     textAreaValue: '',
     reviewItems: [],
     refidLoading: null,
+    seller: window.sessionStorage?.getItem('sellerId') ?? null,
+    sellers:
+      data.sellers?.itemsReturned?.map((sellerItem: any) => {
+        return {
+          value: sellerItem.id,
+          label: sellerItem.name,
+        }
+      }) || [],
   })
 
   const {
@@ -58,6 +68,8 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     textAreaValue,
     reviewItems,
     refidLoading,
+    seller,
+    sellers,
   } = state
 
   const { push } = usePixel()
@@ -119,10 +131,23 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     { error: mutationError, loading: mutationLoading },
   ] = useMutation<{ addToCart: OrderForm }, { items: [] }>(ADD_TO_CART)
 
+  const setSeller = (value: string) => {
+    setState({
+      ...state,
+      seller: value,
+    })
+    window.sessionStorage.setItem('sellerId', value)
+  }
+
   const callAddToCart = async (items: any) => {
     const mutationResult = await addToCart({
       variables: {
-        items,
+        items: items.map((item: any) => {
+          return {
+            ...item,
+            seller: seller || sellers[0].value,
+          }
+        }),
       },
     })
 
@@ -152,12 +177,13 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
       mutationResult.data?.addToCart?.messages?.generalMessages &&
       mutationResult.data.addToCart.messages.generalMessages.length
     ) {
-      const message = mutationResult.data.addToCart.messages.generalMessages.map(
-        (msg: any) => {
-          return `${msg.text} \n`
-        }
-      )
-      showToast({ message, action: undefined, duration: 30000 })
+      mutationResult.data.addToCart.messages.generalMessages.map((msg: any) => {
+        return showToast({
+          message: msg.text,
+          action: undefined,
+          duration: 30000,
+        })
+      })
     } else {
       toastMessage({ success: true, isNewItem: true })
       setTimeout(() => {
@@ -177,7 +203,6 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
       return {
         id: parseInt(vtexSku, 10),
         quantity: parseFloat(quantity),
-        seller: '1',
       }
     })
     callAddToCart(items)
@@ -219,6 +244,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     'reviewBlock',
     'categoryBlock',
     'buttonsBlock',
+    'sellerContainer',
   ] as const
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -226,8 +252,31 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     <div
       className={`${styles.container} ${handles.container} flex flex-column pv6 ph4`}
     >
-      <div className={`title-container ${handles.title}`}>
-        <TranslatedTitle title={title} />
+      <div
+        className="c-on-base flex flex-wrap flex-row justify-between
+            mt0"
+      >
+        <div
+          className={`vtex-pageHeader__title t-heading-2 order-0 flex-grow-1 title-container ${handles.title}`}
+        >
+          <TranslatedTitle title={title} />
+        </div>
+        <div className="vtex-pageHeader__children order-2 order-0-ns mt0-ns">
+          {sellers.length > 1 && (
+            <div className={`mt5 ${handles.sellerContainer}`}>
+              <FormattedMessage id="store/quickorder.seller" />:
+              <Dropdown
+                variation="inline"
+                size="large"
+                options={sellers}
+                value={seller}
+                onChange={(_, v) => {
+                  setSeller(v)
+                }}
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       {!reviewState && showCopyPaste && (
@@ -437,4 +486,4 @@ QuickOrder.schema = {
   },
 }
 
-export default injectIntl(QuickOrder)
+export default compose(graphql(getSellers))(QuickOrder)

@@ -10,10 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Feedback message from the checkout
+- Seller selector if the store have more than one
 
 ### Fixed
 
-- Removed fixed _seller_ 1
+- Seller always being set as `1`
 
 ## [0.8.2] - 2020-06-10
 

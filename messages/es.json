@@ -20,6 +20,7 @@
   "editor.quickorder.upload.downloadText": "Descargar una plantilla de hoja de cálculo",
   "editor.quickorder.category.title": "Mostrar categoría",
   "editor.quickorder.category.description": "Habilitar selección de productos por categoría",
+  "store/quickorder.seller": "Seller",
   "store/quickorder.addToCart": "Agregar al carrito",
   "store/quickorder.validate": "Validar",
   "store/quickorder.back": "Atrás",
