@@ -5,6 +5,7 @@ import {
   FormattedMessage,
   defineMessages,
   WrappedComponentProps,
+  injectIntl,
 } from 'react-intl'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import { useMutation, graphql, compose } from 'react-apollo'
@@ -24,9 +25,7 @@ import styles from './styles.css'
 import { GetText } from './utils'
 
 const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
-  WrappedComponentProps &
-  unknown> = ({
-  customToastUrl,
+  WrappedComponentProps> = ({
   title,
   showCopyPaste,
   showCategory,
@@ -119,10 +118,10 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     const action = success
       ? {
           label: translateMessage(messages.seeCart),
-          href: customToastUrl,
+          href: '/checkout/#/cart',
         }
       : undefined
-
+    console.log('showToast', { message, action })
     showToast({ message, action })
   }
 
@@ -186,9 +185,6 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
       })
     } else {
       toastMessage({ success: true, isNewItem: true })
-      setTimeout(() => {
-        window.location.href = '/checkout'
-      }, 1000)
     }
 
     if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
@@ -382,7 +378,6 @@ interface QuickOrderProps {
   showCopyPaste?: boolean
   showAutocomplete?: boolean
   showCategory?: boolean
-  customToastUrl?: string
   copyText?: string
   copyDescription?: string
   oneText?: string
@@ -392,6 +387,7 @@ interface QuickOrderProps {
   uploadText?: string
   uploadDescription?: string
   downloadText?: string
+  data?: object
 }
 
 QuickOrder.schema = {
@@ -486,4 +482,4 @@ QuickOrder.schema = {
   },
 }
 
-export default compose(graphql(getSellers))(QuickOrder)
+export default compose(graphql(getSellers))(injectIntl(QuickOrder))
