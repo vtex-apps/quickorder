@@ -5,7 +5,7 @@ import { Button, Dropzone } from 'vtex.styleguide'
 import { useCssHandles } from 'vtex.css-handles'
 import XLSX from 'xlsx'
 
-import { ParseText } from '../utils'
+import { ParseText } from './utils'
 
 const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface> = ({
   onReviewItems,
