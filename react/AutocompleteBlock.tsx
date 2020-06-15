@@ -3,11 +3,11 @@ import React, { useState, useContext } from 'react'
 import { FormattedMessage, WrappedComponentProps, injectIntl } from 'react-intl'
 import { Button, Tag, Input, ToastContext } from 'vtex.styleguide'
 import PropTypes from 'prop-types'
-import QuickOrderAutocomplete from './QuickOrderAutocomplete'
-import styles from '../styles.css'
+import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
+import styles from './styles.css'
 import { useCssHandles } from 'vtex.css-handles'
 import { useApolloClient } from 'react-apollo'
-import productQuery from '../queries/product.gql'
+import productQuery from './queries/product.gql'
 
 const AutocompleteBlock: StorefrontFunctionComponent<any &
   WrappedComponentProps> = ({

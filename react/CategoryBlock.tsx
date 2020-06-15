@@ -14,9 +14,9 @@ import { useCssHandles } from 'vtex.css-handles'
 import { graphql, useApolloClient, compose } from 'react-apollo'
 import _ from 'lodash'
 
-import styles from '../styles.css'
-import getCategories from '../queries/categoriesQuery.gql'
-import SearchByCategory from '../queries/productsByCategory.gql'
+import styles from './styles.css'
+import getCategories from './queries/categoriesQuery.gql'
+import SearchByCategory from './queries/productsByCategory.gql'
 
 const CategoryBlock: StorefrontFunctionComponent<any &
   WrappedComponentProps> = ({

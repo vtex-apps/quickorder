@@ -1,7 +1,0 @@
-type Sellers {
-  itemsReturned: [ItemsSeller]
-}
-type ItemsSeller {
-  id: String
-  name: String
-}

@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl'
 import { Button, Textarea } from 'vtex.styleguide'
 import { useCssHandles } from 'vtex.css-handles'
 
-import { ParseText } from '../utils'
+import { ParseText } from './utils'
 
 const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface> = ({
   value,

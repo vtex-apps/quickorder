@@ -25,16 +25,4 @@ export const queries = {
       itemsReturned,
     }
   },
-  sellers: async (_: any, args: {}, ctx: Context) => {
-    console.log(args)
-    const {
-      clients: { search },
-    } = ctx
-
-    const itemsReturned = await search.sellers()
-    return {
-      cacheId: 'sellers',
-      itemsReturned,
-    }
-  },
 }

@@ -50,6 +50,13 @@
       "name": "outbound-access",
       "attrs": {
         "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/catalog_system/pvt/sku/stockkeepingunitbyid/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexcommercestable.com.br",
         "path": "/api/catalog_system/pub/sku/stockkeepingunitidsbyrefids"
       }
     }

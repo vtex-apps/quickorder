@@ -2,9 +2,22 @@
   "quickorder": {
     "component": "QuickOrder"
   },
+  "quickorder-seller": {
+    "component": "SellerSelector"
+  },
+  "quickorder-upload": {
+    "component": "UploadBlock"
+  },
+  "quickorder-categories": {
+    "component": "CategoryBlock"
+  },
+  "quickorder-autocomplete": {
+    "component": "AutocompleteBlock"
+  },
+  "quickorder-textarea": {
+    "component": "TextAreaBlock"
+  },
   "store.quickorder": {
-    "required": [
-      "quickorder"
-    ]
+    "required": ["quickorder"]
   }
 }
