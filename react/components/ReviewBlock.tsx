@@ -1,7 +1,13 @@
 /* eslint-disable vtex/prefer-early-return */
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react'
-import { Table, Input, ButtonWithIcon, IconDelete } from 'vtex.styleguide'
+import {
+  Table,
+  Input,
+  ButtonWithIcon,
+  IconDelete,
+  Dropdown,
+} from 'vtex.styleguide'
 import { WrappedComponentProps, injectIntl, defineMessages } from 'react-intl'
 import PropTypes from 'prop-types'
 import { ParseText, GetText } from '../utils'
@@ -42,36 +48,47 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
   const validateRefids = (refidData: any, reviewed: any) => {
     let error = false
-
+    console.log('validateRefids =>', refidData, reviewed)
     if (refidData) {
       const refIdNotFound =
-        !!refidData && !!refidData.skuFromRefIds.itemsReturned
-          ? refidData.skuFromRefIds.itemsReturned.filter((item: any) => {
+        !!refidData && !!refidData.skuFromRefIds.items
+          ? refidData.skuFromRefIds.items.filter((item: any) => {
               return item.sku === null
             })
           : []
 
       const refIdFound =
-        !!refidData && !!refidData.skuFromRefIds.itemsReturned
-          ? refidData.skuFromRefIds.itemsReturned.filter((item: any) => {
+        !!refidData && !!refidData.skuFromRefIds.items
+          ? refidData.skuFromRefIds.items.filter((item: any) => {
               return item.sku !== null
             })
           : []
 
       const vtexSku = (item: any) => {
         let ret: any = null
-        if (!!refidData && !!refidData.skuFromRefIds.itemsReturned) {
-          ret = refidData.skuFromRefIds.itemsReturned.find((curr: any) => {
+        if (!!refidData && !!refidData.skuFromRefIds.items) {
+          ret = refidData.skuFromRefIds.items.find((curr: any) => {
             return !!item.sku && item.sku === curr.refid
           })
           if (!!ret && !!ret.sku) {
             ret = ret.sku
-          } else {
-            ret = null
           }
         }
         return ret
       }
+      const getSellers = (item: any) => {
+        let ret: any = []
+        if (!!refidData && !!refidData.skuFromRefIds.items) {
+          ret = refidData.skuFromRefIds.items.find((curr: any) => {
+            return !!item.sku && item.sku === curr.refid
+          })
+          if (!!ret && !!ret.sellers) {
+            ret = ret.sellers
+          }
+        }
+        return ret
+      }
+
       const errorMsg = (item: any) => {
         let ret = null
         const notfound = refIdNotFound.find((curr: any) => {
@@ -93,8 +110,12 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       }
 
       const items = reviewed.map((item: any) => {
+        const sellers = getSellers(item)
+        console.log('Sellers for the item =>', sellers, item)
         return {
           ...item,
+          sellers: getSellers(item),
+          seller: sellers[0].id,
           vtexSku: vtexSku(item),
           error: errorMsg(item),
         }
@@ -182,6 +203,15 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     })
   }
 
+  const updateLineSeller = (line: number, seller: string) => {
+    const items = reviewItems
+    items[line].seller = seller
+    setReviewState({
+      ...state,
+      reviewItems: items,
+    })
+  }
+
   const onBlurField = (line: number) => {
     const joinLines = GetText(reviewItems)
     const reviewd: any = ParseText(joinLines)
@@ -240,6 +270,33 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.quantity',
         }),
+      },
+      seller: {
+        type: 'string',
+        title: 'Seller',
+        cellRenderer: ({ rowData }: any) => {
+          console.log('rowData => ', rowData)
+          if (rowData?.sellers?.length > 1) {
+            return (
+              <div className="mb5">
+                <Dropdown
+                  label="Regular"
+                  options={rowData.sellers.map((item: any) => {
+                    return {
+                      label: item.name,
+                      value: item.id,
+                    }
+                  })}
+                  value={rowData.seller}
+                  onChange={(_: any, v: any) =>
+                    updateLineSeller(rowData.line, v)
+                  }
+                />
+              </div>
+            )
+          }
+          return rowData.sellers ? rowData.sellers[0].name : ''
+        },
       },
       error: {
         type: 'string',

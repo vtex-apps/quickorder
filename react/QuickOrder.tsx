@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import React, { useState, useContext } from 'react'
-import { Button, ToastContext, Dropdown } from 'vtex.styleguide'
+import { Button, ToastContext } from 'vtex.styleguide'
 import {
   FormattedMessage,
   defineMessages,
@@ -8,7 +8,7 @@ import {
   injectIntl,
 } from 'react-intl'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
-import { useMutation, graphql, compose } from 'react-apollo'
+import { useMutation } from 'react-apollo'
 import { OrderForm } from 'vtex.order-manager'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
@@ -20,7 +20,6 @@ import TextAreaBlock from './TextAreaBlock'
 import UploadBlock from './UploadBlock'
 import CategoryBlock from './CategoryBlock'
 import ReviewBlock from './components/ReviewBlock'
-import getSellers from './queries/sellers.gql'
 import styles from './styles.css'
 import { GetText } from './utils'
 
@@ -40,7 +39,6 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   uploadText,
   uploadDescription,
   downloadText,
-  data,
   intl,
 }: any) => {
   const { showToast } = useContext(ToastContext)
@@ -51,14 +49,6 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     textAreaValue: '',
     reviewItems: [],
     refidLoading: null,
-    seller: window.sessionStorage?.getItem('sellerId') ?? null,
-    sellers:
-      data.sellers?.itemsReturned?.map((sellerItem: any) => {
-        return {
-          value: sellerItem.id,
-          label: sellerItem.name,
-        }
-      }) || [],
   })
 
   const {
@@ -67,8 +57,6 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     textAreaValue,
     reviewItems,
     refidLoading,
-    seller,
-    sellers,
   } = state
 
   const { push } = usePixel()
@@ -130,21 +118,12 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     { error: mutationError, loading: mutationLoading },
   ] = useMutation<{ addToCart: OrderForm }, { items: [] }>(ADD_TO_CART)
 
-  const setSeller = (value: string) => {
-    setState({
-      ...state,
-      seller: value,
-    })
-    window.sessionStorage.setItem('sellerId', value)
-  }
-
   const callAddToCart = async (items: any) => {
     const mutationResult = await addToCart({
       variables: {
         items: items.map((item: any) => {
           return {
             ...item,
-            seller: seller || sellers[0].value,
           }
         }),
       },
@@ -195,10 +174,11 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   }
 
   const addToCartCopyNPaste = () => {
-    const items: any = reviewItems.map(({ vtexSku, quantity }: any) => {
+    const items: any = reviewItems.map(({ vtexSku, quantity, seller }: any) => {
       return {
         id: parseInt(vtexSku, 10),
         quantity: parseFloat(quantity),
+        seller,
       }
     })
     callAddToCart(items)
@@ -240,7 +220,6 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     'reviewBlock',
     'categoryBlock',
     'buttonsBlock',
-    'sellerContainer',
   ] as const
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -256,22 +235,6 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
           className={`vtex-pageHeader__title t-heading-2 order-0 flex-grow-1 title-container ${handles.title}`}
         >
           <TranslatedTitle title={title} />
-        </div>
-        <div className="vtex-pageHeader__children order-2 order-0-ns mt0-ns">
-          {sellers.length > 1 && (
-            <div className={`mt5 ${handles.sellerContainer}`}>
-              <FormattedMessage id="store/quickorder.seller" />:
-              <Dropdown
-                variation="inline"
-                size="large"
-                options={sellers}
-                value={seller}
-                onChange={(_, v) => {
-                  setSeller(v)
-                }}
-              />
-            </div>
-          )}
         </div>
       </div>
 
@@ -482,4 +445,4 @@ QuickOrder.schema = {
   },
 }
 
-export default compose(graphql(getSellers))(injectIntl(QuickOrder))
+export default injectIntl(QuickOrder)
