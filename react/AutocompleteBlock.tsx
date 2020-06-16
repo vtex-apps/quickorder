@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react/prop-types */
 import React, { useState, useContext } from 'react'
 import { FormattedMessage, WrappedComponentProps, injectIntl } from 'react-intl'
@@ -51,19 +52,34 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
       const selectedSku =
         data.product.items.length === 1 ? data.product.items[0].itemId : null
 
+      console.log('onSelect', data)
+      const seller = selectedSku
+        ? data.product.items[0].sellers.find((item: any) => {
+            return item.sellerDefault === true
+          }).sellerId
+        : null
       setState({
         ...state,
         selectedItem:
           !!product && product.length
-            ? { ...product[0], value: selectedSku, data }
+            ? { ...product[0], value: selectedSku, seller, data }
             : null,
       })
     }
+    return true
   }
 
   const selectSku = (value: string) => {
+    const seller = selectedItem.data.items
+      .find((item: any) => {
+        return item.itemId === value
+      })
+      .sellers.find((s: any) => {
+        return s.sellerDefault === true
+      }).sellerId
     const newSelected = {
       ...selectedItem,
+      seller,
       value,
     }
     setState({
@@ -78,6 +94,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
         {
           id: parseInt(selectedItem.value, 10),
           quantity: parseFloat(quantitySelected),
+          seller: selectedItem.seller,
         },
       ]
       onAddToCart(items).then(() => {

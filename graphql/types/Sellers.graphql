@@ -1,0 +1,7 @@
+type SellersType {
+  items: [ItemsSeller]
+}
+type ItemsSeller {
+  id: String
+  name: String
+}

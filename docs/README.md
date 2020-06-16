@@ -120,7 +120,6 @@ In order to apply CSS customizations to this and other blocks, follow the instru
 | `dropzoneText`               |
 | `dropzoneLink`               |
 | `downloadLink`               |
-| `sellerContainer`            |
 
 <!-- DOCS-IGNORE:start -->
 

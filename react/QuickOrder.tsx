@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import React, { useState, useContext } from 'react'
-import { Button, ToastContext, Dropdown } from 'vtex.styleguide'
+import { Button, ToastContext } from 'vtex.styleguide'
 import {
   FormattedMessage,
   defineMessages,
@@ -40,8 +40,8 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   uploadText,
   uploadDescription,
   downloadText,
-  data,
   intl,
+  data,
 }: any) => {
   const { showToast } = useContext(ToastContext)
   console.log('data', data)
@@ -130,14 +130,6 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     { error: mutationError, loading: mutationLoading },
   ] = useMutation<{ addToCart: OrderForm }, { items: [] }>(ADD_TO_CART)
 
-  const setSeller = (value: string) => {
-    setState({
-      ...state,
-      seller: value,
-    })
-    window.sessionStorage.setItem('sellerId', value)
-  }
-
   const callAddToCart = async (items: any) => {
     const mutationResult = await addToCart({
       variables: {
@@ -195,12 +187,15 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   }
 
   const addToCartCopyNPaste = () => {
-    const items: any = reviewItems.map(({ vtexSku, quantity }: any) => {
-      return {
-        id: parseInt(vtexSku, 10),
-        quantity: parseFloat(quantity),
+    const items: any = reviewItems.map(
+      ({ vtexSku, quantity, seller: sellerItem }: any) => {
+        return {
+          id: parseInt(vtexSku, 10),
+          quantity: parseFloat(quantity),
+          seller: sellerItem,
+        }
       }
-    })
+    )
     callAddToCart(items)
   }
 
@@ -221,8 +216,8 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     }
   }
 
-  const onRefidLoading = (data: any) => {
-    console.log('onRefidLoading', data)
+  const onRefidLoading = (ref: any) => {
+    console.log('onRefidLoading', ref)
   }
 
   const backList = () => {
@@ -240,7 +235,6 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     'reviewBlock',
     'categoryBlock',
     'buttonsBlock',
-    'sellerContainer',
   ] as const
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -256,22 +250,6 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
           className={`vtex-pageHeader__title t-heading-2 order-0 flex-grow-1 title-container ${handles.title}`}
         >
           <TranslatedTitle title={title} />
-        </div>
-        <div className="vtex-pageHeader__children order-2 order-0-ns mt0-ns">
-          {sellers.length > 1 && (
-            <div className={`mt5 ${handles.sellerContainer}`}>
-              <FormattedMessage id="store/quickorder.seller" />:
-              <Dropdown
-                variation="inline"
-                size="large"
-                options={sellers}
-                value={seller}
-                onChange={(_, v) => {
-                  setSeller(v)
-                }}
-              />
-            </div>
-          )}
         </div>
       </div>
 

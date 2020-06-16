@@ -1,6 +1,6 @@
 query getSellers {
   sellers {
-    itemsReturned {
+    items {
       id
       name
     }

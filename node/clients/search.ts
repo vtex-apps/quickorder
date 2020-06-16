@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ExternalClient, InstanceOptions, IOContext } from '@vtex/api'
 
 const axios = require('axios')
@@ -11,10 +12,16 @@ export class Search extends ExternalClient {
     super(`http://${ctx.account}.vtexcommercestable.com.br/`, ctx, opts)
   }
 
-  public skuFromRefIds = async ({ refids }: RefIdArgs) => {
-    const sellersList: any = await this.sellers()
+  private sellersList: any[] | undefined
 
-    console.log('sellersList', sellersList)
+  private getNameFromId = (id: string) => {
+    return this.sellersList?.find((seller: any) => {
+      return seller.id === id
+    }).name
+  }
+
+  public skuFromRefIds = async ({ refids }: RefIdArgs) => {
+    this.sellersList = await this.sellers()
 
     const url = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pub/sku/stockkeepingunitidsbyrefids`
 
@@ -31,16 +38,17 @@ export class Search extends ExternalClient {
 
     if (res.status === 200) {
       const refs = Object.getOwnPropertyNames(res.data)
+
       refs.forEach(id => {
         resultStr[id] = {
           sku: res.data[id],
           refid: id,
-          sellers: sellersList[0].id,
+          sellers: this.sellersList,
         }
         result.push(resultStr[id])
       })
 
-      if (sellersList.length) {
+      if (this.sellersList?.length) {
         const promises = result.map(async (o: any) => this.sellerBySku(o.sku, o.refid))
         result = await Promise.all(promises)
       }
@@ -53,7 +61,7 @@ export class Search extends ExternalClient {
       return {
         sku: null,
         refid,
-        seller: null
+        sellers: null
       }
     }
     const url = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pvt/sku/stockkeepingunitbyid/${skuId}`
@@ -65,14 +73,19 @@ export class Search extends ExternalClient {
     })
     return res.data?.SkuSellers ? {
       sku: skuId,
-      refid: res.data.ProductRefId,
-      seller: res.data.SkuSellers.filter((item: any) => {
+      refid,
+      sellers: res.data.SkuSellers.filter((item: any) => {
         return item.IsActive === true
-      })[0].SellerId
+      }).map(({ SellerId }: any) => {
+        return {
+          id: SellerId,
+          name: this.getNameFromId(SellerId),
+        }
+      })
     } : []
   }
 
-  private sellers = async () => {
+  public sellers = async () => {
     const url = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pvt/seller/list`
 
     const res = await axios.default.get(url, {

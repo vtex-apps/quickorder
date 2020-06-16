@@ -32,13 +32,14 @@ const CategoryBlock: StorefrontFunctionComponent<any &
     categories: data.categories || [],
     categoryItems: {},
     quantitySelected: {},
+    defaultSeller: {},
   })
 
   const { showToast } = useContext(ToastContext)
 
   const client = useApolloClient()
 
-  const { categories, categoryItems, quantitySelected } = state
+  const { categories, categoryItems, quantitySelected, defaultSeller } = state
 
   const translateMessage = (message: MessageDescriptor) => {
     return intl.formatMessage(message)
@@ -112,6 +113,7 @@ const CategoryBlock: StorefrontFunctionComponent<any &
         return {
           id: parseInt(item, 10),
           quantity: parseFloat(quantitySelected[item]),
+          seller: defaultSeller[item],
         }
       })
       onAddToCart(items).then(() => {
@@ -124,9 +126,6 @@ const CategoryBlock: StorefrontFunctionComponent<any &
           _setState({
             quantitySelected: quantitiesCopy,
           })
-          setTimeout(() => {
-            window.location.href = '/checkout'
-          }, 1000)
         }
         return true
       })
@@ -157,8 +156,15 @@ const CategoryBlock: StorefrontFunctionComponent<any &
                       onChange={(e: any) => {
                         const newQtd = quantitySelected
                         newQtd[content.itemId] = e.target.value
+                        const newSeller = defaultSeller
+                        newSeller[content.itemId] = content.sellers.find(
+                          (s: any) => {
+                            return s.sellerDefault === true
+                          }
+                        ).sellerId
                         _setState({
                           quantitySelected: newQtd,
+                          defaultSeller: newSeller,
                         })
                       }}
                     />
