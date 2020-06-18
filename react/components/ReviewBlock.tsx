@@ -115,7 +115,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         return {
           ...item,
           sellers: getSellers(item),
-          seller: sellers[0].id,
+          seller: sellers?.lengh ? sellers[0].id : null,
           vtexSku: vtexSku(item),
           error: errorMsg(item),
         }
@@ -295,7 +295,9 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
               </div>
             )
           }
-          return rowData.sellers ? rowData.sellers[0].name : ''
+          return rowData.sellers && rowData.sellers.length
+            ? rowData.sellers[0].name
+            : ''
         },
       },
       error: {

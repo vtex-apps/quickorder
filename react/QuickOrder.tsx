@@ -16,7 +16,7 @@ import { useCssHandles } from 'vtex.css-handles'
 
 import TranslatedTitle from './components/TranslatedTitle'
 import AutocompleteBlock from './AutocompleteBlock'
-import TextAreaBlock from './TextAreaBlock'
+// import TextAreaBlock from './TextAreaBlock'
 import UploadBlock from './UploadBlock'
 import CategoryBlock from './CategoryBlock'
 import ReviewBlock from './components/ReviewBlock'
@@ -30,8 +30,8 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   showCategory,
   showUpload,
   showAutocomplete,
-  copyText,
-  copyDescription,
+  // copyText,
+  // copyDescription,
   oneText,
   oneDescription,
   catText,
@@ -54,7 +54,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   const {
     reviewState,
     showAddToCart,
-    textAreaValue,
+    // textAreaValue,
     reviewItems,
     refidLoading,
   } = state
@@ -240,13 +240,13 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
 
       {!reviewState && showCopyPaste && (
         <div className={`pa6 bg-muted-5 ${handles.copyPasteBlock}`}>
-          <TextAreaBlock
+          {/* <TextAreaBlock
             text={copyText}
             description={copyDescription}
             value={textAreaValue}
             onReviewItems={onReviewItems}
             onRefidLoading={onRefidLoading}
-          />
+          /> */}
         </div>
       )}
 
