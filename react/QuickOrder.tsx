@@ -8,7 +8,7 @@ import {
   injectIntl,
 } from 'react-intl'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
-import { useMutation, graphql, compose } from 'react-apollo'
+import { useMutation } from 'react-apollo'
 import { OrderForm } from 'vtex.order-manager'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
@@ -20,7 +20,6 @@ import AutocompleteBlock from './AutocompleteBlock'
 import UploadBlock from './UploadBlock'
 import CategoryBlock from './CategoryBlock'
 import ReviewBlock from './components/ReviewBlock'
-import getSellers from './queries/sellers.gql'
 import styles from './styles.css'
 import { GetText } from './utils'
 let sellers: any = []
@@ -460,4 +459,4 @@ QuickOrder.schema = {
   },
 }
 
-export default compose(graphql(getSellers))(injectIntl(QuickOrder))
+export default injectIntl(QuickOrder)
