@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Updated
+
+- Changing to major to remove the billing option
+
 ## [0.9.3] - 2020-06-19
 
 ### Fixed
 
-- Sellers listing not loaded 
+- Sellers listing not loaded
 
 ## [0.9.2] - 2020-06-18
 

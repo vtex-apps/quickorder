@@ -1,7 +1,7 @@
 {
   "vendor": "vtex",
   "name": "quickorder",
-  "version": "0.9.3",
+  "version": "0.9.2",
   "title": "Quickorder",
   "description": "Allow users to add multiple products to the cart at once",
   "defaultLocale": "pt-BR",
@@ -54,6 +54,9 @@
       }
     }
   ],
+  "billingOptions": {
+    "free": true
+  },
   "settingsSchema": {},
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
