@@ -23,7 +23,7 @@ import ReviewBlock from './components/ReviewBlock'
 import getSellers from './queries/sellers.gql'
 import styles from './styles.css'
 import { GetText } from './utils'
-
+let sellers: any = []
 const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   WrappedComponentProps> = ({
   title,
@@ -44,7 +44,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   intl,
 }: any) => {
   const { showToast } = useContext(ToastContext)
-
+  console.log('data', data)
   const [state, setState] = useState<any>({
     reviewState: false,
     showAddToCart: false,
@@ -52,13 +52,6 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     reviewItems: [],
     refidLoading: null,
     seller: window.sessionStorage?.getItem('sellerId') ?? null,
-    sellers:
-      data.sellers?.itemsReturned?.map((sellerItem: any) => {
-        return {
-          value: sellerItem.id,
-          label: sellerItem.name,
-        }
-      }) || [],
   })
 
   const {
@@ -68,8 +61,16 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
     reviewItems,
     refidLoading,
     seller,
-    sellers,
   } = state
+
+  if (!data.loading) {
+    sellers = data.sellers?.itemsReturned?.map((sellerItem: any) => {
+      return {
+        value: sellerItem.id,
+        label: sellerItem.name,
+      }
+    })
+  }
 
   const { push } = usePixel()
   const { settings = {}, showInstallPrompt = undefined } = usePWA() || {}
@@ -121,7 +122,6 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
           href: '/checkout/#/cart',
         }
       : undefined
-    console.log('showToast', { message, action })
     showToast({ message, action })
   }
 
@@ -144,7 +144,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
         items: items.map((item: any) => {
           return {
             ...item,
-            seller: seller || sellers[0].value,
+            seller: seller || (sellers?.length ? sellers[0].value : null),
           }
         }),
       },
