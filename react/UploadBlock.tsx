@@ -1,13 +1,14 @@
 /* eslint-disable no-console */
 import React, { useState } from 'react'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, injectIntl, WrappedComponentProps } from 'react-intl'
 import { Button, Dropzone } from 'vtex.styleguide'
 import { useCssHandles } from 'vtex.css-handles'
 import XLSX from 'xlsx'
 
 import { ParseText } from './utils'
 
-const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface> = ({
+const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
+  WrappedComponentProps> = ({
   onReviewItems,
   text,
   description,
@@ -198,4 +199,4 @@ interface UploadBlockInterface {
   downloadText?: string
 }
 
-export default UploadBlock
+export default injectIntl(UploadBlock)

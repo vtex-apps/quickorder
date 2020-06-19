@@ -4,6 +4,7 @@ import {
   FormattedMessage,
   defineMessages,
   WrappedComponentProps,
+  injectIntl,
 } from 'react-intl'
 import { Button, Textarea, ToastContext } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
@@ -37,6 +38,8 @@ const messages = defineMessages({
 
 const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
   WrappedComponentProps> = ({ intl, value, text, description }: any) => {
+  console.log('TextAreaBlock Initiated', text, description)
+
   const [state, setState] = useState<any>({
     reviewState: false,
     showAddToCart: false,
@@ -301,4 +304,4 @@ interface TextAreaBlockInterface {
   description: string
 }
 
-export default TextAreaBlock
+export default injectIntl(TextAreaBlock)

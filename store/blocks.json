@@ -1,23 +1,17 @@
 {
   "store.quickorder": {
-    "blocks": ["quickorder"]
+    "blocks": ["quickorder-textarea", "quickorder-upload"]
   },
-  "quickorder": {
+  "quickorder-textarea": {
     "props": {
-      "title": "Quickorder",
-      "showCopyPaste": "on",
-      "copyText": "Copy/Paste Skus",
-      "copyDescription": "[Sku's Code],[Quantity]",
-      "showAutocomplete": "on",
-      "oneText": "One by One",
-      "oneDescription": "Type the product name, select, enter quantity, add to the cart",
-      "showCategory": "on",
-      "catText": "Categories",
-      "catDescription": "Add products directly from their categories",
-      "showUpload": "on",
-      "uploadText": "Upload",
-      "uploadDescription": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order",
-      "downloadText": "Click here to download a spreadsheet model"
+      "text": "Copy/Paste Skus",
+      "description": "[Sku's Code],[Quantity]"
+    }
+  },
+  "quickorder-upload": {
+    "props": {
+      "text": "Upload",
+      "description": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order"
     }
   }
 }

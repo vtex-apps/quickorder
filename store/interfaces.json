@@ -17,7 +17,5 @@
   "quickorder-textarea": {
     "component": "TextAreaBlock"
   },
-  "store.quickorder": {
-    "required": ["quickorder"]
-  }
+  "store.quickorder": {}
 }
