@@ -48,7 +48,6 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
   const validateRefids = (refidData: any, reviewed: any) => {
     let error = false
-    console.log('validateRefids =>', refidData, reviewed)
     if (refidData) {
       const refIdNotFound =
         !!refidData && !!refidData.skuFromRefIds.items
@@ -111,11 +110,10 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
       const items = reviewed.map((item: any) => {
         const sellers = getSellers(item)
-        console.log('Sellers for the item =>', sellers, item)
         return {
           ...item,
           sellers: getSellers(item),
-          seller: sellers?.lengh ? sellers[0].id : null,
+          seller: sellers.length ? sellers[0].id : '1',
           vtexSku: vtexSku(item),
           error: errorMsg(item),
         }
@@ -275,7 +273,6 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         type: 'string',
         title: 'Seller',
         cellRenderer: ({ rowData }: any) => {
-          console.log('rowData => ', rowData)
           if (rowData?.sellers?.length > 1) {
             return (
               <div className="mb5">

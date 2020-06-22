@@ -17,7 +17,7 @@ import { useCssHandles } from 'vtex.css-handles'
 import TranslatedTitle from './components/TranslatedTitle'
 import AutocompleteBlock from './AutocompleteBlock'
 // import TextAreaBlock from './TextAreaBlock'
-import UploadBlock from './UploadBlock'
+// import UploadBlock from './UploadBlock'
 import CategoryBlock from './CategoryBlock'
 import ReviewBlock from './components/ReviewBlock'
 import styles from './styles.css'
@@ -28,7 +28,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   title,
   showCopyPaste,
   showCategory,
-  showUpload,
+  // showUpload,
   showAutocomplete,
   // copyText,
   // copyDescription,
@@ -36,9 +36,9 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
   oneDescription,
   catText,
   catDescription,
-  uploadText,
-  uploadDescription,
-  downloadText,
+  // uploadText,
+  // uploadDescription,
+  // downloadText,
   intl,
   data,
 }: any) => {
@@ -288,7 +288,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
         </div>
       )}
 
-      {!reviewState && showUpload && (
+      {/* {!reviewState && showUpload && (
         <div className={`pa6 bg-muted-5 ${handles.uploadBlock}`}>
           <UploadBlock
             text={uploadText}
@@ -298,7 +298,7 @@ const QuickOrder: StorefrontFunctionComponent<QuickOrderProps &
             downloadText={downloadText}
           />
         </div>
-      )}
+      )} */}
 
       {reviewState && (
         <div className={`pa6 ${handles.reviewBlock}`}>

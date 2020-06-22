@@ -2,7 +2,11 @@
 /* eslint-disable react/jsx-key */
 import PropTypes from 'prop-types'
 import React, { useState, useContext } from 'react'
-import { FormattedMessage, WrappedComponentProps } from 'react-intl'
+import {
+  FormattedMessage,
+  WrappedComponentProps,
+  defineMessages,
+} from 'react-intl'
 import {
   Collapsible,
   Input,
@@ -10,24 +14,39 @@ import {
   ToastContext,
   Spinner,
 } from 'vtex.styleguide'
+import { OrderForm } from 'vtex.order-manager'
+import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
+import { usePWA } from 'vtex.store-resources/PWAContext'
+import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import { useCssHandles } from 'vtex.css-handles'
-import { graphql, useApolloClient, compose } from 'react-apollo'
+import { graphql, useApolloClient, compose, useMutation } from 'react-apollo'
 import _ from 'lodash'
 
 import styles from './styles.css'
 import getCategories from './queries/categoriesQuery.gql'
 import SearchByCategory from './queries/productsByCategory.gql'
 
+const messages = defineMessages({
+  success: {
+    id: 'store/toaster.cart.success',
+    defaultMessage: '',
+    label: '',
+  },
+  duplicate: {
+    id: 'store/toaster.cart.duplicated',
+    defaultMessage: '',
+    label: '',
+  },
+  error: { id: 'store/toaster.cart.error', defaultMessage: '', label: '' },
+  seeCart: {
+    id: 'store/toaster.cart.seeCart',
+    defaultMessage: '',
+    label: '',
+  },
+})
+
 const CategoryBlock: StorefrontFunctionComponent<any &
-  WrappedComponentProps> = ({
-  onAddToCart,
-  text,
-  description,
-  loading,
-  success,
-  intl,
-  data,
-}) => {
+  WrappedComponentProps> = ({ text, description, intl, data }) => {
   const [state, setState] = useState<any>({
     categories: data.categories || [],
     categoryItems: {},
@@ -40,21 +59,126 @@ const CategoryBlock: StorefrontFunctionComponent<any &
   const client = useApolloClient()
 
   const { categories, categoryItems, quantitySelected, defaultSeller } = state
+  const [addToCart, { error, loading }] = useMutation<
+    { addToCart: OrderForm },
+    { items: [] }
+  >(ADD_TO_CART)
 
+  const { push } = usePixel()
+  const { settings = {}, showInstallPrompt = undefined } = usePWA() || {}
+  const { promptOnCustomEvent } = settings
+
+  const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
   const translateMessage = (message: MessageDescriptor) => {
     return intl.formatMessage(message)
   }
+  const resolveToastMessage = (success: boolean, isNewItem: boolean) => {
+    if (!success) return translateMessage(messages.error)
+    if (!isNewItem) return translateMessage(messages.duplicate)
 
-  const toastMessage = (messsageKey: string) => {
-    const message = translateMessage({
-      id: messsageKey,
-    })
+    return translateMessage(messages.success)
+  }
+  const toastMessage = (arg: any) => {
+    let message
+    let action
+    if (typeof arg === 'string') {
+      message = translateMessage({
+        id: arg,
+      })
+    } else {
+      const {
+        success,
+        isNewItem,
+      }: {
+        success: boolean
+        isNewItem: boolean
+      } = arg
+      message = resolveToastMessage(success, isNewItem)
 
-    const action = undefined
-
+      action = success
+        ? {
+            label: translateMessage(messages.seeCart),
+            href: '/checkout/#/cart',
+          }
+        : undefined
+    }
     showToast({ message, action })
   }
+  const _setState = (props: any) => {
+    setState((previousState: any) => {
+      const newState = _.merge(props, previousState)
+      return newState
+    })
+  }
+  const onAddToCart = async (items: any, skus: any) => {
+    const mutationResult = await addToCart({
+      variables: {
+        items: items.map((item: any) => {
+          return {
+            ...item,
+          }
+        }),
+      },
+    })
 
+    if (error || mutationResult.errors?.length) {
+      if (error) {
+        console.error(error)
+      }
+      if (mutationResult.errors?.length) {
+        for (let i = 0; i < mutationResult.errors.length; i++) {
+          console.error(mutationResult.errors[i].message)
+        }
+      }
+      toastMessage({ success: false, isNewItem: false })
+      return
+    }
+
+    // Update OrderForm from the context
+    mutationResult.data && setOrderForm(mutationResult.data.addToCart)
+
+    const adjustSkuItemForPixelEvent = (item: any) => {
+      return {
+        skuId: item.id,
+        quantity: item.quantity,
+      }
+    }
+    // Send event to pixel-manager
+    const pixelEventItems = items.map(adjustSkuItemForPixelEvent)
+    push({
+      event: 'addToCart',
+      items: pixelEventItems,
+    })
+
+    if (
+      mutationResult.data?.addToCart?.messages?.generalMessages &&
+      mutationResult.data.addToCart.messages.generalMessages.length
+    ) {
+      mutationResult.data.addToCart.messages.generalMessages.map((msg: any) => {
+        return showToast({
+          message: msg.text,
+          action: undefined,
+          duration: 30000,
+        })
+      })
+    } else {
+      toastMessage({ success: true, isNewItem: true })
+      const quantitiesCopy = quantitySelected
+      skus.map((sku: any) => {
+        quantitiesCopy[sku] = 0
+        return true
+      })
+      _setState({
+        quantitySelected: quantitiesCopy,
+      })
+    }
+
+    if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
+      showInstallPrompt()
+    }
+
+    return showInstallPrompt
+  }
   const CSS_HANDLES = [
     'categoryContainer',
     'categoryTitle',
@@ -67,13 +191,6 @@ const CategoryBlock: StorefrontFunctionComponent<any &
     'categoryLoadingProducts',
   ] as const
   const handles = useCssHandles(CSS_HANDLES)
-
-  const _setState = (props: any) => {
-    setState((previousState: any) => {
-      const newState = _.merge(props, previousState)
-      return newState
-    })
-  }
 
   const setOptions = (categoryId: any, result: any) => {
     const copy = categoryItems
@@ -116,19 +233,7 @@ const CategoryBlock: StorefrontFunctionComponent<any &
           seller: defaultSeller[item],
         }
       })
-      onAddToCart(items).then(() => {
-        if (!loading && success) {
-          const quantitiesCopy = quantitySelected
-          skus.map((sku: any) => {
-            quantitiesCopy[sku] = 0
-            return true
-          })
-          _setState({
-            quantitySelected: quantitiesCopy,
-          })
-        }
-        return true
-      })
+      onAddToCart(items, skus)
     } else {
       toastMessage('store/quickorder.category.noneSelection')
     }
@@ -140,7 +245,10 @@ const CategoryBlock: StorefrontFunctionComponent<any &
         return b.items.length
           ? b.items.map((content: any) => {
               return (
-                <div className="flex flex-row pa2 pl4 bg-white hover-bg-near-white">
+                <div
+                  className="flex flex-row pa2 pl4 bg-white hover-bg-near-white"
+                  key={b.itemId}
+                >
                   <div
                     className={`flex flex-column w-90 ${styles.pcc} fl ${handles.categoryProductLabel}`}
                   >
@@ -273,7 +381,7 @@ const CategoryBlock: StorefrontFunctionComponent<any &
               </div>
             </div>
             {categories.map((item: any) => {
-              return collapsible(item)
+              return <div key={item.id}>{collapsible(item)}</div>
             })}
           </div>
         )}
@@ -283,9 +391,6 @@ const CategoryBlock: StorefrontFunctionComponent<any &
 }
 
 CategoryBlock.propTypes = {
-  onAddToCart: PropTypes.func,
-  loading: PropTypes.bool,
-  success: PropTypes.bool,
   text: PropTypes.string,
   description: PropTypes.string,
   data: PropTypes.shape({
@@ -295,6 +400,11 @@ CategoryBlock.propTypes = {
   }),
 }
 
+interface OrderFormContext {
+  loading: boolean
+  orderForm: OrderForm | undefined
+  setOrderForm: (orderForm: Partial<OrderForm>) => void
+}
 interface MessageDescriptor {
   id: string
   description?: string | object

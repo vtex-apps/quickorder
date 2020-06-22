@@ -38,8 +38,6 @@ const messages = defineMessages({
 
 const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
   WrappedComponentProps> = ({ intl, value, text, description }: any) => {
-  console.log('TextAreaBlock Initiated', text, description)
-
   const [state, setState] = useState<any>({
     reviewState: false,
     showAddToCart: false,
@@ -84,7 +82,6 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
           href: '/checkout/#/cart',
         }
       : undefined
-    console.log('showToast', { message, action })
     showToast({ message, action })
   }
 
@@ -225,62 +222,65 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
         </div>
       </div>
       <div className="w-two-thirds-l w-100-ns fr-l">
-        <div className="w-100 mb5">
-          <div className="bg-base t-body c-on-base pa7 br3 b--muted-4 ba">
-            <Textarea
-              value={textAreaValue}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                setTextareaValue(e.target.value)
-              }
-            />
-            <div className={`mt2 flex justify-end ${handles.buttonValidate}`}>
-              <Button
-                variation="secondary"
-                size="regular"
-                onClick={() => {
-                  parseText()
-                }}
-              >
-                <FormattedMessage id="store/quickorder.validate" />
-              </Button>
+        {!reviewState && (
+          <div className="w-100 mb5">
+            <div className="bg-base t-body c-on-base pa7 br3 b--muted-4 ba">
+              <Textarea
+                value={textAreaValue}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  setTextareaValue(e.target.value)
+                }
+              />
+              <div className={`mt2 flex justify-end ${handles.buttonValidate}`}>
+                <Button
+                  variation="secondary"
+                  size="regular"
+                  onClick={() => {
+                    parseText()
+                  }}
+                >
+                  <FormattedMessage id="store/quickorder.validate" />
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      {reviewState && (
-        <div className={`pa6 ${handles.reviewBlock}`}>
-          <ReviewBlock
-            reviewedItems={reviewItems}
-            onReviewItems={onReviewItems}
-            onRefidLoading={onRefidLoading}
-          />
-          <div
-            className={`mb4 mt4 flex justify-between ${handles.buttonsBlock}`}
-          >
-            <Button
-              variation="tertiary"
-              size="small"
-              onClick={() => {
-                backList()
-              }}
+        )}
+
+        {reviewState && (
+          <div className={`w-100 pa6 ${handles.reviewBlock}`}>
+            <ReviewBlock
+              reviewedItems={reviewItems}
+              onReviewItems={onReviewItems}
+              onRefidLoading={onRefidLoading}
+            />
+            <div
+              className={`mb4 mt4 flex justify-between ${handles.buttonsBlock}`}
             >
-              <FormattedMessage id="store/quickorder.back" />
-            </Button>
-            {showAddToCart && (
               <Button
-                variation="primary"
+                variation="tertiary"
                 size="small"
-                isLoading={mutationLoading || refidLoading}
                 onClick={() => {
-                  addToCartCopyNPaste()
+                  backList()
                 }}
               >
-                <FormattedMessage id="store/quickorder.addToCart" />
+                <FormattedMessage id="store/quickorder.back" />
               </Button>
-            )}
+              {showAddToCart && (
+                <Button
+                  variation="primary"
+                  size="small"
+                  isLoading={mutationLoading || refidLoading}
+                  onClick={() => {
+                    addToCartCopyNPaste()
+                  }}
+                >
+                  <FormattedMessage id="store/quickorder.addToCart" />
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
