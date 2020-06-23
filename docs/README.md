@@ -10,7 +10,7 @@
 
 The Quickorder app is entirely designed for **B2B scenarios**. It creates a custom page in your store aimed at purchases in bulk, offering tools such as uploading a spreadsheet to make bulk orders more agile.
 
-![quick-order](https://user-images.githubusercontent.com/52087100/82382559-8fb77b00-9a02-11ea-8803-1d36c4cf5d13.png)
+![quick-order](./image/RawQuickorder.png)
 _Example of a quick order page without customization_
 
 ## Configuration
@@ -19,17 +19,71 @@ _Example of a quick order page without customization_
 
 ```diff
   dependencies: {
-+   "vtex.quickorder": "0.x"
++   "vtex.quickorder": "2.x"
   }
 ```
 
 Once Quickorder is added as a dependency, a new route called `/quickorder` will be automatically created for your store, creating the Quickorder custom page that allows bulk orders.
 
-2. Access the admin of the VTEX account in which your are working to access the CMS section. Then, enter **Site Editor**;
-3. In the admin's Site Editor, look up the `/quickorder` route in the Site Editor's `URL` field;
-4. Edit the page's Quickorder block according to the desired scenarios and save your changes. You can change the page title, as well as define which bulk order options will be made available to users: `autocomplete`, `textarea`, `category` or `upload`.
+This `2.x` version is fully compatible with the [Store Blocks](https://vtex.io/docs/getting-started/build-stores-with-store-framework/4/) template, so you can customize the `/quickorder` page according to your neeeds, to do that, add a `quickorder.jsonp` file to your Store Theme with the desired structure.
 
-![Admin View](./image/Editor-Admin_2.png)
+The available block interfaces are `quickorder-textarea`, `quickorder-upload`, `quickorder-autocomplete`, `quickorder-categories`.
+
+You can use our default blocks configuration as a example to build your own
+
+```json
+{
+  "store.quickorder": {
+    "blocks": [
+      "flex-layout.row#top",
+      "quickorder-textarea",
+      "quickorder-upload",
+      "quickorder-autocomplete",
+      "quickorder-categories"
+    ]
+  },
+  "flex-layout.row#top": {
+    "children": ["flex-layout.col#title"]
+  },
+  "flex-layout.col#title": {
+    "children": ["rich-text#title"],
+    "props": {
+      "blockClass": "titleQuickorder",
+      "preventVerticalStretch": true
+    }
+  },
+  "rich-text#title": {
+    "props": {
+      "text": "## Quick Order"
+    }
+  },
+  "quickorder-textarea": {
+    "props": {
+      "text": "Copy/Paste Skus",
+      "description": "[Sku's Code],[Quantity]"
+    }
+  },
+  "quickorder-upload": {
+    "props": {
+      "text": "Upload",
+      "description": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order",
+      "downloadText": "Click here to download a spreadsheet model"
+    }
+  },
+  "quickorder-autocomplete": {
+    "props": {
+      "text": "One by One",
+      "description": "Type the product name, select, enter quantity, add to the cart"
+    }
+  },
+  "quickorder-categories": {
+    "props": {
+      "text": "Categories",
+      "description": "Add products directly from their categories"
+    }
+  }
+}
+```
 
 For more on each of the available options and their respective functionalities, check the Modus Operandi section below.
 
