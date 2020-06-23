@@ -1,11 +1,27 @@
 {
   "store.quickorder": {
     "blocks": [
+      "flex-layout.row#top",
       "quickorder-textarea",
       "quickorder-upload",
       "quickorder-autocomplete",
       "quickorder-categories"
     ]
+  },
+  "flex-layout.row#top": {
+    "children": ["flex-layout.col#title"]
+  },
+  "flex-layout.col#title": {
+    "children": ["rich-text#title"],
+    "props": {
+      "blockClass": "titleQuickorder",
+      "preventVerticalStretch": true
+    }
+  },
+  "rich-text#title": {
+    "props": {
+      "text": "## Quick Order"
+    }
   },
   "quickorder-textarea": {
     "props": {
@@ -16,7 +32,8 @@
   "quickorder-upload": {
     "props": {
       "text": "Upload",
-      "description": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order"
+      "description": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order",
+      "downloadText": "Click here to download a spreadsheet model"
     }
   },
   "quickorder-autocomplete": {

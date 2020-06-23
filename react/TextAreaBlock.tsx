@@ -6,7 +6,7 @@ import {
   WrappedComponentProps,
   injectIntl,
 } from 'react-intl'
-import { Button, Textarea, ToastContext } from 'vtex.styleguide'
+import { Button, Textarea, ToastContext, Spinner } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { useCssHandles } from 'vtex.css-handles'
@@ -40,11 +40,15 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
   WrappedComponentProps> = ({ intl, value, text, description }: any) => {
   const [state, setState] = useState<any>({
     reviewState: false,
-    showAddToCart: false,
+    showAddToCart: null,
     textAreaValue: value || '',
     reviewItems: [],
-    refidLoading: null,
   })
+
+  const [refidLoading, setRefIdLoading] = useState<any>()
+
+  const { textAreaValue, reviewItems, reviewState, showAddToCart } = state
+
   const [
     addToCart,
     { error: mutationError, loading: mutationLoading },
@@ -140,14 +144,6 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
     return showInstallPrompt
   }
 
-  const {
-    textAreaValue,
-    reviewItems,
-    reviewState,
-    showAddToCart,
-    refidLoading,
-  } = state
-
   const onReviewItems = (items: any) => {
     if (items) {
       const show =
@@ -171,7 +167,6 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
     const error = !!items.filter((item: any) => {
       return item.error !== null
     }).length
-
     setState({
       ...state,
       reviewItems: items,
@@ -202,8 +197,8 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
     })
     callAddToCart(items)
   }
-  const onRefidLoading = (data: any) => {
-    console.log('onRefidLoading', data)
+  const onRefidLoading = (data: boolean) => {
+    setRefIdLoading(data)
   }
   const backList = () => {
     setState({
@@ -224,7 +219,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
       <div className="w-two-thirds-l w-100-ns fr-l">
         {!reviewState && (
           <div className="w-100 mb5">
-            <div className="bg-base t-body c-on-base pa7 br3 b--muted-4 ba">
+            <div className="bg-base t-body c-on-base pa7 br3 b--muted-4">
               <Textarea
                 value={textAreaValue}
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
@@ -265,11 +260,12 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
               >
                 <FormattedMessage id="store/quickorder.back" />
               </Button>
+              {refidLoading && <Spinner />}
               {showAddToCart && (
                 <Button
                   variation="primary"
                   size="small"
-                  isLoading={mutationLoading || refidLoading}
+                  isLoading={mutationLoading}
                   onClick={() => {
                     addToCartCopyNPaste()
                   }}

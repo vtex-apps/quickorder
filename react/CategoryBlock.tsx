@@ -366,7 +366,7 @@ const CategoryBlock: StorefrontFunctionComponent<any &
           <div>
             <div className="flex flex-row">
               <div
-                className={`flex flex-column w-100 items-end fl ${handles.categoryButtonAdd}`}
+                className={`flex flex-column w-100 items-end fl pr7 ${handles.categoryButtonAdd}`}
               >
                 <Button
                   variation="primary"

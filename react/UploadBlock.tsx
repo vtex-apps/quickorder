@@ -6,7 +6,7 @@ import {
   WrappedComponentProps,
   defineMessages,
 } from 'react-intl'
-import { Button, Dropzone, ToastContext } from 'vtex.styleguide'
+import { Button, Dropzone, ToastContext, Spinner } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { useCssHandles } from 'vtex.css-handles'
@@ -41,19 +41,11 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   let productsArray: any = []
   const [state, setState] = useState<any>({
     reviewItems: [],
-    hasError: false,
     reviewState: false,
     showAddToCart: false,
-    refidLoading: null,
   })
-
-  const {
-    reviewItems,
-    hasError,
-    reviewState,
-    showAddToCart,
-    refidLoading,
-  } = state
+  const [refidLoading, setRefIdLoading] = useState<any>()
+  const { reviewItems, reviewState, showAddToCart } = state
 
   const [
     addToCart,
@@ -112,8 +104,8 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     const exportFileName = `model-quickorder.xls`
     XLSX.writeFile(wb, exportFileName)
   }
-  const onRefidLoading = (data: any) => {
-    console.log('onRefidLoading', data)
+  const onRefidLoading = (data: boolean) => {
+    setRefIdLoading(data)
   }
   const onReviewItems = (items: any) => {
     if (items) {
@@ -294,7 +286,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
             {description}{' '}
             {downloadText && (
               <button
-                className={`${handles.downloadLink} pointer c-link hover-c-link active-c-link no-underline underline-hover bn bg-transparent`}
+                className={`${handles.downloadLink} pointer c-link hover-c-link active-c-link no-underline underline-hover bn bg-transparent pl0`}
                 onClick={() => {
                   download()
                 }}
@@ -309,7 +301,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
         {!reviewState && (
           <div className="w-100 mb5">
             <div
-              className={`bg-base t-body c-on-base pa7 br3 b--muted-4 ba ${handles.dropzoneContainer}`}
+              className={`bg-base t-body c-on-base pa7 br3 b--muted-4 ${handles.dropzoneContainer}`}
             >
               <Dropzone onDropAccepted={handleFile} onFileReset={handleReset}>
                 <div className="pt7">
@@ -360,11 +352,12 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
               >
                 <FormattedMessage id="store/quickorder.back" />
               </Button>
+              {refidLoading && <Spinner />}
               {showAddToCart && (
                 <Button
                   variation="primary"
                   size="small"
-                  isLoading={mutationLoading || refidLoading}
+                  isLoading={mutationLoading}
                   onClick={() => {
                     addToCartUpload()
                   }}

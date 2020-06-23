@@ -36,7 +36,13 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   const client = useApolloClient()
 
   const [state, setReviewState] = useState<any>({
-    reviewItems: reviewedItems || [],
+    reviewItems:
+      reviewedItems.map((item: any, index: number) => {
+        return {
+          ...item,
+          index,
+        }
+      }) || [],
   })
   const { reviewItems } = state
 
@@ -176,15 +182,18 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     checkValidatedItems()
   })
 
-  const removeLine = (line: number) => {
-    const items: [any] = reviewItems.filter((item: any, pos: number) => {
-      ;() => {
-        // eslint-disable-next-line no-void
-        void item
-      }
-      return pos !== line
-    })
-
+  const removeLine = (i: number) => {
+    const items: [any] = reviewItems
+      .filter((item: any) => {
+        return item.index !== i
+      })
+      .map((item: any, index: number) => {
+        return {
+          ...item,
+          line: index,
+          index,
+        }
+      })
     onReviewItems(items)
     setReviewState({
       ...state,
@@ -192,18 +201,30 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     })
   }
 
-  const updateLineContent = (line: number, content: string) => {
-    const items = reviewItems
-    items[line].content = content
+  const updateLineContent = (index: number, content: string) => {
+    const items = reviewItems.map((item: any) => {
+      return item.index === index
+        ? {
+            ...item,
+            content,
+          }
+        : item
+    })
     setReviewState({
       ...state,
       reviewItems: items,
     })
   }
 
-  const updateLineSeller = (line: number, seller: string) => {
-    const items = reviewItems
-    items[line].seller = seller
+  const updateLineSeller = (index: number, seller: string) => {
+    const items = reviewItems.map((item: any) => {
+      return item.index === index
+        ? {
+            ...item,
+            seller,
+          }
+        : item
+    })
     setReviewState({
       ...state,
       reviewItems: items,
@@ -213,7 +234,6 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   const onBlurField = (line: number) => {
     const joinLines = GetText(reviewItems)
     const reviewd: any = ParseText(joinLines)
-
     if (reviewd[line].error === null) {
       setReviewState({
         ...state,
@@ -247,7 +267,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
                 <Input
                   value={cellData}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    updateLineContent(rowData.line, e.target.value)
+                    updateLineContent(rowData.index, e.target.value)
                   }}
                   onBlur={() => {
                     onBlurField(rowData.line)
@@ -271,7 +291,9 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       },
       seller: {
         type: 'string',
-        title: 'Seller',
+        title: intl.formatMessage({
+          id: 'store/quickorder.review.label.seller',
+        }),
         cellRenderer: ({ rowData }: any) => {
           if (rowData?.sellers?.length > 1) {
             return (
@@ -286,7 +308,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
                   })}
                   value={rowData.seller}
                   onChange={(_: any, v: any) =>
-                    updateLineSeller(rowData.line, v)
+                    updateLineSeller(rowData.index, v)
                   }
                 />
               </div>
@@ -329,7 +351,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
                 icon={remove}
                 variation="tertiary"
                 onClick={() => {
-                  removeLine(rowData.line)
+                  removeLine(rowData.index)
                 }}
               />
             </div>

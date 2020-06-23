@@ -19,6 +19,8 @@
   },
   "credentialType": "absolute",
   "dependencies": {
+    "vtex.flex-layout": "0.x",
+    "vtex.rich-text": "0.x",
     "vtex.checkout": "0.x",
     "vtex.render-runtime": "7.x",
     "vtex.store": "2.x",

@@ -235,7 +235,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
       </div>
       <div className="w-two-thirds-l w-100-ns fr-l">
         <div className="w-100 mb5">
-          <div className="bg-base t-body c-on-base pa7 br3 b--muted-4 ba">
+          <div className="bg-base t-body c-on-base pa7 br3 b--muted-4">
             <div className={'flex flex-column w-100'}>
               {!selectedItem && <QuickOrderAutocomplete onSelect={onSelect} />}
               {!!selectedItem && (

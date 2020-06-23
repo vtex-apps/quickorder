@@ -1,10 +1,4 @@
 {
-  "quickorder": {
-    "component": "QuickOrder"
-  },
-  "quickorder-seller": {
-    "component": "SellerSelector"
-  },
   "quickorder-upload": {
     "component": "UploadBlock"
   },
