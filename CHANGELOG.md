@@ -30,6 +30,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Billing Options
 - Translations for Site Editor
 
+## [1.0.2] - 2020-06-19
+
+### Update
+
+- Doc update
+
 ## [1.0.0] - 2020-06-19
 
 ### Updated
