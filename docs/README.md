@@ -15,7 +15,7 @@ _Example of a quick order page without customization_
 
 ## Configuration
 
-1. Add the Quickorder app to your theme's dependencies in `manifest.json`. For example:
+Add the Quickorder app to your theme's dependencies in `manifest.json`. For example:
 
 ```diff
   dependencies: {
@@ -24,6 +24,12 @@ _Example of a quick order page without customization_
 ```
 
 Once Quickorder is added as a dependency, a new route called `/quickorder` will be automatically created for your store, creating the Quickorder custom page that allows bulk orders.
+
+This new page already contains a default template with all blocks exported by the `quickorder` app, meaning that the Quickorder page is ready to be rendered and no further actions are required.
+
+However, you can customize the Quickorder page overwriting the template by creating a brand new one as you wish. To do so, check the **Advanced configurations** section below. 
+
+### Advanced configurations
 
 In order to define the Quickorder custom page UI, you must use the blocks exported by the app:
 
@@ -34,8 +40,8 @@ In order to define the Quickorder custom page UI, you must use the blocks export
 | `quickorder-autocomplete` | Renders a custom search bar, allowing users to look for SKUs and add them to the Minicart at once according to the desired quantity. For more on this component, check out the Modus Operandi section. | 
 | `quickorder-categories` | Renders the store's category tree, allowing users to look for the desired SKUs and add them to the Minicart at once according to the desired quantity. | 
 
-2. In the `store` folder of your Store Theme app, create a new file callef `quickorder.json`;
-3. Then, create a new store template called `store.quickorder`. In its `blocks` array, declare the blocks responsible for building your Quickorder custom page. For example:  
+1. In the `store` folder of your Store Theme app, create a new file called `quickorder.json`;
+2. Then, create a new store template called `store.quickorder`. In its `blocks` array, declare the blocks responsible for building your Quickorder custom page. For example:  
 
 ```json
 {
@@ -50,7 +56,7 @@ In order to define the Quickorder custom page UI, you must use the blocks export
   },
   ```
   
-  4. Configure each one of the blocks previously declared using its props, as shown in the example below:
+  3. Configure each one of the blocks previously declared using its props, as shown in the example below:
   
   ```json
   {
@@ -127,7 +133,7 @@ For more on each of the components and their respective functionalities, check o
 
 In practice, the Quickorder custom page works just like any other store page - with a unique route and its own components.
 
-This means that you can display a link to it in components from other pages, such as the Homepage, so that your users can access it faster.
+This means that you can **display a link to it in components from other pages, such as the Homepage, so that your users can access it faster**.
 
 When configuring the page itself, we recommend that you **choose a maximum of 2 bulk order options** (from the total of 4 available) to establish clear communication with users. Remember: the more options on the UI, the more complex the order process becomes.
 
