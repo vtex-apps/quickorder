@@ -25,14 +25,35 @@ _Example of a quick order page without customization_
 
 Once Quickorder is added as a dependency, a new route called `/quickorder` will be automatically created for your store, creating the Quickorder custom page that allows bulk orders.
 
-This `2.x` version is fully compatible with the [Store Blocks](https://vtex.io/docs/getting-started/build-stores-with-store-framework/4/) template, so you can customize the `/quickorder` page according to your neeeds, to do that, add a `quickorder.jsonp` file to your Store Theme with the desired structure.
+In order to define the Quickorder custom page UI, you must use the blocks exported by the app:
 
-The available block interfaces are `quickorder-textarea`, `quickorder-upload`, `quickorder-autocomplete`, `quickorder-categories`.
+| Block name     | Description                                     |
+| -------------- | ----------------------------------------------- |
+| `quickorder-textarea` | Renders a text box, allowing users to paste a list of desired SKUs following the structure `[Sku's Code],[Quantity]`. For more on this component, check out the Modus Operandi section. |
+| `quickorder-upload` | Renders an upload box, working as an option that replaces the Copy/Paste SKU component (`quickorder-textarea` block). It allows users to upload a spreadsheet containing the desired SKUs. For more on this component, check out the Modus Operandi section. |
+| `quickorder-autocomplete` | Renders a custom search bar, allowing users to look for SKUs and add them to the Minicart at once according to the desired quantity. For more on this component, check out the Modus Operandi section. | 
+| `quickorder-categories` | Renders the store's category tree, allowing users to look for the desired SKUs and add them to the Minicart at once according to the desired quantity. | 
 
-You can use our default blocks configuration as a example to build your own
+2. In the `store` folder of your Store Theme app, create a new file callef `quickorder.json`;
+3. Then, create a new store template called `store.quickorder`. In its `blocks` array, declare the blocks responsible for building your Quickorder custom page. For example:  
 
 ```json
 {
+  "store.quickorder": {
+    "blocks": [
+      "flex-layout.row#top",
+      "quickorder-textarea",
+      "quickorder-upload",
+      "quickorder-autocomplete",
+      "quickorder-categories"
+    ]
+  },
+  ```
+  
+  4. Configure each one of the blocks previously declared using its props, as shown in the example below:
+  
+  ```json
+  {
   "store.quickorder": {
     "blocks": [
       "flex-layout.row#top",
@@ -85,11 +106,12 @@ You can use our default blocks configuration as a example to build your own
 }
 ```
 
-For more on each of the available options and their respective functionalities, check the Modus Operandi section below.
+
+For more on each of the components and their respective functionalities, check out the Modus Operandi section below.
 
 ## Modus Operandi
 
-In practice, the QuickOrder custom page works just like any other store page - with a unique route and its own components.
+In practice, the Quickorder custom page works just like any other store page - with a unique route and its own components.
 
 This means that you can display a link to it in components from other pages, such as the Homepage, so that your users can access it faster.
 
@@ -97,9 +119,9 @@ When configuring the page itself, we recommend that you **choose a maximum of 2 
 
 The available options are as follows:
 
-### Copy/Paste SKU
+### Copy/Paste SKU (`quickorder-textarea` block)
 
-The Copy/Paste SKU allows user to paste a list of desired SKUs in a text box following the structure `[Sku's Code],[Quantity]`, where:
+The Copy/Paste SKU option allows user to paste a list of desired SKUs in a text box following the structure `[Sku's Code],[Quantity]`, where:
 
 - `SKU'S code` = SKU Reference ID SKU (be aware that this is not the SKU ID displayed in your admin's catalog);
 - `Quantity` = SKU quantity you wish to add to the cart.
@@ -108,31 +130,11 @@ For example:
 
 ![Copy & Paste](./image/Copy-n-Paste.gif)
 
-:information_source: Remember that you need to validate the list after pasting it. Validating the Reference IDs will let you know if the selected SKUs are in fact available for purchase.
+:information_source: *Remember that you need to validate the list after pasting it. Validating the Reference IDs will let you know if the selected SKUs are in fact available for purchase.*
 
-### One By One
+### Upload (`quickorder-upload` block)
 
-The One By One option works as a custom search bar. Simply add the name of the desired SKU, then select it and set the amount you wish to add to the cart.
-
-Remember to add each selected item to the cart by clicking on `Add`.
-
-![One by One](./image/One-by-One.gif)
-
-:information_source: This option does not require any validation, since selecting the SKUs using a search bar already ensures that they are available to purchase.
-
-### Categories
-
-The Categories option allow users to choose their desired SKUs and respective quantities using the store's categories tree, adding all the selected options to the cart at once.
-
-![Category](./image/Category.gif)
-
-Be careful however: this option is only recommended if you don't have more than 50 SKUs for each category in your catalog, otherwise the component will take too long to load and will negatively affect your store's UX.
-
-:information_source: This scenario also does not require validating the SKUs that you've added to the cart, since selecting them directly from the store's categories tree ensures their availability.
-
-### Upload
-
-Another possible option that replaces the Copy/Paste SKU option is to upload a spreadsheet containing two columns (SKU and Quantity) to the Upload component.
+Another possible option that replaces the Copy/Paste SKU option is to upload a spreadsheet containing two columns (SKU and Quantity) to the Upload component (`quickorder-upload` block).
 
 ![Spreadsheet](./image/Spreadsheet.png)
 
@@ -141,7 +143,27 @@ The spreadsheet will work in the same way as the list pasted using the Copy/Past
 - `SKU` column = SKU Reference ID (be aware that this is not the SKU ID displayed in your admin's catalog);
 - `Quantity` column = SKU quantity you wish to add to the cart.
 
-:information_source: Once uploaded, the spreadsheet is then validated. Based on the filled in Reference IDs, Quickorder will confirm whether the SKUs are in fact available for purchase.
+:information_source: *Once uploaded, the spreadsheet is then validated. Based on the filled in Reference IDs, Quickorder will confirm whether the SKUs are in fact available for purchase.*
+
+### Custom Search Bar (`quickorder-autocomplete` block)
+
+The Custom Search Bar component works as a custom search bar. Simply add the name of the desired SKU, then select it and set the amount you wish to add to the cart.
+
+Remember to add each selected item to the cart by clicking on `Add`.
+
+![One by One](./image/One-by-One.gif)
+
+:information_source: *This option does not require any validation, since selecting the SKUs using a search bar already ensures that they are available to purchase.*
+
+### Categories (`quickorder-categories` block)
+
+The Categories component allows users to choose their desired SKUs and respective quantities using the store's categories tree, adding all the selected options to the cart at once.
+
+![Category](./image/Category.gif)
+
+Be careful however: this option is only recommended if you don't have more than 50 SKUs for each category in your catalog, otherwise the component will take too long to load and will negatively affect your store's UX.
+
+:information_source: *This scenario also does not require validating the SKUs that you've added to the cart, since selecting them directly from the store's categories tree ensures their availability.*
 
 ## Customization
 
