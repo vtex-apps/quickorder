@@ -106,6 +106,20 @@ In order to define the Quickorder custom page UI, you must use the blocks export
 }
 ```
 
+## Props
+
+All blocks exported by the `quickorder` app share the same props:
+
+| Prop name | Type | Description | Default value | 
+| --------- | ---- | ------------ | ------------- | 
+| `text` | `string` | Component title. | `undefined` | 
+| `description` | `string` | Component description. It should be used to explain users how to properly bulk order using the given component. | `undefined` | 
+
+Especially, the `quickorder-upload` block also can use the following prop:
+
+| Prop name | Type | Description | Default value | 
+| --------- | ---- | ------------ | ------------- | 
+| `downloadText` | `string` | Defines a text for the spreadsheet download button. Use this prop to explain users how to properly download the spreadsheet model provided by the component. | `undefined` | 
 
 For more on each of the components and their respective functionalities, check out the Modus Operandi section below.
 
