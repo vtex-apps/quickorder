@@ -17,12 +17,12 @@ export const queries = {
       throw new UserInputError('No refids provided')
     }
 
-    const itemsReturned = await search.skuFromRefIds({
+    const items = await search.skuFromRefIds({
       refids: args.refids,
     })
     return {
       cacheId: args.refids,
-      itemsReturned,
+      items,
     }
   },
   sellers: async (_: any, args: {}, ctx: Context) => {
@@ -31,10 +31,10 @@ export const queries = {
       clients: { search },
     } = ctx
 
-    const itemsReturned = await search.sellers()
+    const items = await search.sellers()
     return {
       cacheId: 'sellers',
-      itemsReturned,
+      items,
     }
   },
 }

@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- New blocks structure
+- New interfaces for blocks `quickorder-textarea`, `quickorder-upload`, `quickorder-autocomplete`, `quickorder-categories`
+- Blocks default structure for `store.quickorder`
+- Spinner while validatin screen is loading VTEX SKU IDs based on a list of Reference Code
+
+### Fixed
+
+- Sellers selection and auto-selection
+- Validation screen lost index after removing an item
+
+### Updated
+
+- Documentation
+
+### Removed
+
+- Single app configuration
+- Site Editor Compatibility
+- Billing Options
+- Translations for Site Editor
+
 ## [1.0.2] - 2020-06-19
 
 ### Update

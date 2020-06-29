@@ -4,7 +4,7 @@
   "version": "1.0.2",
   "title": "Quickorder",
   "description": "Allow users to add multiple products to the cart at once",
-  "defaultLocale": "pt-BR",
+  "defaultLocale": "en-US",
   "builders": {
     "messages": "1.x",
     "store": "0.x",
@@ -19,6 +19,8 @@
   },
   "credentialType": "absolute",
   "dependencies": {
+    "vtex.flex-layout": "0.x",
+    "vtex.rich-text": "0.x",
     "vtex.checkout": "0.x",
     "vtex.render-runtime": "7.x",
     "vtex.store": "2.x",
@@ -45,6 +47,13 @@
     },
     {
       "name": "graphql-query"
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/catalog_system/pvt/sku/stockkeepingunitbyid/*"
+      }
     },
     {
       "name": "outbound-access",

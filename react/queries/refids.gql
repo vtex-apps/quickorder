@@ -1,8 +1,12 @@
-query getSkuFromRefIds($refids:[String]) {
-    skuFromRefIds(refids:$refids) {
-        itemsReturned {
-            sku
-            refid
-        }
+query getSkuFromRefIds($refids: [String]) {
+  skuFromRefIds(refids: $refids) {
+    items {
+      sku
+      refid
+      sellers {
+        id
+        name
+      }
     }
   }
+}

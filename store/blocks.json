@@ -1,23 +1,51 @@
 {
   "store.quickorder": {
-    "blocks": ["quickorder"]
+    "blocks": [
+      "flex-layout.row#top",
+      "quickorder-textarea",
+      "quickorder-upload",
+      "quickorder-autocomplete",
+      "quickorder-categories"
+    ]
   },
-  "quickorder": {
+  "flex-layout.row#top": {
+    "children": ["flex-layout.col#title"]
+  },
+  "flex-layout.col#title": {
+    "children": ["rich-text#title"],
     "props": {
-      "title": "Quickorder",
-      "showCopyPaste": "on",
-      "copyText": "Copy/Paste Skus",
-      "copyDescription": "[Sku's Code],[Quantity]",
-      "showAutocomplete": "on",
-      "oneText": "One by One",
-      "oneDescription": "Type the product name, select, enter quantity, add to the cart",
-      "showCategory": "on",
-      "catText": "Categories",
-      "catDescription": "Add products directly from their categories",
-      "showUpload": "on",
-      "uploadText": "Upload",
-      "uploadDescription": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order",
+      "blockClass": "titleQuickorder",
+      "preventVerticalStretch": true
+    }
+  },
+  "rich-text#title": {
+    "props": {
+      "text": "## Quick Order"
+    }
+  },
+  "quickorder-textarea": {
+    "props": {
+      "text": "Copy/Paste Skus",
+      "description": "[Sku's Code],[Quantity]"
+    }
+  },
+  "quickorder-upload": {
+    "props": {
+      "text": "Upload",
+      "description": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order",
       "downloadText": "Click here to download a spreadsheet model"
+    }
+  },
+  "quickorder-autocomplete": {
+    "props": {
+      "text": "One by One",
+      "description": "Type the product name, select, enter quantity, add to the cart"
+    }
+  },
+  "quickorder-categories": {
+    "props": {
+      "text": "Categories",
+      "description": "Add products directly from their categories"
     }
   }
 }

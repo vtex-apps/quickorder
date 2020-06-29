@@ -1,23 +1,45 @@
+/* eslint-disable no-console */
 /* eslint-disable react/prop-types */
 import React, { useState, useContext } from 'react'
-import { FormattedMessage, WrappedComponentProps, injectIntl } from 'react-intl'
+import {
+  FormattedMessage,
+  WrappedComponentProps,
+  injectIntl,
+  defineMessages,
+} from 'react-intl'
 import { Button, Tag, Input, ToastContext } from 'vtex.styleguide'
+import { OrderForm } from 'vtex.order-manager'
+import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
+import { usePWA } from 'vtex.store-resources/PWAContext'
+import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import PropTypes from 'prop-types'
-import QuickOrderAutocomplete from './QuickOrderAutocomplete'
-import styles from '../styles.css'
+import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
+import styles from './styles.css'
 import { useCssHandles } from 'vtex.css-handles'
-import { useApolloClient } from 'react-apollo'
-import productQuery from '../queries/product.gql'
+import { useApolloClient, useMutation } from 'react-apollo'
+import productQuery from './queries/product.gql'
+
+const messages = defineMessages({
+  success: {
+    id: 'store/toaster.cart.success',
+    defaultMessage: '',
+    label: '',
+  },
+  duplicate: {
+    id: 'store/toaster.cart.duplicated',
+    defaultMessage: '',
+    label: '',
+  },
+  error: { id: 'store/toaster.cart.error', defaultMessage: '', label: '' },
+  seeCart: {
+    id: 'store/toaster.cart.seeCart',
+    defaultMessage: '',
+    label: '',
+  },
+})
 
 const AutocompleteBlock: StorefrontFunctionComponent<any &
-  WrappedComponentProps> = ({
-  onAddToCart,
-  text,
-  description,
-  loading,
-  success,
-  intl,
-}) => {
+  WrappedComponentProps> = ({ text, description, intl }) => {
   const client = useApolloClient()
   const { showToast } = useContext(ToastContext)
   const [state, setState] = useState<any>({
@@ -25,22 +47,113 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     quantitySelected: 1,
   })
 
+  const [addToCart, { error, loading }] = useMutation<
+    { addToCart: OrderForm },
+    { items: [] }
+  >(ADD_TO_CART)
+
+  const { push } = usePixel()
+  const { settings = {}, showInstallPrompt = undefined } = usePWA() || {}
+  const { promptOnCustomEvent } = settings
+
+  const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
+
   const translateMessage = (message: MessageDescriptor) => {
     return intl.formatMessage(message)
   }
+  const resolveToastMessage = (success: boolean, isNewItem: boolean) => {
+    if (!success) return translateMessage(messages.error)
+    if (!isNewItem) return translateMessage(messages.duplicate)
 
-  const toastMessage = (messsageKey: string) => {
-    const message = translateMessage({
-      id: messsageKey,
-    })
+    return translateMessage(messages.success)
+  }
+  const toastMessage = (arg: any) => {
+    let message
+    let action
+    if (typeof arg === 'string') {
+      message = translateMessage({
+        id: arg,
+      })
+    } else {
+      const {
+        success,
+        isNewItem,
+      }: {
+        success: boolean
+        isNewItem: boolean
+      } = arg
+      message = resolveToastMessage(success, isNewItem)
 
-    const action = undefined
-
+      action = success
+        ? {
+            label: translateMessage(messages.seeCart),
+            href: '/checkout/#/cart',
+          }
+        : undefined
+    }
     showToast({ message, action })
   }
 
   const { selectedItem, quantitySelected } = state
+  const callAddToCart = async (items: any) => {
+    const mutationResult = await addToCart({
+      variables: {
+        items: items.map((item: any) => {
+          return {
+            ...item,
+          }
+        }),
+      },
+    })
 
+    if (error) {
+      console.error(error)
+      toastMessage({ success: false, isNewItem: false })
+      return
+    }
+
+    // Update OrderForm from the context
+    mutationResult.data && setOrderForm(mutationResult.data.addToCart)
+
+    const adjustSkuItemForPixelEvent = (item: any) => {
+      return {
+        skuId: item.id,
+        quantity: item.quantity,
+      }
+    }
+    // Send event to pixel-manager
+    const pixelEventItems = items.map(adjustSkuItemForPixelEvent)
+    push({
+      event: 'addToCart',
+      items: pixelEventItems,
+    })
+
+    if (
+      mutationResult.data?.addToCart?.messages?.generalMessages &&
+      mutationResult.data.addToCart.messages.generalMessages.length
+    ) {
+      mutationResult.data.addToCart.messages.generalMessages.map((msg: any) => {
+        return showToast({
+          message: msg.text,
+          action: undefined,
+          duration: 30000,
+        })
+      })
+    } else {
+      toastMessage({ success: true, isNewItem: true })
+      setState({
+        ...state,
+        selectedItem: null,
+        quantitySelected: 1,
+      })
+    }
+
+    if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
+      showInstallPrompt()
+    }
+
+    return showInstallPrompt
+  }
   const onSelect = async (product: any) => {
     if (!!product && product.length) {
       const query = {
@@ -51,19 +164,33 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
       const selectedSku =
         data.product.items.length === 1 ? data.product.items[0].itemId : null
 
+      const seller = selectedSku
+        ? data.product.items[0].sellers.find((item: any) => {
+            return item.sellerDefault === true
+          }).sellerId
+        : null
       setState({
         ...state,
         selectedItem:
           !!product && product.length
-            ? { ...product[0], value: selectedSku, data }
+            ? { ...product[0], value: selectedSku, seller, data }
             : null,
       })
     }
+    return true
   }
 
   const selectSku = (value: string) => {
+    const seller = selectedItem.data.product.items
+      .find((item: any) => {
+        return item.itemId === value
+      })
+      .sellers.find((s: any) => {
+        return s.sellerDefault === true
+      }).sellerId
     const newSelected = {
       ...selectedItem,
+      seller,
       value,
     }
     setState({
@@ -78,17 +205,10 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
         {
           id: parseInt(selectedItem.value, 10),
           quantity: parseFloat(quantitySelected),
+          seller: selectedItem.seller,
         },
       ]
-      onAddToCart(items).then(() => {
-        if (!loading && success) {
-          setState({
-            ...state,
-            selectedItem: null,
-            quantitySelected: 1,
-          })
-        }
-      })
+      callAddToCart(items)
     } else {
       toastMessage('store/quickorder.autocomplete.selectSku')
     }
@@ -115,7 +235,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
       </div>
       <div className="w-two-thirds-l w-100-ns fr-l">
         <div className="w-100 mb5">
-          <div className="bg-base t-body c-on-base pa7 br3 b--muted-4 ba">
+          <div className="bg-base t-body c-on-base pa7 br3 b--muted-4">
             <div className={'flex flex-column w-100'}>
               {!selectedItem && <QuickOrderAutocomplete onSelect={onSelect} />}
               {!!selectedItem && (
@@ -203,11 +323,14 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
   )
 }
 AutocompleteBlock.propTypes = {
-  onAddToCart: PropTypes.func,
-  loading: PropTypes.bool,
-  success: PropTypes.bool,
   text: PropTypes.string,
   description: PropTypes.string,
+}
+
+interface OrderFormContext {
+  loading: boolean
+  orderForm: OrderForm | undefined
+  setOrderForm: (orderForm: Partial<OrderForm>) => void
 }
 
 interface MessageDescriptor {

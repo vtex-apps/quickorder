@@ -2,5 +2,7 @@ type Query {
   skuFromRefIds(refids: [String]): Refids
     @cacheControl(scope: SEGMENT, maxAge: MEDIUM)
     @withSegment
-  sellers: Sellers @cacheControl(scope: SEGMENT, maxAge: MEDIUM) @withSegment
+  sellers: SellersType
+    @cacheControl(scope: SEGMENT, maxAge: MEDIUM)
+    @withSegment
 }

@@ -5,6 +5,11 @@ query SearchByCategory($categoryId: String) {
       items {
         itemId
         nameComplete
+        sellers {
+          sellerId
+          sellerName
+          sellerDefault
+        }
         referenceId {
           Value
         }

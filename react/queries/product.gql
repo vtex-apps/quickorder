@@ -1,18 +1,22 @@
 query Product($slug: String) {
-  product(slug: $slug)
-    @context(provider: "vtex.search-graphql") {
-      productName
-      items {
-        itemId
-        name
-        referenceId {
-          Key
-          Value
-        }
-        images {
-          imageUrl
-        }
+  product(slug: $slug) @context(provider: "vtex.search-graphql") {
+    productName
+    items {
+      itemId
+      name
+      sellers {
+        sellerId
+        sellerName
+        sellerDefault
       }
+      referenceId {
+        Key
+        Value
+      }
+      images {
+        imageUrl
+      }
+    }
     skuSpecifications {
       field {
         name

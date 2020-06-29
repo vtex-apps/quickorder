@@ -25,6 +25,7 @@ export const ParseText = (textAreaValue: string) => {
           !isNaN(lineSplitted[1])
         ) {
           return {
+            index,
             line: index,
             sku: String(lineSplitted[0]).trim(),
             quantity: parseFloat(String(lineSplitted[1]).trim()),
@@ -34,6 +35,7 @@ export const ParseText = (textAreaValue: string) => {
         }
       }
       return {
+        index,
         line: index,
         content: line,
         sku: null,

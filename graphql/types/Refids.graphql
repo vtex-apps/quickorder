@@ -1,7 +1,8 @@
 type Refids {
-  itemsReturned: [ItemsRefId]
+  items: [ItemsRefId]
 }
 type ItemsRefId {
   sku: String
   refid: String
+  sellers: [ItemsSeller]
 }
