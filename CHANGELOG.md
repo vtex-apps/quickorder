@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Updated
+
+- Document
+- `blocks.json` now makes use of `flex-layout` to host all the components by default
+
 ## [2.0.0] - 2020-06-29
 
 ### Added

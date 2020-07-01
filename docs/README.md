@@ -47,11 +47,11 @@ In order to define the Quickorder custom page UI, you must use the blocks export
 {
   "store.quickorder": {
     "blocks": [
-      "flex-layout.row#top",
-      "quickorder-textarea",
-      "quickorder-upload",
-      "quickorder-autocomplete",
-      "quickorder-categories"
+      "flex-layout.row#title",
+      "flex-layout.row#textarea",
+      "flex-layout.row#upload",
+      "flex-layout.row#autocomplete",
+      "flex-layout.row#categories"
     ]
   },
   ```
@@ -62,14 +62,14 @@ In order to define the Quickorder custom page UI, you must use the blocks export
   {
   "store.quickorder": {
     "blocks": [
-      "flex-layout.row#top",
-      "quickorder-textarea",
-      "quickorder-upload",
-      "quickorder-autocomplete",
-      "quickorder-categories"
+      "flex-layout.row#title",
+      "flex-layout.row#textarea",
+      "flex-layout.row#upload",
+      "flex-layout.row#autocomplete",
+      "flex-layout.row#categories"
     ]
   },
-  "flex-layout.row#top": {
+  "flex-layout.row#title": {
     "children": ["flex-layout.col#title"]
   },
   "flex-layout.col#title": {
@@ -84,11 +84,25 @@ In order to define the Quickorder custom page UI, you must use the blocks export
       "text": "## Quick Order"
     }
   },
+
+  "flex-layout.row#textarea": {
+    "children": ["flex-layout.col#textarea"]
+  },
+  "flex-layout.col#textarea": {
+    "children": ["quickorder-textarea"]
+  },
   "quickorder-textarea": {
     "props": {
       "text": "Copy/Paste Skus",
       "description": "[Sku's Code],[Quantity]"
     }
+  },
+
+  "flex-layout.row#upload": {
+    "children": ["flex-layout.col#upload"]
+  },
+  "flex-layout.col#upload": {
+    "children": ["quickorder-upload"]
   },
   "quickorder-upload": {
     "props": {
@@ -97,11 +111,25 @@ In order to define the Quickorder custom page UI, you must use the blocks export
       "downloadText": "Click here to download a spreadsheet model"
     }
   },
+
+  "flex-layout.row#autocomplete": {
+    "children": ["flex-layout.col#autocomplete"]
+  },
+  "flex-layout.col#autocomplete": {
+    "children": ["quickorder-autocomplete"]
+  },
   "quickorder-autocomplete": {
     "props": {
       "text": "One by One",
       "description": "Type the product name, select, enter quantity, add to the cart"
     }
+  },
+
+  "flex-layout.row#categories": {
+    "children": ["flex-layout.col#categories"]
+  },
+  "flex-layout.col#categories": {
+    "children": ["quickorder-categories"]
   },
   "quickorder-categories": {
     "props": {
