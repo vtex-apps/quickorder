@@ -39,7 +39,7 @@ const messages = defineMessages({
 })
 
 const AutocompleteBlock: StorefrontFunctionComponent<any &
-  WrappedComponentProps> = ({ text, description, intl }) => {
+  WrappedComponentProps> = ({ text, description, componentOnly, intl }) => {
   const client = useApolloClient()
   const { showToast } = useContext(ToastContext)
   const [state, setState] = useState<any>({
@@ -220,20 +220,28 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     'productLabel',
     'inputQuantity',
     'buttonAdd',
+    'textContainer',
+    'componentContainer',
   ] as const
   const handles = useCssHandles(CSS_HANDLES)
 
   return (
     <div>
-      <div className="w-third-l w-100-ns fl-l">
-        <div className="flex-grow-1">
-          <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">{text}</h2>
-          <div className="t-body lh-copy c-muted-1 mb7 ml3 false">
-            {description}
+      {!componentOnly && (
+        <div className={`${handles.textContainer} w-third-l w-100-ns fl-l`}>
+          <div className="flex-grow-1">
+            <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">{text}</h2>
+            <div className="t-body lh-copy c-muted-1 mb7 ml3 false">
+              {description}
+            </div>
           </div>
         </div>
-      </div>
-      <div className="w-two-thirds-l w-100-ns fr-l">
+      )}
+      <div
+        className={`${handles.componentContainer} ${
+          !componentOnly ? 'w-two-thirds-l w-100-ns fr-l' : ''
+        }`}
+      >
         <div className="w-100 mb5">
           <div className="bg-base t-body c-on-base pa7 br3 b--muted-4">
             <div className={'flex flex-column w-100'}>
@@ -323,6 +331,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
   )
 }
 AutocompleteBlock.propTypes = {
+  componentOnly: PropTypes.bool,
   text: PropTypes.string,
   description: PropTypes.string,
 }

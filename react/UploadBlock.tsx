@@ -37,7 +37,13 @@ const messages = defineMessages({
 })
 
 const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
-  WrappedComponentProps> = ({ text, description, downloadText, intl }: any) => {
+  WrappedComponentProps> = ({
+  text,
+  description,
+  downloadText,
+  componentOnly,
+  intl,
+}: any) => {
   let productsArray: any = []
   const [state, setState] = useState<any>({
     reviewItems: [],
@@ -274,30 +280,38 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     'dropzoneText',
     'dropzoneLink',
     'downloadLink',
+    'textContainer',
+    'componentContainer',
   ] as const
   const handles = useCssHandles(CSS_HANDLES)
 
   return (
     <div>
-      <div className="w-third-l w-100-ns fl-l">
-        <div className="flex-grow-1">
-          <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">{text}</h2>
-          <div className="t-body lh-copy c-muted-1 mb7 ml3 false">
-            {description}{' '}
-            {downloadText && (
-              <button
-                className={`${handles.downloadLink} pointer c-link hover-c-link active-c-link no-underline underline-hover bn bg-transparent pl0`}
-                onClick={() => {
-                  download()
-                }}
-              >
-                {downloadText}
-              </button>
-            )}
+      {!componentOnly && (
+        <div className={`${handles.textContainer} w-third-l w-100-ns fl-l`}>
+          <div className="flex-grow-1">
+            <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">{text}</h2>
+            <div className="t-body lh-copy c-muted-1 mb7 ml3 false">
+              {description}{' '}
+              {downloadText && (
+                <button
+                  className={`${handles.downloadLink} pointer c-link hover-c-link active-c-link no-underline underline-hover bn bg-transparent pl0`}
+                  onClick={() => {
+                    download()
+                  }}
+                >
+                  {downloadText}
+                </button>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-      <div className="w-two-thirds-l w-100-ns fr-l">
+      )}
+      <div
+        className={`${handles.componentContainer} ${
+          !componentOnly ? 'w-two-thirds-l w-100-ns fr-l' : ''
+        }`}
+      >
         {!reviewState && (
           <div className="w-100 mb5">
             <div
@@ -386,8 +400,9 @@ interface OrderFormContext {
 }
 
 interface UploadBlockInterface {
-  text: string
-  description: string
+  text?: string
+  description?: string
+  componentOnly?: boolean
   downloadText?: string
 }
 

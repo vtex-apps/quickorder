@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- New **boolean** property `componentOnly` to the blocks, default value is **true**
+- New CSS Handles `textContainer` and `componentContainer`
+
 ## [2.0.1] - 2020-07-01
 
 ### Updated
