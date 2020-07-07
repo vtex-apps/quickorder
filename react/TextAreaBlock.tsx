@@ -216,7 +216,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
       reviewState: false,
     })
   }
-  console.log('componentOnly => ', componentOnly)
+
   return (
     <div>
       {!componentOnly && (

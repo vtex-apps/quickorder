@@ -251,6 +251,7 @@ In order to apply CSS customizations to this and other blocks, follow the instru
 | `downloadLink`               |
 | `textContainer`              |
 | `componentContainer`         |
+| `buttonClear`                |
 
 <!-- DOCS-IGNORE:start -->
 
