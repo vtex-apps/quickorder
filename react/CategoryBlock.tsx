@@ -46,7 +46,13 @@ const messages = defineMessages({
 })
 
 const CategoryBlock: StorefrontFunctionComponent<any &
-  WrappedComponentProps> = ({ text, description, intl, data }) => {
+  WrappedComponentProps> = ({
+  text,
+  description,
+  componentOnly,
+  intl,
+  data,
+}) => {
   const [state, setState] = useState<any>({
     categories: data.categories || [],
     categoryItems: {},
@@ -189,6 +195,8 @@ const CategoryBlock: StorefrontFunctionComponent<any &
     'categoriesSubCategory',
     'categoriesProductContainer',
     'categoryLoadingProducts',
+    'textContainer',
+    'componentContainer',
   ] as const
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -342,21 +350,27 @@ const CategoryBlock: StorefrontFunctionComponent<any &
 
   return (
     <div className={`${handles.categoryContainer}`}>
-      <div className="w-third-l w-100-ns fl-l">
-        <div className="flex-grow-1">
-          <h2
-            className={`t-heading-3 mb3 ml5 ml3-ns mt4 ${handles.categoryTitle}`}
-          >
-            {text}
-          </h2>
-          <div
-            className={`t-body lh-copy c-muted-1 mb7 ml3 false ${handles.categoryHelper}`}
-          >
-            {description}
+      {!componentOnly && (
+        <div className={`${handles.textContainer} w-third-l w-100-ns fl-l`}>
+          <div className="flex-grow-1">
+            <h2
+              className={`t-heading-3 mb3 ml5 ml3-ns mt4 ${handles.categoryTitle}`}
+            >
+              {text}
+            </h2>
+            <div
+              className={`t-body lh-copy c-muted-1 mb7 ml3 false ${handles.categoryHelper}`}
+            >
+              {description}
+            </div>
           </div>
         </div>
-      </div>
-      <div className="w-two-thirds-l w-100-ns fr-l">
+      )}
+      <div
+        className={`${handles.componentContainer} ${
+          !componentOnly ? 'w-two-thirds-l w-100-ns fr-l' : ''
+        }`}
+      >
         {!categories && (
           <div>
             <Spinner />
@@ -391,6 +405,7 @@ const CategoryBlock: StorefrontFunctionComponent<any &
 }
 
 CategoryBlock.propTypes = {
+  componentOnly: PropTypes.bool,
   text: PropTypes.string,
   description: PropTypes.string,
   data: PropTypes.shape({

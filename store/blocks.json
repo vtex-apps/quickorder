@@ -32,6 +32,7 @@
   },
   "quickorder-textarea": {
     "props": {
+      "componentOnly": false,
       "text": "Copy/Paste Skus",
       "description": "[Sku's Code],[Quantity]"
     }
@@ -45,6 +46,7 @@
   },
   "quickorder-upload": {
     "props": {
+      "componentOnly": false,
       "text": "Upload",
       "description": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order",
       "downloadText": "Click here to download a spreadsheet model"
@@ -59,6 +61,7 @@
   },
   "quickorder-autocomplete": {
     "props": {
+      "componentOnly": false,
       "text": "One by One",
       "description": "Type the product name, select, enter quantity, add to the cart"
     }
@@ -72,6 +75,7 @@
   },
   "quickorder-categories": {
     "props": {
+      "componentOnly": false,
       "text": "Categories",
       "description": "Add products directly from their categories"
     }

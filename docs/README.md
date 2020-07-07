@@ -27,21 +27,21 @@ Once Quickorder is added as a dependency, a new route called `/quickorder` will 
 
 This new page already contains a default template with all blocks exported by the `quickorder` app, meaning that the Quickorder page is ready to be rendered and no further actions are required.
 
-However, you can customize the Quickorder page overwriting the template by creating a brand new one as you wish. To do so, check the **Advanced configurations** section below. 
+However, you can customize the Quickorder page overwriting the template by creating a brand new one as you wish. To do so, check the **Advanced configurations** section below.
 
 ### Advanced configurations
 
 In order to define the Quickorder custom page UI, you must use the blocks exported by the app:
 
-| Block name     | Description                                     |
-| -------------- | ----------------------------------------------- |
-| `quickorder-textarea` | Renders a text box, allowing users to paste a list of desired SKUs following the structure `[Sku's Code],[Quantity]`. For more on this component, check out the Modus Operandi section. |
-| `quickorder-upload` | Renders an upload box, working as an option that replaces the Copy/Paste SKU component (`quickorder-textarea` block). It allows users to upload a spreadsheet containing the desired SKUs. For more on this component, check out the Modus Operandi section. |
-| `quickorder-autocomplete` | Renders a custom search bar, allowing users to look for SKUs and add them to the Minicart at once according to the desired quantity. For more on this component, check out the Modus Operandi section. | 
-| `quickorder-categories` | Renders the store's category tree, allowing users to look for the desired SKUs and add them to the Minicart at once according to the desired quantity. | 
+| Block name                | Description                                                                                                                                                                                                                                                  |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `quickorder-textarea`     | Renders a text box, allowing users to paste a list of desired SKUs following the structure `[Sku's Code],[Quantity]`. For more on this component, check out the Modus Operandi section.                                                                      |
+| `quickorder-upload`       | Renders an upload box, working as an option that replaces the Copy/Paste SKU component (`quickorder-textarea` block). It allows users to upload a spreadsheet containing the desired SKUs. For more on this component, check out the Modus Operandi section. |
+| `quickorder-autocomplete` | Renders a custom search bar, allowing users to look for SKUs and add them to the Minicart at once according to the desired quantity. For more on this component, check out the Modus Operandi section.                                                       |
+| `quickorder-categories`   | Renders the store's category tree, allowing users to look for the desired SKUs and add them to the Minicart at once according to the desired quantity.                                                                                                       |
 
 1. In the `store` folder of your Store Theme app, create a new file called `quickorder.json`;
-2. Then, create a new store template called `store.quickorder`. In its `blocks` array, declare the blocks responsible for building your Quickorder custom page. For example:  
+2. Then, create a new store template called `store.quickorder`. In its `blocks` array, declare the blocks responsible for building your Quickorder custom page. For example:
 
 ```json
 {
@@ -54,12 +54,12 @@ In order to define the Quickorder custom page UI, you must use the blocks export
       "flex-layout.row#categories"
     ]
   },
-  ```
-  
-  3. Configure each one of the blocks previously declared using its props, as shown in the example below:
-  
-  ```json
-  {
+```
+
+3. Configure each one of the blocks previously declared using its props, as shown in the example below:
+
+```json
+{
   "store.quickorder": {
     "blocks": [
       "flex-layout.row#title",
@@ -93,6 +93,7 @@ In order to define the Quickorder custom page UI, you must use the blocks export
   },
   "quickorder-textarea": {
     "props": {
+      "componentOnly": false,
       "text": "Copy/Paste Skus",
       "description": "[Sku's Code],[Quantity]"
     }
@@ -106,6 +107,7 @@ In order to define the Quickorder custom page UI, you must use the blocks export
   },
   "quickorder-upload": {
     "props": {
+      "componentOnly": false,
       "text": "Upload",
       "description": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order",
       "downloadText": "Click here to download a spreadsheet model"
@@ -120,6 +122,7 @@ In order to define the Quickorder custom page UI, you must use the blocks export
   },
   "quickorder-autocomplete": {
     "props": {
+      "componentOnly": false,
       "text": "One by One",
       "description": "Type the product name, select, enter quantity, add to the cart"
     }
@@ -133,6 +136,7 @@ In order to define the Quickorder custom page UI, you must use the blocks export
   },
   "quickorder-categories": {
     "props": {
+      "componentOnly": false,
       "text": "Categories",
       "description": "Add products directly from their categories"
     }
@@ -144,16 +148,17 @@ In order to define the Quickorder custom page UI, you must use the blocks export
 
 All blocks exported by the `quickorder` app share the same props:
 
-| Prop name | Type | Description | Default value | 
-| --------- | ---- | ------------ | ------------- | 
-| `text` | `string` | Component title. | `undefined` | 
-| `description` | `string` | Component description. It should be used to explain users how to properly bulk order using the given component. | `undefined` | 
+| Prop name       | Type      | Description                                                                                                     | Default value |
+| --------------- | --------- | --------------------------------------------------------------------------------------------------------------- | ------------- |
+| `text`          | `string`  | Component title.                                                                                                | `undefined`   |
+| `description`   | `string`  | Component description. It should be used to explain users how to properly bulk order using the given component. | `undefined`   |
+| `componentOnly` | `boolean` | If `true`, only the component will be loaded, removing the `text` and `description` column.                     | `false`       |
 
 Especially, the `quickorder-upload` block also can use the following prop:
 
-| Prop name | Type | Description | Default value | 
-| --------- | ---- | ------------ | ------------- | 
-| `downloadText` | `string` | Defines a text for the spreadsheet download button. Use this prop to explain users how to properly download the spreadsheet model provided by the component. | `undefined` | 
+| Prop name      | Type     | Description                                                                                                                                                  | Default value |
+| -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
+| `downloadText` | `string` | Defines a text for the spreadsheet download button. Use this prop to explain users how to properly download the spreadsheet model provided by the component. | `undefined`   |
 
 For more on each of the components and their respective functionalities, check out the Modus Operandi section below.
 
@@ -178,7 +183,7 @@ For example:
 
 ![Copy & Paste](./image/Copy-n-Paste.gif)
 
-:information_source: *Remember that you need to validate the list after pasting it. Validating the Reference IDs will let you know if the selected SKUs are in fact available for purchase.*
+:information*source: \_Remember that you need to validate the list after pasting it. Validating the Reference IDs will let you know if the selected SKUs are in fact available for purchase.*
 
 ### Upload (`quickorder-upload` block)
 
@@ -191,7 +196,7 @@ The spreadsheet will work in the same way as the list pasted using the Copy/Past
 - `SKU` column = SKU Reference ID (be aware that this is not the SKU ID displayed in your admin's catalog);
 - `Quantity` column = SKU quantity you wish to add to the cart.
 
-:information_source: *Once uploaded, the spreadsheet is then validated. Based on the filled in Reference IDs, Quickorder will confirm whether the SKUs are in fact available for purchase.*
+:information*source: \_Once uploaded, the spreadsheet is then validated. Based on the filled in Reference IDs, Quickorder will confirm whether the SKUs are in fact available for purchase.*
 
 ### Custom Search Bar (`quickorder-autocomplete` block)
 
@@ -201,7 +206,7 @@ Remember to add each selected item to the cart by clicking on `Add`.
 
 ![One by One](./image/One-by-One.gif)
 
-:information_source: *This option does not require any validation, since selecting the SKUs using a search bar already ensures that they are available to purchase.*
+:information*source: \_This option does not require any validation, since selecting the SKUs using a search bar already ensures that they are available to purchase.*
 
 ### Categories (`quickorder-categories` block)
 
@@ -211,7 +216,7 @@ The Categories component allows users to choose their desired SKUs and respectiv
 
 Be careful however: this option is only recommended if you don't have more than 50 SKUs for each category in your catalog, otherwise the component will take too long to load and will negatively affect your store's UX.
 
-:information_source: *This scenario also does not require validating the SKUs that you've added to the cart, since selecting them directly from the store's categories tree ensures their availability.*
+:information*source: \_This scenario also does not require validating the SKUs that you've added to the cart, since selecting them directly from the store's categories tree ensures their availability.*
 
 ## Customization
 
@@ -244,6 +249,9 @@ In order to apply CSS customizations to this and other blocks, follow the instru
 | `dropzoneText`               |
 | `dropzoneLink`               |
 | `downloadLink`               |
+| `textContainer`              |
+| `componentContainer`         |
+| `buttonClear`                |
 
 <!-- DOCS-IGNORE:start -->
 

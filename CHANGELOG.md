@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- New **boolean** property `componentOnly` to the blocks, default value is **true**
+- New CSS Handles `textContainer`, `componentContainer` and `buttonClear`
+- New Clear button to the selected product at the **Autocomplete** component
+
+## Fixed
+
+- Responsive layout to the `autocomplete` block
+
 ## [2.0.1] - 2020-07-01
 
 ### Updated
