@@ -1,0 +1,15 @@
+## Sobre
+
+O **Quickorder** é um APP inteiramente desenvolvido para atender cenários **B2B**.
+
+Ele cria uma página customizada em sua loja que oferece diversas ferramentas para de pedido em lote, tais como Upload de planilha
+
+## Configuração
+
+1. Instale o app na VTEX app store.
+
+Uma nova página `/quickorder` será criada automaticamente em sua loja, onde já será possível fazer pedidos em lote.
+
+Essa página já contem uma configuração padrão com todas as ferramentas disponibilizadas pelo APP, o que significa que nenhuma outra ação é necessária.
+
+No entanto, você pode customizar a página do Quickorder sobrescrevendo seu template e criando uma página de acordo com a sua necessidade, para tal, veja a seção de **configuração avançada** na [documentação](https://github.com/vtex-apps/quickorder/#advanced-configurations).
