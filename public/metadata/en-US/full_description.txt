@@ -1,0 +1,13 @@
+## About
+
+The Quickorder app is entirely designed for **B2B scenarios**. It creates a custom page in your store aimed at purchases in bulk, offering tools such as uploading a spreadsheet to make bulk orders more agile.
+
+## Configuration
+
+1. Install the app from the VTEX app store.
+
+A new route called `/quickorder` will be automatically created for your store, creating the Quickorder custom page that allows bulk orders.
+
+This new page already contains a default template with all blocks exported by the `quickorder` app, meaning that the Quickorder page is ready to be rendered and no further actions are required.
+
+However, you can customize the Quickorder page overwriting the template by creating a brand new one as you wish. To do so, check the **Advanced configurations** documentation [here](https://github.com/vtex-apps/quickorder/#advanced-configurations).
