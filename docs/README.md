@@ -19,23 +19,21 @@ _Example of a quick order page without customization_
 
 Install the app by running `vtex install vtex.quickorder` on the [vtex toolbelt](https://vtex.io/docs/concepts/toolbelt/)
 
-### Store Theme: Dependencies
-
-After installing the app in your account, add it as a `peerDependency` in your `store-theme`:
-
-```diff
-+"peerDependencies": {
-+  "vtex.quickorder": "3.x"
-+}
-```
-
-Once Quickorder is added as a `peerDependency`, a new route called `/quickorder` will be automatically created for your store, creating the Quickorder custom page that allows bulk orders.
+Once installed a new route called `/quickorder` will be automatically created for your store, creating the Quickorder custom page that allows bulk orders.
 
 This new page already contains a default template with all blocks exported by the `quickorder` app, meaning that the Quickorder page is ready to be rendered and no further actions are required.
 
 However, you can customize the Quickorder page overwriting the template by creating a brand new one as you wish. To do so, check the **Advanced configurations** section below.
 
 ### Advanced configurations
+
+Before making any customization, make sure to add it as a `peerDependency` in your `store-theme` manifest file:
+
+```diff
++"peerDependencies": {
++  "vtex.quickorder": "3.x"
++}
+```
 
 In order to define the Quickorder custom page UI, you must use the blocks exported by the app:
 
