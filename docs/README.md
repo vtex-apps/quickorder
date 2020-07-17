@@ -15,7 +15,7 @@ _Example of a quick order page without customization_
 
 ## Configuration
 
-### Environment instalation
+### Environment installation
 
 Install the app by running `vtex install vtex.quickorder` on the [vtex toolbelt](https://vtex.io/docs/concepts/toolbelt/)
 
