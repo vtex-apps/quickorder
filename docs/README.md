@@ -21,7 +21,7 @@ _Example of a quick order page without customization_
 
 ```diff
  "peerDependencies": {
-+  "vtex.quickorder": "2.x"
++  "vtex.quickorder": "3.x"
  }
 ```
 
