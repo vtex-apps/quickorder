@@ -15,7 +15,7 @@ _Example of a quick order page without customization_
 
 ## Configuration
 
-1. [Install](https://vtex.io/docs/recipes/development/installing-an-app/) the Quickorder app by running `vtex install vtex.quickorder@2.x`.
+1. [Install](https://vtex.io/docs/recipes/development/installing-an-app/) the Quickorder app by running `vtex install vtex.quickorder@3.x`.
 2. Open your store's Store Theme app directory in your code editor.
 3. Add the Quickorder app as a `peerDependency` in the `manifest.json` file:
 
