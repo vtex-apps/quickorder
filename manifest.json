@@ -1,7 +1,7 @@
 {
   "vendor": "vtex",
   "name": "quickorder",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "title": "Quickorder",
   "description": "Allow users to add multiple products to the cart at once",
   "defaultLocale": "en-US",
