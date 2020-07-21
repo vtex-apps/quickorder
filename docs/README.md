@@ -8,26 +8,24 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-The Quickorder app is entirely designed for **B2B scenarios**. It creates a custom page in your store aimed at purchases in bulk, offering tools such as uploading a spreadsheet to make bulk orders more agile.
+The Quickorder app, designed for **B2B scenarios**, creates a custom page in your store aimed at purchases in bulk, offering tools such as uploading a spreadsheet to make bulk orders more agile.
 
 ![quick-order](./image/RawQuickorder.png)
 _Example of a quick order page without customization_
 
 ## Configuration
 
-Add the Quickorder app to your theme's dependencies in `manifest.json`. For example:
+1. [Install](https://vtex.io/docs/recipes/development/installing-an-app/) the Quickorder app by running `vtex install vtex.quickorder@3.x`.
+2. Open your store's Store Theme app directory in your code editor.
+3. Add the Quickorder app as a `peerDependency` in the `manifest.json` file:
 
 ```diff
-  dependencies: {
-+   "vtex.quickorder": "2.x"
-  }
+ "peerDependencies": {
++  "vtex.quickorder": "3.x"
+ }
 ```
 
-Once Quickorder is added as a dependency, a new route called `/quickorder` will be automatically created for your store, creating the Quickorder custom page that allows bulk orders.
-
-This new page already contains a default template with all blocks exported by the `quickorder` app, meaning that the Quickorder page is ready to be rendered and no further actions are required.
-
-However, you can customize the Quickorder page overwriting the template by creating a brand new one as you wish. To do so, check the **Advanced configurations** section below.
+:information_source: *Once installed, the app will generate a new route called `/quickorder` for your store, creating the Quickorder custom page that allows bulk orders. The new page already contains a default template with all blocks exported by the `quickorder` app, meaning that the Quickorder page is ready to be rendered and no further actions are required. However, you can **customize the Quickorder page overwriting the template by creating a brand new one as you wish**. To do so, check the **Advanced configurations** section below.*
 
 ### Advanced configurations
 
