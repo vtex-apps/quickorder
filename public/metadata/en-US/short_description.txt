@@ -1,1 +1,1 @@
-Allow users to add multiple products to the cart at once
+Allow users to add multiple products to the cart at once.
