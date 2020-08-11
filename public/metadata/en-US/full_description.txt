@@ -1,6 +1,11 @@
-## About
+## Overview
+The Quickorder app is tailor-made to B2B needs: it creates a custom page in your store aimed at purchases in bulk, offering tools such as uploading a spreadsheet to make bulk orders more simple.
 
-The Quickorder app is entirely designed for **B2B scenarios**. It creates a custom page in your store aimed at purchases in bulk, offering tools such as uploading a spreadsheet to make bulk orders more agile.
+## Features
+- Copy and paste SKUs in the Quick Order page
+- Upload a spreadsheet with SKU information
+- Search for SKUs in the Custom Search Bar
+- Add products according to their category
 
 ## Configuration
 
