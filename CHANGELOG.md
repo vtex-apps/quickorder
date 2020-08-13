@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - APP's icon update
 - Documentation
+- New pt-BR/full_description.txt and es-AR/full_description.txt
 
 ## [3.0.0] - 2020-07-21
 
