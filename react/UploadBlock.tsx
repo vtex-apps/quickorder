@@ -8,6 +8,7 @@ import {
 } from 'react-intl'
 import { Button, Dropzone, ToastContext, Spinner } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
+import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { useCssHandles } from 'vtex.css-handles'
 import { useMutation } from 'react-apollo'
@@ -56,7 +57,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   const [
     addToCart,
     { error: mutationError, loading: mutationLoading },
-  ] = useMutation<{ addToCart: OrderForm }, { items: [] }>(ADD_TO_CART)
+  ] = useMutation<{ addToCart: OrderFormType }, { items: [] }>(ADD_TO_CART)
 
   const { push } = usePixel()
   const { settings = {}, showInstallPrompt = undefined } = usePWA() || {}
@@ -282,6 +283,8 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     'downloadLink',
     'textContainer',
     'componentContainer',
+    'reviewBlock',
+    'buttonsBlock',
   ] as const
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -395,8 +398,8 @@ interface MessageDescriptor {
 
 interface OrderFormContext {
   loading: boolean
-  orderForm: OrderForm | undefined
-  setOrderForm: (orderForm: Partial<OrderForm>) => void
+  orderForm: OrderFormType | undefined
+  setOrderForm: (orderForm: Partial<OrderFormType>) => void
 }
 
 interface UploadBlockInterface {

@@ -25,7 +25,6 @@
     "vtex.render-runtime": "7.x",
     "vtex.store": "2.x",
     "vtex.styleguide": "9.x",
-    "vtex.search": "0.x",
     "vtex.store-graphql": "2.x",
     "vtex.search-graphql": "0.x",
     "vtex.checkout-graphql": "0.x",
@@ -69,7 +68,11 @@
     "support": {
       "url": "https://support.vtex.com/hc/requests"
     },
-    "free": true
+    "free": true,
+    "type": "free",
+    "availableCountries": [
+      "*"
+    ]
   },
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }

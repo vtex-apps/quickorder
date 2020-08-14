@@ -9,6 +9,7 @@ import {
 } from 'react-intl'
 import { Button, Tag, Input, ToastContext, IconClear } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
+import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
@@ -31,6 +32,11 @@ const messages = defineMessages({
     defaultMessage: '',
     label: '',
   },
+  selectSku: {
+    id: 'store/quickorder.autocomplete.selectSku',
+    defaultMessage: '',
+    label: '',
+  },
   error: { id: 'store/toaster.cart.error', defaultMessage: '', label: '' },
   seeCart: {
     id: 'store/toaster.cart.seeCart',
@@ -49,7 +55,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
   })
 
   const [addToCart, { error, loading }] = useMutation<
-    { addToCart: OrderForm },
+    { addToCart: OrderFormType },
     { items: [] }
   >(ADD_TO_CART)
 
@@ -72,9 +78,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     let message
     let action
     if (typeof arg === 'string') {
-      message = translateMessage({
-        id: arg,
-      })
+      message = intl.formatMessage(messages[arg])
     } else {
       const {
         success,
@@ -216,7 +220,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
       ]
       callAddToCart(items)
     } else {
-      toastMessage('store/quickorder.autocomplete.selectSku')
+      toastMessage('selectSku')
     }
   }
 
@@ -363,8 +367,8 @@ AutocompleteBlock.propTypes = {
 
 interface OrderFormContext {
   loading: boolean
-  orderForm: OrderForm | undefined
-  setOrderForm: (orderForm: Partial<OrderForm>) => void
+  orderForm: OrderFormType | undefined
+  setOrderForm: (orderForm: Partial<OrderFormType>) => void
 }
 
 interface MessageDescriptor {
