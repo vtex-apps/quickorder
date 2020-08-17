@@ -6,6 +6,7 @@ import {
   FormattedMessage,
   WrappedComponentProps,
   defineMessages,
+  injectIntl,
 } from 'react-intl'
 import {
   Collapsible,
@@ -15,12 +16,13 @@ import {
   Spinner,
 } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
+import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import { useCssHandles } from 'vtex.css-handles'
 import { graphql, useApolloClient, compose, useMutation } from 'react-apollo'
-import _ from 'lodash'
+import { merge } from 'ramda'
 
 import styles from './styles.css'
 import getCategories from './queries/categoriesQuery.gql'
@@ -37,6 +39,11 @@ const messages = defineMessages({
     defaultMessage: '',
     label: '',
   },
+  noneSelection: {
+    id: 'store/quickorder.category.noneSelection',
+    defaultMessage: '',
+    label: '',
+  },
   error: { id: 'store/toaster.cart.error', defaultMessage: '', label: '' },
   seeCart: {
     id: 'store/toaster.cart.seeCart',
@@ -45,14 +52,8 @@ const messages = defineMessages({
   },
 })
 
-const CategoryBlock: StorefrontFunctionComponent<any &
-  WrappedComponentProps> = ({
-  text,
-  description,
-  componentOnly,
-  intl,
-  data,
-}) => {
+const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
+  any> = ({ text, description, componentOnly, intl, data }) => {
   const [state, setState] = useState<any>({
     categories: data.categories || [],
     categoryItems: {},
@@ -66,7 +67,7 @@ const CategoryBlock: StorefrontFunctionComponent<any &
 
   const { categories, categoryItems, quantitySelected, defaultSeller } = state
   const [addToCart, { error, loading }] = useMutation<
-    { addToCart: OrderForm },
+    { addToCart: OrderFormType },
     { items: [] }
   >(ADD_TO_CART)
 
@@ -75,22 +76,18 @@ const CategoryBlock: StorefrontFunctionComponent<any &
   const { promptOnCustomEvent } = settings
 
   const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
-  const translateMessage = (message: MessageDescriptor) => {
-    return intl.formatMessage(message)
-  }
-  const resolveToastMessage = (success: boolean, isNewItem: boolean) => {
-    if (!success) return translateMessage(messages.error)
-    if (!isNewItem) return translateMessage(messages.duplicate)
 
-    return translateMessage(messages.success)
+  const resolveToastMessage = (success: boolean, isNewItem: boolean) => {
+    if (!success) return intl.formatMessage(messages.error)
+    if (!isNewItem) return intl.formatMessage(messages.duplicate)
+
+    return intl.formatMessage(messages.success)
   }
   const toastMessage = (arg: any) => {
     let message
     let action
     if (typeof arg === 'string') {
-      message = translateMessage({
-        id: arg,
-      })
+      message = intl.formatMessage(messages[arg])
     } else {
       const {
         success,
@@ -103,7 +100,7 @@ const CategoryBlock: StorefrontFunctionComponent<any &
 
       action = success
         ? {
-            label: translateMessage(messages.seeCart),
+            label: intl.formatMessage(messages.seeCart),
             href: '/checkout/#/cart',
           }
         : undefined
@@ -112,7 +109,7 @@ const CategoryBlock: StorefrontFunctionComponent<any &
   }
   const _setState = (props: any) => {
     setState((previousState: any) => {
-      const newState = _.merge(props, previousState)
+      const newState = merge(props, previousState)
       return newState
     })
   }
@@ -243,52 +240,56 @@ const CategoryBlock: StorefrontFunctionComponent<any &
       })
       onAddToCart(items, skus)
     } else {
-      toastMessage('store/quickorder.category.noneSelection')
+      toastMessage('noneSelection')
     }
   }
 
   const drawProducts = (a: any) => {
     return a.length ? (
-      a.map((b: any) => {
-        return b.items.length
-          ? b.items.map((content: any) => {
-              return (
-                <div
-                  className="flex flex-row pa2 pl4 bg-white hover-bg-near-white"
-                  key={b.itemId}
-                >
-                  <div
-                    className={`flex flex-column w-90 ${styles.pcc} fl ${handles.categoryProductLabel}`}
-                  >
-                    {content.nameComplete}
-                  </div>
-                  <div
-                    className={`flex flex-column w-10 ph5-l ph2 p fl ${handles.categoryInputQuantity}`}
-                  >
-                    <Input
-                      value={quantitySelected[content.itemId] || 0}
-                      size="small"
-                      disabled={loading}
-                      onChange={(e: any) => {
-                        const newQtd = quantitySelected
-                        newQtd[content.itemId] = e.target.value
-                        const newSeller = defaultSeller
-                        newSeller[content.itemId] = content.sellers.find(
-                          (s: any) => {
-                            return s.sellerDefault === true
-                          }
-                        ).sellerId
-                        _setState({
-                          quantitySelected: newQtd,
-                          defaultSeller: newSeller,
-                        })
-                      }}
-                    />
-                  </div>
-                </div>
-              )
-            })
-          : ''
+      a.map((b: any, i: number) => {
+        return (
+          <div key={`ifany_${i}`}>
+            {b.items.length
+              ? b.items.map((content: any) => {
+                  return (
+                    <div
+                      className="flex flex-row pa2 pl4 bg-white hover-bg-near-white"
+                      key={`prod_${b.itemId}`}
+                    >
+                      <div
+                        className={`flex flex-column w-90 ${styles.pcc} fl ${handles.categoryProductLabel}`}
+                      >
+                        {content.nameComplete}
+                      </div>
+                      <div
+                        className={`flex flex-column w-10 ph5-l ph2 p fl ${handles.categoryInputQuantity}`}
+                      >
+                        <Input
+                          value={quantitySelected[content.itemId] || 0}
+                          size="small"
+                          disabled={loading}
+                          onChange={(e: any) => {
+                            const newQtd = quantitySelected
+                            newQtd[content.itemId] = e.target.value
+                            const newSeller = defaultSeller
+                            newSeller[content.itemId] = content.sellers.find(
+                              (s: any) => {
+                                return s.sellerDefault === true
+                              }
+                            ).sellerId
+                            _setState({
+                              quantitySelected: newQtd,
+                              defaultSeller: newSeller,
+                            })
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )
+                })
+              : ''}
+          </div>
+        )
       })
     ) : (
       <span>No products</span>
@@ -320,6 +321,7 @@ const CategoryBlock: StorefrontFunctionComponent<any &
   const collapsible = (item: any) => {
     return (
       <Collapsible
+        key={`collapsable_${item.slug}_${item.id}`}
         header={<span className="ml5 fw5">{item.name}</span>}
         isOpen={item.isOpen}
         onClick={() => {
@@ -340,7 +342,11 @@ const CategoryBlock: StorefrontFunctionComponent<any &
         {item.hasChildren && (
           <div className={`${handles.categoriesSubCategory} pl5`}>
             {item.children.map((child: any) => {
-              return collapsible(child)
+              return (
+                <div key={`${child.slug}_${child.slug}`}>
+                  {collapsible(child)}
+                </div>
+              )
             })}
           </div>
         )}
@@ -417,13 +423,8 @@ CategoryBlock.propTypes = {
 
 interface OrderFormContext {
   loading: boolean
-  orderForm: OrderForm | undefined
-  setOrderForm: (orderForm: Partial<OrderForm>) => void
-}
-interface MessageDescriptor {
-  id: string
-  description?: string | object
-  defaultMessage?: string
+  orderForm: OrderFormType | undefined
+  setOrderForm: (orderForm: Partial<OrderFormType>) => void
 }
 
-export default compose(graphql(getCategories))(CategoryBlock)
+export default injectIntl(compose(graphql(getCategories))(CategoryBlock))
