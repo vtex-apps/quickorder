@@ -7,11 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Updated
+### Changed
 
 - Removed dependency on `vtex.search`
 - Updated billingOptions
 - Dependencies update
+- Updated app store assets
 
 ### Fixed
 
