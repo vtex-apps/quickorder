@@ -132,8 +132,7 @@ const QuickOrderAutocomplete = ({ onSelect }: any) => {
         setTerm(term)
       }
     },
-    // eslint-disable-next-line no-console
-    onSearch: (...args: any) => console.log('onSearch:', ...args),
+    onSearch: () => () => {},
     onClear: () => setTerm(''),
     placeholder: 'Search for a product...',
     value: term,

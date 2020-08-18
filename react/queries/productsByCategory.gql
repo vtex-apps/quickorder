@@ -1,6 +1,6 @@
-query SearchByCategory($categoryId: String) {
-  productSearch(category: $categoryId)
-    @context(provider: "vtex.store-graphql") {
+query SearchByCategory($selectedFacets: [SelectedFacetInput]) {
+  productSearch(selectedFacets: $selectedFacets)
+    @context(provider: "vtex.search-graphql") {
     products {
       items {
         itemId

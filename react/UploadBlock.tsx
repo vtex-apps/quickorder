@@ -196,11 +196,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     doFile(files)
   }
 
-  const handleReset = (files: any) => {
-    if (files) {
-      console.log(files)
-    }
-  }
+  const handleReset = () => {}
 
   const backList = () => {
     setState({
