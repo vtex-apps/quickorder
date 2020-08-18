@@ -25,8 +25,7 @@ export const queries = {
       items,
     }
   },
-  sellers: async (_: any, args: {}, ctx: Context) => {
-    console.log(args)
+  sellers: async (_: any, __: {}, ctx: Context) => {
     const {
       clients: { search },
     } = ctx

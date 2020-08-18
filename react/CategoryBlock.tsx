@@ -53,9 +53,8 @@ const messages = defineMessages({
 })
 
 const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
-  any> = ({ text, description, componentOnly, intl, data }) => {
+  any> = ({ text, description, componentOnly, intl, data: { categories } }) => {
   const [state, setState] = useState<any>({
-    categories: data.categories || [],
     categoryItems: {},
     quantitySelected: {},
     defaultSeller: {},
@@ -65,7 +64,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
 
   const client = useApolloClient()
 
-  const { categories, categoryItems, quantitySelected, defaultSeller } = state
+  const { categoryItems, quantitySelected, defaultSeller } = state
   const [addToCart, { error, loading }] = useMutation<
     { addToCart: OrderFormType },
     { items: [] }
@@ -205,12 +204,15 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     })
   }
 
-  const handleSearch = async (categoryId: any) => {
+  const handleSearch = async (categoryId: number, categoryName: string) => {
+    const selectedFacets = [{ key: 'c', value: categoryName }]
+
     if (!categoryItems[categoryId]) {
       const { data: dataProducts } = await client.query({
         query: SearchByCategory,
-        variables: { categoryId },
+        variables: { selectedFacets },
       })
+
       setOptions(
         categoryId,
         !!dataProducts &&
@@ -238,6 +240,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
           seller: defaultSeller[item],
         }
       })
+
       onAddToCart(items, skus)
     } else {
       toastMessage('noneSelection')
@@ -272,11 +275,15 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
                             const newQtd = quantitySelected
                             newQtd[content.itemId] = e.target.value
                             const newSeller = defaultSeller
-                            newSeller[content.itemId] = content.sellers.find(
-                              (s: any) => {
-                                return s.sellerDefault === true
-                              }
-                            ).sellerId
+                            const seller = content.sellers.find((s: any) => {
+                              return s.sellerDefault === true
+                            })
+                            newSeller[content.itemId] =
+                              seller?.sellerId ||
+                              (content.sellers.length
+                                ? content.sellers[0].sellerId
+                                : '1')
+
                             _setState({
                               quantitySelected: newQtd,
                               defaultSeller: newSeller,
@@ -296,7 +303,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     )
   }
 
-  const openClose = (id: number) => {
+  const openClose = (id: number, name: string) => {
     const findNChange = (source: any) => {
       const obj: any = source.map((item: any) => {
         const ret = item
@@ -315,7 +322,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     _setState({
       categories: newCategories,
     })
-    handleSearch(id)
+    handleSearch(id, name)
   }
 
   const collapsible = (item: any) => {
@@ -325,7 +332,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
         header={<span className="ml5 fw5">{item.name}</span>}
         isOpen={item.isOpen}
         onClick={() => {
-          openClose(item.id)
+          openClose(item.id, item.name)
         }}
       >
         <div className={`${handles.categoriesProductContainer}`}>
