@@ -1,0 +1,11 @@
+---
+files:
+  -
+    source: "/quickorder/public/metadata/messages/pt-BR.json"
+    translation: "/quickorder/public/metadata/messages/%locale%.json"
+    type: "json"
+  -
+    source: "/quickorder/public/metadata/licenses/pt-BR.md"
+    translation: "/quickorder/public/metadata/licenses/%locale%.md"
+    type: "md"
+    

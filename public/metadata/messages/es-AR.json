@@ -1,0 +1,15 @@
+{
+  "name": "Quickorder",
+  "headline": "Permita que los usuarios de B2B agreguen varios productos al carrito a la vez.",
+  "overview": "La aplicación Quickorder está hecha a medida para las necesidades B2B: crea una página personalizada en su tienda para compras masivas, ofreciendo herramientas como la carga de una hoja de cálculo para facilitar los pedidos masivos.",
+  "features": [
+    "Copia y pega los SKUs en la página de compra rápida;",
+    "Sube una hoja de cálculo con la información del SKU;",
+    "Busca SKUs en la barra de búsqueda personalizada;",
+    "Añade productos de acuerdo a tu categoría."
+  ],
+  "websiteURL": "https://vtex.com/",
+  "support": {
+    "url": "https://support.vtex.com/hc/requests"
+  }
+}
