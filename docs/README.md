@@ -15,7 +15,7 @@ _Example of a quick order page without customization_
 
 ## Configuration
 
-1. [Install](https://vtex.io/docs/recipes/development/installing-an-app/) the Quickorder app by running `vtex install vtex.quickorder@3.x`.
+1. [Install](https://vtex.io/docs/recipes/development/installing-an-app/) the Quickorder app by running `vtex install vtex.quickorder@3.x` in your terminal.
 2. Open your store's Store Theme app directory in your code editor.
 3. Add the Quickorder app as a `peerDependency` in the `manifest.json` file:
 
@@ -25,11 +25,13 @@ _Example of a quick order page without customization_
  }
 ```
 
-:information_source: *Once installed, the app will generate a new route called `/quickorder` for your store, creating the Quickorder custom page that allows bulk orders. The new page already contains a default template with all blocks exported by the `quickorder` app, meaning that the Quickorder page is ready to be rendered and no further actions are required. However, you can **customize the Quickorder page overwriting the template by creating a brand new one as you wish**. To do so, check the **Advanced configurations** section below.*
+Once installed, the app will generate a new route called `/quickorder` for your store, creating the Quickorder custom page that allows bulk orders. 
+
+The new page already contains a default template with all blocks exported by the `quickorder` app, meaning that the Quickorder page is ready to be rendered and no further actions are required. However, you can **customize the Quickorder page overwriting the template by creating a brand new one as you wish**. To do so, check the **Advanced configurations** section below.
 
 ### Advanced configurations
 
-In order to define the Quickorder custom page UI, you must use the blocks exported by the app:
+In order to define the Quickorder custom page UI, you must use the blocks exported by the `vtex.quickorder` app. Namely, they are:
 
 | Block name                | Description                                                                                                                                                                                                                                                  |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -38,7 +40,7 @@ In order to define the Quickorder custom page UI, you must use the blocks export
 | `quickorder-autocomplete` | Renders a custom search bar, allowing users to look for SKUs and add them to the Minicart at once according to the desired quantity. For more on this component, check out the Modus Operandi section.                                                       |
 | `quickorder-categories`   | Renders the store's category tree, allowing users to look for the desired SKUs and add them to the Minicart at once according to the desired quantity.                                                                                                       |
 
-1. In the `store` folder of your Store Theme app, create a new file called `quickorder.json`;
+1. In the `store` folder of your Store Theme app, create a new file called `quickorder.json`.
 2. Then, create a new store template called `store.quickorder`. In its `blocks` array, declare the blocks responsible for building your Quickorder custom page. For example:
 
 ```json
@@ -142,7 +144,7 @@ In order to define the Quickorder custom page UI, you must use the blocks export
 }
 ```
 
-## Props
+#### Props
 
 All blocks exported by the `quickorder` app share the same props:
 
@@ -158,7 +160,7 @@ Especially, the `quickorder-upload` block also can use the following prop:
 | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
 | `downloadText` | `string` | Defines a text for the spreadsheet download button. Use this prop to explain users how to properly download the spreadsheet model provided by the component. | `undefined`   |
 
-For more on each of the components and their respective functionalities, check out the Modus Operandi section below.
+For more on each of the components and their respective functionalities, check out the **Modus Operandi** section below.
 
 ## Modus Operandi
 
@@ -214,7 +216,7 @@ The Categories component allows users to choose their desired SKUs and respectiv
 
 Be careful however: this option is only recommended if you don't have more than 50 SKUs for each category in your catalog, otherwise the component will take too long to load and will negatively affect your store's UX.
 
-:information*source: \_This scenario also does not require validating the SKUs that you've added to the cart, since selecting them directly from the store's categories tree ensures their availability.*
+:information*source: _This scenario also does not require validating the SKUs that you've added to the cart, since selecting them directly from the store's categories tree ensures their availability.*
 
 ## Customization
 
@@ -222,34 +224,34 @@ In order to apply CSS customizations to this and other blocks, follow the instru
 
 | CSS Handles                  |
 | ---------------------------- |
-| `container`                  |
-| `title`                      |
-| `copyPasteBlock`             |
 | `autocompleteBlock`          |
-| `reviewBlock`                |
+| `buttonAdd`                  |
+| `buttonClear`                |
 | `buttonsBlock`               |
 | `buttonValidate`             |
-| `skuSelection`               |
-| `productThumb`               |
-| `productLabel`               |
-| `inputQuantity`              |
-| `buttonAdd`                  |
-| `categoryContainer`          |
-| `categoryTitle`              |
-| `categoryHelper`             |
-| `categoryProductLabel`       |
-| `categoryInputQuantity`      |
-| `categoryButtonAdd`          |
 | `categoriesSubCategory`      |
 | `categoriesProductContainer` |
+| `categoryButtonAdd`          |
+| `categoryContainer`          |
 | `categoryLoadingProducts`    |
-| `dropzoneContainer`          |
-| `dropzoneText`               |
-| `dropzoneLink`               |
-| `downloadLink`               |
-| `textContainer`              |
+| `categoryHelper`             |
+| `categoryInputQuantity`      |
+| `categoryProductLabel`       |
+| `categoryTitle`              |
 | `componentContainer`         |
-| `buttonClear`                |
+| `container`                  |
+| `copyPasteBlock`             |
+| `dropzoneContainer`          |
+| `dropzoneLink`               |
+| `dropzoneText`               |
+| `downloadLink`               |
+| `inputQuantity`              |
+| `productLabel`               |
+| `productThumb`               |
+| `reviewBlock`                |
+| `skuSelection`               |
+| `textContainer`              |
+| `title`                      |
 
 <!-- DOCS-IGNORE:start -->
 
