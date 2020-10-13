@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable react/jsx-key */
 import PropTypes from 'prop-types'
 import React, { useState, useContext } from 'react'
@@ -22,7 +21,6 @@ import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import { useCssHandles } from 'vtex.css-handles'
 import { graphql, useApolloClient, compose, useMutation } from 'react-apollo'
-import { merge } from 'ramda'
 
 import styles from './styles.css'
 import getCategories from './queries/categoriesQuery.gql'
@@ -82,9 +80,11 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
 
     return intl.formatMessage(messages.success)
   }
+
   const toastMessage = (arg: any) => {
     let message
     let action
+
     if (typeof arg === 'string') {
       message = intl.formatMessage(messages[arg])
     } else {
@@ -95,6 +95,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
         success: boolean
         isNewItem: boolean
       } = arg
+
       message = resolveToastMessage(success, isNewItem)
 
       action = success
@@ -104,14 +105,18 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
           }
         : undefined
     }
+
     showToast({ message, action })
   }
+
   const _setState = (props: any) => {
     setState((previousState: any) => {
-      const newState = merge(props, previousState)
+      const newState = { ...previousState, props }
+
       return newState
     })
   }
+
   const onAddToCart = async (items: any, skus: any) => {
     const mutationResult = await addToCart({
       variables: {
@@ -127,12 +132,15 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
       if (error) {
         console.error(error)
       }
+
       if (mutationResult.errors?.length) {
         for (let i = 0; i < mutationResult.errors.length; i++) {
           console.error(mutationResult.errors[i].message)
         }
       }
+
       toastMessage({ success: false, isNewItem: false })
+
       return
     }
 
@@ -145,8 +153,10 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
         quantity: item.quantity,
       }
     }
+
     // Send event to pixel-manager
     const pixelEventItems = items.map(adjustSkuItemForPixelEvent)
+
     push({
       event: 'addToCart',
       items: pixelEventItems,
@@ -166,8 +176,10 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     } else {
       toastMessage({ success: true, isNewItem: true })
       const quantitiesCopy = quantitySelected
+
       skus.map((sku: any) => {
         quantitiesCopy[sku] = 0
+
         return true
       })
       _setState({
@@ -181,6 +193,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
 
     return showInstallPrompt
   }
+
   const CSS_HANDLES = [
     'categoryContainer',
     'categoryTitle',
@@ -194,10 +207,12 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     'textContainer',
     'componentContainer',
   ] as const
+
   const handles = useCssHandles(CSS_HANDLES)
 
   const setOptions = (categoryId: any, result: any) => {
     const copy = categoryItems
+
     copy[categoryId] = result
     _setState({
       categoryItems: copy,
@@ -205,7 +220,14 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
   }
 
   const handleSearch = async (categoryId: number, categoryName: string) => {
-    const selectedFacets = [{ key: 'c', value: categoryName }]
+    const selectedFacets = categoryName
+      .split('/')
+      .filter((cat: string) => {
+        return !!cat
+      })
+      .map((cat: string) => {
+        return { key: 'c', value: cat }
+      })
 
     if (!categoryItems[categoryId]) {
       const { data: dataProducts } = await client.query({
@@ -222,6 +244,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
           : []
       )
     }
+
     return true
   }
 
@@ -273,11 +296,13 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
                           disabled={loading}
                           onChange={(e: any) => {
                             const newQtd = quantitySelected
+
                             newQtd[content.itemId] = e.target.value
                             const newSeller = defaultSeller
                             const seller = content.sellers.find((s: any) => {
                               return s.sellerDefault === true
                             })
+
                             newSeller[content.itemId] =
                               seller?.sellerId ||
                               (content.sellers.length
@@ -307,6 +332,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     const findNChange = (source: any) => {
       const obj: any = source.map((item: any) => {
         const ret = item
+
         if (item.id === id) {
           ret.isOpen = !item.isOpen
         }
@@ -314,11 +340,15 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
         if (item.id !== id && item.hasChildren) {
           ret.children = findNChange(item.children)
         }
+
         return ret
       })
+
       return obj
     }
+
     const newCategories = findNChange(categories)
+
     _setState({
       categories: newCategories,
     })
@@ -332,7 +362,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
         header={<span className="ml5 fw5">{item.name}</span>}
         isOpen={item.isOpen}
         onClick={() => {
-          openClose(item.id, item.name)
+          openClose(item.id, item.href)
         }}
       >
         <div className={`${handles.categoriesProductContainer}`}>
@@ -418,6 +448,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
 }
 
 CategoryBlock.propTypes = {
+  intl: PropTypes.any,
   componentOnly: PropTypes.bool,
   text: PropTypes.string,
   description: PropTypes.string,
