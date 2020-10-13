@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Products on subcategories not being loaded
 
+## [3.0.3] - 2020-09-10
+### Added
+- New metadada folder structure
+- License files
+- Localization file
+
 ## [3.0.2] - 2020-08-18
 
 ### Fixed
