@@ -2,10 +2,20 @@ import React, { useState, useRef } from 'react'
 import { AutocompleteInput } from 'vtex.styleguide'
 import PropTypes from 'prop-types'
 
+import { WrappedComponentProps, injectIntl, defineMessages } from 'react-intl'
+
 import autocomplete from '../queries/autocomplete.gql'
 
 import { uniq } from 'lodash'
 import { useApolloClient } from 'react-apollo'
+
+const messages = defineMessages({
+  placeholder: {
+    id: 'store/quickorder.autocomplete.placeholder',
+    defaultMessage: '',
+    label: '',
+  },
+})
 
 const getImageSrc = (img: string) => {
   const src: any = img ? img.match(/src=["']([^"']+)/) : []
@@ -62,8 +72,11 @@ const CustomOption = (props: any) => {
     </button>
   )
 }
-
-const QuickOrderAutocomplete = ({ onSelect }: any) => {
+interface QuickOrderAutocompleteInt {
+  onSelect: any
+}
+const QuickOrderAutocomplete: StorefrontFunctionComponent<WrappedComponentProps &
+  QuickOrderAutocompleteInt> = ({ onSelect, intl }: any) => {
   const client = useApolloClient()
   const [optionsResult, setOptions] = useState([])
   const [term, setTerm] = useState('')
@@ -134,7 +147,7 @@ const QuickOrderAutocomplete = ({ onSelect }: any) => {
     },
     onSearch: () => () => {},
     onClear: () => setTerm(''),
-    placeholder: 'Search for a product...',
+    placeholder: intl.formatMessage(messages.placeholder),
     value: term,
   }
   return <AutocompleteInput input={input} options={options} />
@@ -143,4 +156,4 @@ const QuickOrderAutocomplete = ({ onSelect }: any) => {
 QuickOrderAutocomplete.propTypes = {
   onSelect: PropTypes.func,
 }
-export default QuickOrderAutocomplete
+export default injectIntl(QuickOrderAutocomplete)
