@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.0.4] - 2020-10-13
+
 ### Fixed
 
 - Products on subcategories not being loaded
