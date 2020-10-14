@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.0.5] - 2020-10-14
+
+### Added
+
+- Romanian translation
+
+## [3.0.4] - 2020-10-13
+
+### Fixed
+
+- Products on subcategories not being loaded
+
+## [3.0.3] - 2020-09-10
+
+### Added
+
+- New metadada folder structure
+- License files
+- Localization file
+
 ## [3.0.2] - 2020-08-18
 
 ### Fixed
