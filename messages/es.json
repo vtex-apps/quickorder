@@ -6,6 +6,7 @@
   "store/quickorder.upload.choose": "choose a file",
   "store/quickorder.autocomplete.addButton": "Agregar",
   "store/quickorder.autocomplete.selectSku": "Por favor, seleccione un SKU",
+  "store/quickorder.autocomplete.placeholder": "Buscar un producto...",
   "store/quickorder.category.addButton": "Add items to Cart",
   "store/quickorder.category.noneSelection": "Enter some quantity on the items",
   "store/quickorder.category.loading": "Loading...",

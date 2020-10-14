@@ -7,6 +7,7 @@
   "store/quickorder.autocomplete.addButton": "Adicionar",
   "store/quickorder.autocomplete.selectSku": "Por favor, selecione um SKU",
   "store/quickorder.category.addButton": "Adicionar itens ao carrinho",
+  "store/quickorder.autocomplete.placeholder": "Busque um produto...",
   "store/quickorder.category.noneSelection": "Informe alguma quantidade nos items desejados",
   "store/quickorder.category.loading": "Carregando...",
   "store/quickorder.review.label.lineNumber": "#",
