@@ -1,20 +1,23 @@
 /* eslint-disable vtex/prefer-early-return */
-/* eslint-disable no-console */
 import React, { useState, useEffect } from 'react'
 import {
   Table,
   Input,
   ButtonWithIcon,
   IconDelete,
+  IconInfo,
+  Tooltip,
   Dropdown,
 } from 'vtex.styleguide'
 import { WrappedComponentProps, injectIntl, defineMessages } from 'react-intl'
 import PropTypes from 'prop-types'
 import { ParseText, GetText } from '../utils'
-import { useApolloClient } from 'react-apollo'
+import { useApolloClient, useQuery } from 'react-apollo'
 import getRefIdTranslation from '../queries/refids.gql'
+import OrderFormQuery from '../queries/orderForm.gql'
 
 const remove = <IconDelete />
+
 const messages = defineMessages({
   valid: {
     id: 'store/quickorder.valid',
@@ -25,7 +28,99 @@ const messages = defineMessages({
   skuNotFound: {
     id: 'store/quickorder.skuNotFound',
   },
+  withoutPriceFulfillment: {
+    id: 'store/quickorder.withoutPriceFulfillment',
+  },
+  cannotBeDelivered: {
+    id: 'store/quickorder.cannotBeDelivered',
+  },
+  ORD002: {
+    id: 'store/quickorder.ORD002',
+  },
+  ORD003: {
+    id: 'store/quickorder.ORD003',
+  },
+  ORD004: {
+    id: 'store/quickorder.ORD004',
+  },
+  ORD005: {
+    id: 'store/quickorder.ORD005',
+  },
+  ORD006: {
+    id: 'store/quickorder.ORD006',
+  },
+  ORD007: {
+    id: 'store/quickorder.ORD007',
+  },
+  ORD008: {
+    id: 'store/quickorder.ORD008',
+  },
+  ORD009: {
+    id: 'store/quickorder.ORD009',
+  },
+  ORD011: {
+    id: 'store/quickorder.ORD011',
+  },
+  ORD012: {
+    id: 'store/quickorder.ORD012',
+  },
+  ORD013: {
+    id: 'store/quickorder.ORD013',
+  },
+  ORD014: {
+    id: 'store/quickorder.ORD014',
+  },
+  ORD015: {
+    id: 'store/quickorder.ORD015',
+  },
+  ORD016: {
+    id: 'store/quickorder.ORD016',
+  },
+  ORD017: {
+    id: 'store/quickorder.ORD017',
+  },
+  ORD019: {
+    id: 'store/quickorder.ORD019',
+  },
+  ORD020: {
+    id: 'store/quickorder.ORD020',
+  },
+  ORD021: {
+    id: 'store/quickorder.ORD021',
+  },
+  ORD022: {
+    id: 'store/quickorder.ORD022',
+  },
+  ORD023: {
+    id: 'store/quickorder.ORD023',
+  },
+  ORD024: {
+    id: 'store/quickorder.ORD024',
+  },
+  ORD025: {
+    id: 'store/quickorder.ORD025',
+  },
+  ORD026: {
+    id: 'store/quickorder.ORD026',
+  },
+  ORD027: {
+    id: 'store/quickorder.ORD027',
+  },
+  ORD028: {
+    id: 'store/quickorder.ORD028',
+  },
+  ORD029: {
+    id: 'store/quickorder.ORD029',
+  },
+  ORD030: {
+    id: 'store/quickorder.ORD030',
+  },
+  ORD031: {
+    id: 'store/quickorder.ORD031',
+  },
 })
+
+let orderFormId: string = ''
 
 const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   onReviewItems,
@@ -34,6 +129,13 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   intl,
 }: any) => {
   const client = useApolloClient()
+
+  const { data: orderFormData } = useQuery<{
+    orderForm
+  }>(OrderFormQuery, {
+    ssr: false,
+    skip: !!orderFormId,
+  })
 
   const [state, setReviewState] = useState<any>({
     reviewItems:
@@ -46,10 +148,45 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   })
   const { reviewItems } = state
 
+  if (orderFormData?.orderForm?.orderFormId) {
+    orderFormId = orderFormData.orderForm.orderFormId
+  }
+
   const errorMessage = {
     'store/quickorder.valid': messages.valid,
     'store/quickorder.invalidPattern': messages.invalidPattern,
     'store/quickorder.skuNotFound': messages.skuNotFound,
+    'store/quickorder.withoutPriceFulfillment':
+      messages.withoutPriceFulfillment,
+    'store/quickorder.cannotBeDelivered': messages.cannotBeDelivered,
+    'store/quickorder.ORD002': messages.ORD002,
+    'store/quickorder.ORD003': messages.ORD003,
+    'store/quickorder.ORD004': messages.ORD004,
+    'store/quickorder.ORD005': messages.ORD005,
+    'store/quickorder.ORD006': messages.ORD006,
+    'store/quickorder.ORD007': messages.ORD007,
+    'store/quickorder.ORD008': messages.ORD008,
+    'store/quickorder.ORD009': messages.ORD009,
+    'store/quickorder.ORD011': messages.ORD011,
+    'store/quickorder.ORD012': messages.ORD012,
+    'store/quickorder.ORD013': messages.ORD013,
+    'store/quickorder.ORD014': messages.ORD014,
+    'store/quickorder.ORD015': messages.ORD015,
+    'store/quickorder.ORD016': messages.ORD016,
+    'store/quickorder.ORD017': messages.ORD017,
+    'store/quickorder.ORD019': messages.ORD019,
+    'store/quickorder.ORD020': messages.ORD020,
+    'store/quickorder.ORD021': messages.ORD021,
+    'store/quickorder.ORD022': messages.ORD022,
+    'store/quickorder.ORD023': messages.ORD023,
+    'store/quickorder.ORD024': messages.ORD024,
+    'store/quickorder.ORD025': messages.ORD025,
+    'store/quickorder.ORD026': messages.ORD026,
+    'store/quickorder.ORD027': messages.ORD027,
+    'store/quickorder.ORD028': messages.ORD028,
+    'store/quickorder.ORD029': messages.ORD029,
+    'store/quickorder.ORD030': messages.ORD030,
+    'store/quickorder.ORD031': messages.ORD031,
   }
 
   const validateRefids = (refidData: any, reviewed: any) => {
@@ -66,6 +203,12 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         !!refidData && !!refidData.skuFromRefIds.items
           ? refidData.skuFromRefIds.items.filter((item: any) => {
               return item.sku !== null
+            })
+          : []
+      const refNotAvailable =
+        !!refidData && !!refidData.skuFromRefIds.items
+          ? refidData.skuFromRefIds.items.filter((item: any) => {
+              return item.availability !== 'available'
             })
           : []
 
@@ -95,22 +238,23 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       }
 
       const errorMsg = (item: any) => {
-        let ret = null
+        let ret: any = null
         const notfound = refIdNotFound.find((curr: any) => {
           return curr.refid === item.sku && curr.sku === null
         })
         const found = refIdFound.find((curr: any) => {
           return curr.refid === item.sku && curr.sku !== null
         })
+
         ret = notfound
           ? 'store/quickorder.skuNotFound'
-          : found
+          : found?.availability === 'available'
           ? null
-          : item.error
+          : `store/quickorder.${found.availability}`
         return ret
       }
 
-      if (refIdNotFound.length) {
+      if (refIdNotFound.length || refNotAvailable.length) {
         error = true
       }
 
@@ -149,7 +293,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     onRefidLoading(true)
     const query = {
       query: getRefIdTranslation,
-      variables: { refids },
+      variables: { refids, orderFormId },
     }
 
     const { data } = await client.query(query)
@@ -330,10 +474,12 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
               errorMessage[cellData || 'store/quickorder.valid']
             )
             return (
-              <span
-                className={`pa3 br2 bg-danger--faded hover-bg-danger-faded active-bg-danger-faded c-danger hover-c-danger active-c-danger dib mr5 mv0 ba b--danger hover-b-danger active-b-danger`}
-              >
-                {text}
+              <span className={`pa3 br2 dib mr5 mv0`}>
+                <Tooltip label={text}>
+                  <span className="c-danger pointer">
+                    <IconInfo />
+                  </span>
+                </Tooltip>
               </span>
             )
           }

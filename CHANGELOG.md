@@ -7,8 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Extra error messages at the preview for `Copy n Paste` and `Upload` components
+- Validate items before sending to the Cart and ignore items with error
+
 ## [3.0.7] - 2020-10-14
+
 ### Fixed
+
 - Doc review and update
 
 ## [3.0.6] - 2020-10-14

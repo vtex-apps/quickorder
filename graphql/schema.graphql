@@ -1,5 +1,5 @@
 type Query {
-  skuFromRefIds(refids: [String]): Refids
+  skuFromRefIds(refids: [String], orderFormId: String): Refids
     @cacheControl(scope: SEGMENT, maxAge: MEDIUM)
     @withSegment
   sellers: SellersType

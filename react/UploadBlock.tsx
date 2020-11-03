@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useState, useContext } from 'react'
 import {
   FormattedMessage,
@@ -261,13 +260,15 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   }
 
   const addToCartUpload = () => {
-    const items: any = reviewItems.map(({ vtexSku, quantity, seller }: any) => {
-      return {
-        id: parseInt(vtexSku, 10),
-        quantity: parseFloat(quantity),
-        seller,
-      }
-    })
+    const items: any = reviewItems
+      .filter((item: any) => item.error === null && item.vtexSku !== null)
+      .map(({ vtexSku, quantity, seller }: any) => {
+        return {
+          id: parseInt(vtexSku, 10),
+          quantity: parseFloat(quantity),
+          seller,
+        }
+      })
     callAddToCart(items)
   }
 
