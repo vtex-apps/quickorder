@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { UserInputError } from '@vtex/api'
 
 import { resolvers as refidsResolvers } from './refids'
@@ -8,7 +7,11 @@ export const fieldResolvers = {
 }
 
 export const queries = {
-  skuFromRefIds: async (_: any, args: { refids: string }, ctx: Context) => {
+  skuFromRefIds: async (
+    _: any,
+    args: { refids: string; orderFormId: string },
+    ctx: Context
+  ) => {
     const {
       clients: { search },
     } = ctx
@@ -19,7 +22,9 @@ export const queries = {
 
     const items = await search.skuFromRefIds({
       refids: args.refids,
+      orderFormId: args.orderFormId,
     })
+
     return {
       cacheId: args.refids,
       items,

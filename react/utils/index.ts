@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 export const GetText = (items: any) => {
   const joinLines = items
     .map((line: any) => {

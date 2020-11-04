@@ -1,10 +1,15 @@
-/* eslint-disable no-console */
 import { ExternalClient, InstanceOptions, IOContext } from '@vtex/api'
 
 const axios = require('axios')
 
 interface RefIdArgs {
   refids: any
+  orderFormId: string
+}
+interface Items {
+  id: string
+  quantity: number
+  seller: string
 }
 
 export class Search extends ExternalClient {
@@ -20,7 +25,7 @@ export class Search extends ExternalClient {
     }).name
   }
 
-  public skuFromRefIds = async ({ refids }: RefIdArgs) => {
+  public skuFromRefIds = async ({ refids, orderFormId }: RefIdArgs) => {
     this.sellersList = await this.sellers()
 
     const url = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pub/sku/stockkeepingunitidsbyrefids`
@@ -52,8 +57,52 @@ export class Search extends ExternalClient {
         const promises = result.map(async (o: any) => this.sellerBySku(o.sku, o.refid))
         result = await Promise.all(promises)
       }
+
+      const orderForm = await this.getOrderForm(orderFormId)
+
+     const {items}: any = await this.simulate(result, orderForm)
+
+     result = result.map((item: any) => {
+       return {
+         ...item,
+         availability: this.getAvailability(item, items)
+       }
+     })
     }
     return result
+  }
+
+  private getAvailability = (item: any, items: any) => {
+    const [availabilityItem] = items.filter((curr: any) => {
+      return curr.id === item.sku
+    })
+    return availabilityItem?.availability ?? ''
+  }
+
+  private getOrderForm = async (orderFormId: string) => {
+    return this.http.get(`/api/checkout/pub/orderForm/${orderFormId}`)
+  }
+
+  private simulate = async (refids: [Items], orderForm: any) => {
+    const {salesChannel, storePreferencesData: {
+      countryCode
+    },
+    shippingData} = orderForm
+    const items = refids.filter((item: any) => {
+      return !!item.sku
+    }).map((item: any) => {
+      const [seller] = item.sellers
+      return {
+        id: item.sku,
+        quantity: 1,
+        seller: seller?.id,
+      }
+    })
+    return this.http.post(`/api/checkout/pub/orderForms/simulation?sc=${salesChannel}`, {
+      items,
+      country: countryCode,
+      postalCode: shippingData?.address?.postalCode ?? ''
+    })
   }
 
   private sellerBySku = async (skuId: string, refid: string) => {
