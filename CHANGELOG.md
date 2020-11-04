@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.1.0] - 2020-11-04
+
 ### Added
 
 - Extra error messages at the preview for `Copy n Paste` and `Upload` components
