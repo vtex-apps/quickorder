@@ -11,8 +11,9 @@ import {
 } from 'vtex.styleguide'
 import { WrappedComponentProps, injectIntl, defineMessages } from 'react-intl'
 import PropTypes from 'prop-types'
-import { ParseText, GetText } from '../utils'
 import { useApolloClient, useQuery } from 'react-apollo'
+
+import { ParseText, GetText } from '../utils'
 import getRefIdTranslation from '../queries/refids.gql'
 import OrderFormQuery from '../queries/orderForm.gql'
 
@@ -22,8 +23,14 @@ const messages = defineMessages({
   valid: {
     id: 'store/quickorder.valid',
   },
+  available: {
+    id: 'store/quickorder.available',
+  },
   invalidPattern: {
     id: 'store/quickorder.invalidPattern',
+  },
+  withoutStock: {
+    id: 'store/quickorder.withoutStock',
   },
   skuNotFound: {
     id: 'store/quickorder.skuNotFound',
@@ -120,7 +127,7 @@ const messages = defineMessages({
   },
 })
 
-let orderFormId: string = ''
+let orderFormId = ''
 
 const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   onReviewItems,
@@ -146,6 +153,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         }
       }) || [],
   })
+
   const { reviewItems } = state
 
   if (orderFormData?.orderForm?.orderFormId) {
@@ -154,8 +162,10 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
   const errorMessage = {
     'store/quickorder.valid': messages.valid,
+    'store/quickorder.available': messages.available,
     'store/quickorder.invalidPattern': messages.invalidPattern,
     'store/quickorder.skuNotFound': messages.skuNotFound,
+    'store/quickorder.withoutStock': messages.withoutStock,
     'store/quickorder.withoutPriceFulfillment':
       messages.withoutPriceFulfillment,
     'store/quickorder.cannotBeDelivered': messages.cannotBeDelivered,
@@ -191,6 +201,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
   const validateRefids = (refidData: any, reviewed: any) => {
     let error = false
+
     if (refidData) {
       const refIdNotFound =
         !!refidData && !!refidData.skuFromRefIds.items
@@ -205,6 +216,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
               return item.sku !== null
             })
           : []
+
       const refNotAvailable =
         !!refidData && !!refidData.skuFromRefIds.items
           ? refidData.skuFromRefIds.items.filter((item: any) => {
@@ -214,6 +226,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
       const vtexSku = (item: any) => {
         let ret: any = null
+
         if (!!refidData && !!refidData.skuFromRefIds.items) {
           ret = refidData.skuFromRefIds.items.find((curr: any) => {
             return !!item.sku && item.sku === curr.refid
@@ -222,10 +235,13 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
             ret = ret.sku
           }
         }
+
         return ret
       }
+
       const getSellers = (item: any) => {
         let ret: any = []
+
         if (!!refidData && !!refidData.skuFromRefIds.items) {
           ret = refidData.skuFromRefIds.items.find((curr: any) => {
             return !!item.sku && item.sku === curr.refid
@@ -234,6 +250,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
             ret = ret.sellers
           }
         }
+
         return ret
       }
 
@@ -242,15 +259,17 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         const notfound = refIdNotFound.find((curr: any) => {
           return curr.refid === item.sku && curr.sku === null
         })
+
         const found = refIdFound.find((curr: any) => {
           return curr.refid === item.sku && curr.sku !== null
         })
 
         ret = notfound
           ? 'store/quickorder.skuNotFound'
-          : found?.availability === 'available'
-          ? null
-          : `store/quickorder.${found.availability}`
+          : found?.availability && found.availability !== 'available'
+          ? `store/quickorder.${found.availability}`
+          : null
+
         return ret
       }
 
@@ -260,6 +279,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
       const items = reviewed.map((item: any) => {
         const sellers = getSellers(item)
+
         return {
           ...item,
           sellers: getSellers(item),
@@ -273,6 +293,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         const item = items.find((curr: any) => {
           return original.sku === curr.sku
         })
+
         return item || original
       }
 
@@ -310,6 +331,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       .map((item: any) => {
         return item.sku
       })
+
     getRefIds(refids, items)
   }
 
@@ -317,6 +339,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     const items: [any] = reviewItems.filter((item: any) => {
       return item.sku !== null && item.error === null && !item.vtexSku
     })
+
     if (items.length) {
       convertRefIds(items)
     }
@@ -338,6 +361,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
           index,
         }
       })
+
     onReviewItems(items)
     setReviewState({
       ...state,
@@ -354,6 +378,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
           }
         : item
     })
+
     setReviewState({
       ...state,
       reviewItems: items,
@@ -369,6 +394,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
           }
         : item
     })
+
     setReviewState({
       ...state,
       reviewItems: items,
@@ -378,6 +404,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   const onBlurField = (line: number) => {
     const joinLines = GetText(reviewItems)
     const reviewd: any = ParseText(joinLines)
+
     if (reviewd[line].error === null) {
       setReviewState({
         ...state,
@@ -420,6 +447,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
               </div>
             )
           }
+
           return <span>{cellData}</span>
         },
       },
@@ -458,6 +486,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
               </div>
             )
           }
+
           return rowData.sellers && rowData.sellers.length
             ? rowData.sellers[0].name
             : ''
@@ -473,8 +502,9 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
             const text = intl.formatMessage(
               errorMessage[cellData || 'store/quickorder.valid']
             )
+
             return (
-              <span className={`pa3 br2 dib mr5 mv0`}>
+              <span className="pa3 br2 dib mr5 mv0">
                 <Tooltip label={text}>
                   <span className="c-danger pointer">
                     <IconInfo />
@@ -483,6 +513,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
               </span>
             )
           }
+
           return intl.formatMessage({ id: 'store/quickorder.valid' })
         },
       },
@@ -513,6 +544,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     </div>
   )
 }
+
 ReviewBlock.propTypes = {
   onReviewItems: PropTypes.func,
   reviewItems: PropTypes.array,

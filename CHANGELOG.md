@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Unmapped status message
+
+### Added
+
+- New status message to translation
+
 ## [3.1.0] - 2020-11-04
 
 ### Added
@@ -17,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [3.0.8] - 2020-11-04
 
 ### Fixed
+
 - New terms of use
 
 ## [3.0.7] - 2020-10-14
