@@ -48,6 +48,9 @@
       "name": "graphql-query"
     },
     {
+      "name": "AcessaTodosCarrinhos"
+    },
+    {
       "name": "outbound-access",
       "attrs": {
         "host": "{{account}}.vtexcommercestable.com.br",
