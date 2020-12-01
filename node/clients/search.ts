@@ -80,7 +80,12 @@ export class Search extends ExternalClient {
   }
 
   private getOrderForm = async (orderFormId: string) => {
-    return this.http.get(`/api/checkout/pub/orderForm/${orderFormId}`)
+    return this.http.get(`/api/checkout/pub/orderForm/${orderFormId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        VtexIdclientAutCookie: `${this.context.authToken}`,
+      },
+    })
   }
 
   private simulate = async (refids: [Items], orderForm: any) => {

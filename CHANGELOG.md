@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Allow the app to access all the orderForms to properly run the simulation
+
 ## [3.1.1] - 2020-11-30
 
 ### Fixed
