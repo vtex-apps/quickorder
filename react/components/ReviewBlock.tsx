@@ -310,8 +310,17 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     }
   }
 
-  const getRefIds = async (refids: any, reviewed: any) => {
+  const getRefIds = async (_refids: any, reviewed: any) => {
     onRefidLoading(true)
+    let refids = {}
+
+    if (_refids.length) {
+      _refids.forEach(refid => {
+        refids[refid] = true
+      })
+      refids = Object.getOwnPropertyNames(refids)
+    }
+
     const query = {
       query: getRefIdTranslation,
       variables: { refids, orderFormId },
