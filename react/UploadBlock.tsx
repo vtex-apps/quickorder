@@ -10,7 +10,7 @@ import { OrderForm } from 'vtex.order-manager'
 import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { useCssHandles } from 'vtex.css-handles'
-import { useMutation } from 'react-apollo'
+import { ExecutionResult, useMutation } from 'react-apollo'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import { ParseText, GetText } from './utils'
@@ -205,24 +205,58 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   }
 
   const callAddToCart = async (items: any) => {
-    const mutationResult = await addToCart({
-      variables: {
-        items: items.map((item: any) => {
-          return {
-            ...item,
-          }
-        }),
-      },
-    })
+    const splitBy = 10
+    const tempItems = items
+    const loopCount = Math.floor(items.length / splitBy) + 1
 
-    if (mutationError) {
+    const promises: Array<ExecutionResult<{ addToCart: OrderFormType }>> = []
+    // let orderFormData = []
+
+    for (let i = 0; i < loopCount; i++) {
+      const chunk = tempItems.splice(0, splitBy)
+      if (chunk.length) {
+        const mutationChunk = await addToCart({
+          variables: {
+            items: chunk.map((item: any) => {
+              return {
+                ...item,
+              }
+            }),
+          },
+        })
+
+        console.log('mutationChunk =>', mutationChunk)
+
+        mutationChunk.data && setOrderForm(mutationChunk.data.addToCart)
+
+        if (
+          mutationChunk.data?.addToCart?.messages?.generalMessages &&
+          mutationChunk.data.addToCart.messages.generalMessages.length
+        ) {
+          mutationChunk.data.addToCart.messages.generalMessages.map(
+            (msg: any) => {
+              return showToast({
+                message: msg.text,
+                action: undefined,
+                duration: 30000,
+              })
+            }
+          )
+        } else {
+          toastMessage({ success: true, isNewItem: true })
+        }
+
+        promises.push(mutationChunk)
+      }
+    }
+
+    Promise.all(promises).catch(() => {
       console.error(mutationError)
       toastMessage({ success: false, isNewItem: false })
       return
-    }
+    })
 
     // Update OrderForm from the context
-    mutationResult.data && setOrderForm(mutationResult.data.addToCart)
 
     const adjustSkuItemForPixelEvent = (item: any) => {
       return {
@@ -236,21 +270,6 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
       event: 'addToCart',
       items: pixelEventItems,
     })
-
-    if (
-      mutationResult.data?.addToCart?.messages?.generalMessages &&
-      mutationResult.data.addToCart.messages.generalMessages.length
-    ) {
-      mutationResult.data.addToCart.messages.generalMessages.map((msg: any) => {
-        return showToast({
-          message: msg.text,
-          action: undefined,
-          duration: 30000,
-        })
-      })
-    } else {
-      toastMessage({ success: true, isNewItem: true })
-    }
 
     if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
       showInstallPrompt()
