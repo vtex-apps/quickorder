@@ -14,7 +14,6 @@ import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import PropTypes from 'prop-types'
 import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
-import styles from './styles.css'
 import { useCssHandles } from 'vtex.css-handles'
 import { useApolloClient, useMutation } from 'react-apollo'
 import productQuery from './queries/product.gql'
@@ -208,6 +207,10 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     })
   }
 
+  const thumb = (url: string) => {
+    return url.replace('25-25', `50-50`)
+  }
+
   const callAddUnitToCart = () => {
     if (selectedItem && selectedItem.value) {
       const items = [
@@ -226,10 +229,14 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
   const CSS_HANDLES = [
     'skuSelection',
     'productThumb',
+    'productTitle',
+    'productSku',
     'productLabel',
     'inputQuantity',
     'buttonAdd',
     'textContainer',
+    'textContainerTitle',
+    'textContainerDescription',
     'componentContainer',
     'buttonClear',
   ] as const
@@ -239,11 +246,15 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     <div>
       {!componentOnly && (
         <div className={`${handles.textContainer} w-third-l w-100-ns fl-l`}>
-          <div className="flex-grow-1">
-            <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">{text}</h2>
-            <div className="t-body lh-copy c-muted-1 mb7 ml3 false">
-              {description}
-            </div>
+          <h2
+            className={`${handles.textContainerTitle} t-heading-3 mb3 ml5 ml3-ns mt4`}
+          >
+            {text}
+          </h2>
+          <div
+            className={`${handles.textContainerDescription} t-body lh-copy c-muted-1 mb7 ml3 false`}
+          >
+            {description}
           </div>
         </div>
       )}
@@ -262,24 +273,26 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
                     className={`flex flex-column w-10 fl ${handles.productThumb}`}
                   >
                     <img
-                      src={selectedItem.thumb}
-                      width="25"
-                      height="25"
+                      src={thumb(selectedItem.thumb)}
+                      width="50"
+                      height="50"
                       alt=""
                     />
                   </div>
                   <div
                     className={`flex flex-column w-90 fl ${handles.productLabel}`}
                   >
-                    {selectedItem.label}
+                    <span className={`${handles.productTitle}`}>
+                      {selectedItem.label}
+                    </span>
                     {!!selectedItem &&
                       selectedItem.data.product.items.length > 1 && (
-                        <div className={`flex flex-row`}>
+                        <div className={`${handles.productSku} flex flex-row`}>
                           {selectedItem.data.product.items.map((item: any) => {
                             return (
                               <span
                                 key={item.itemId}
-                                className={`mr4 ${handles.skuSelection} ${styles.tag}`}
+                                className={`mr4 ${handles.skuSelection}`}
                               >
                                 <Tag
                                   size="small"

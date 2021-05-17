@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Thumb to category module
+- Reference code to category module
+- New CSS handles to all the modules
+
+### Changed
+
+- Thumb size for the selected item on the One-by-One module
+
+### Removed
+
+- Default `styles.css` file
+
 ## [3.1.4] - 2021-04-28
 
 ## [3.1.3] - 2021-02-25
