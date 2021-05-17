@@ -22,7 +22,6 @@ import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import { useCssHandles } from 'vtex.css-handles'
 import { graphql, useApolloClient, compose, useMutation } from 'react-apollo'
 
-import styles from './styles.css'
 import getCategories from './queries/categoriesQuery.gql'
 import SearchByCategory from './queries/productsByCategory.gql'
 
@@ -199,6 +198,9 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     'categoryTitle',
     'categoryHelper',
     'categoryProductLabel',
+    'categoryProductTitle',
+    'categoryProductThumb',
+    'categoryProductReference',
     'categoryInputQuantity',
     'categoryButtonAdd',
     'categoriesSubCategory',
@@ -206,6 +208,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     'categoryLoadingProducts',
     'textContainer',
     'componentContainer',
+    'categoryProductItem',
   ] as const
 
   const handles = useCssHandles(CSS_HANDLES)
@@ -270,6 +273,12 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     }
   }
 
+  const thumb = (url: string) => {
+    const td = url.split('/')
+    const ids = td[td.indexOf('ids') + 1]
+    return url.replace(ids, `${ids}-50-50`)
+  }
+
   const drawProducts = (a: any) => {
     return a.length ? (
       a.map((b: any, i: number) => {
@@ -277,15 +286,37 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
           <div key={`ifany_${i}`}>
             {b.items.length
               ? b.items.map((content: any) => {
+                  console.log('Content =>', content)
+                  const [referenceId] = content.referenceId
+                  const [image] = content.images
+
                   return (
                     <div
                       className="flex flex-row pa2 pl4 bg-white hover-bg-near-white"
                       key={`prod_${b.itemId}`}
                     >
                       <div
-                        className={`flex flex-column w-90 ${styles.pcc} fl ${handles.categoryProductLabel}`}
+                        className={`flex flex-row w-90 fl ${handles.categoryProductLabel}`}
                       >
-                        {content.nameComplete}
+                        {image?.imageUrl && (
+                          <img
+                            src={thumb(image.imageUrl)}
+                            title={image.imageLabel}
+                            width="50"
+                            height="50"
+                            className={`pr5 ${handles.categoryProductThumb}`}
+                          />
+                        )}
+                        <span className={handles.categoryProductTitle}>
+                          {content.nameComplete}
+                        </span>
+                        {referenceId && (
+                          <span
+                            className={`pl5 ${handles.categoryProductReference}`}
+                          >
+                            {referenceId['Value']}
+                          </span>
+                        )}
                       </div>
                       <div
                         className={`flex flex-column w-10 ph5-l ph2 p fl ${handles.categoryInputQuantity}`}
@@ -395,17 +426,15 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     <div className={`${handles.categoryContainer}`}>
       {!componentOnly && (
         <div className={`${handles.textContainer} w-third-l w-100-ns fl-l`}>
-          <div className="flex-grow-1">
-            <h2
-              className={`t-heading-3 mb3 ml5 ml3-ns mt4 ${handles.categoryTitle}`}
-            >
-              {text}
-            </h2>
-            <div
-              className={`t-body lh-copy c-muted-1 mb7 ml3 false ${handles.categoryHelper}`}
-            >
-              {description}
-            </div>
+          <h2
+            className={`t-heading-3 mb3 ml5 ml3-ns mt4 ${handles.categoryTitle}`}
+          >
+            {text}
+          </h2>
+          <div
+            className={`t-body lh-copy c-muted-1 mb7 ml3 false ${handles.categoryHelper}`}
+          >
+            {description}
           </div>
         </div>
       )}
@@ -420,7 +449,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
           </div>
         )}
         {categories && (
-          <div>
+          <div className={`${handles.categoryProductItem}`}>
             <div className="flex flex-row">
               <div
                 className={`flex flex-column w-100 items-end fl pr7 ${handles.categoryButtonAdd}`}

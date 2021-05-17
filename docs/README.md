@@ -25,7 +25,7 @@ _Example of a quick order page without customization_
  }
 ```
 
-Once installed, the app will generate a new route called `/quickorder` for your store, creating the Quickorder custom page that allows bulk orders. 
+Once installed, the app will generate a new route called `/quickorder` for your store, creating the Quickorder custom page that allows bulk orders.
 
 The new page already contains a default template with all blocks exported by the `quickorder` app, meaning that the Quickorder page is ready to be rendered and no further actions are required. However, you can **customize the Quickorder page overwriting the template by creating a brand new one as you wish**. To do so, check the **Advanced configurations** section below.
 
@@ -183,7 +183,7 @@ For example:
 
 ![Copy & Paste](./image/Copy-n-Paste.gif)
 
-:information_source: *Remember that you need to validate the list after pasting it. Validating the Reference IDs will let you know if the selected SKUs are in fact available for purchase.*
+:information_source: _Remember that you need to validate the list after pasting it. Validating the Reference IDs will let you know if the selected SKUs are in fact available for purchase._
 
 ### Upload (`quickorder-upload` block)
 
@@ -196,7 +196,7 @@ The spreadsheet will work in the same way as the list pasted using the Copy/Past
 - `SKU` column = SKU Reference ID (be aware that this is not the SKU ID displayed in your admin's catalog);
 - `Quantity` column = SKU quantity you wish to add to the cart.
 
-:information_source: _Once uploaded, the spreadsheet is then validated. Based on the filled in Reference IDs, Quickorder will confirm whether the SKUs are in fact available for purchase.*
+:information_source: \_Once uploaded, the spreadsheet is then validated. Based on the filled in Reference IDs, Quickorder will confirm whether the SKUs are in fact available for purchase.\*
 
 ### Custom Search Bar (`quickorder-autocomplete` block)
 
@@ -206,7 +206,7 @@ Remember to add each selected item to the cart by clicking on `Add`:
 
 ![One by One](./image/One-by-One.gif)
 
-:information_source: *This option does not require any validation, since selecting the SKUs using a search bar already ensures that they are available to purchase.*
+:information_source: _This option does not require any validation, since selecting the SKUs using a search bar already ensures that they are available to purchase._
 
 ### Categories (`quickorder-categories` block)
 
@@ -216,7 +216,7 @@ The Categories component allows users to choose their desired SKUs and respectiv
 
 Be careful however: this option is only recommended if you don't have more than 50 SKUs for each category in your catalog, otherwise the component will take too long to load and will negatively affect your store's UX.
 
-:information_source: *This scenario also does not require validating the SKUs that you've added to the cart, since selecting them directly from the store's categories tree ensures their availability.*
+:information_source: _This scenario also does not require validating the SKUs that you've added to the cart, since selecting them directly from the store's categories tree ensures their availability._
 
 ## Customization
 
@@ -237,6 +237,10 @@ In order to apply CSS customizations to this and other blocks, follow the instru
 | `categoryHelper`             |
 | `categoryInputQuantity`      |
 | `categoryProductLabel`       |
+| `categoryProductTitle`       |
+| `categoryProductThumb`       |
+| `categoryProductReference`   |
+| `categoryProductItem`        |
 | `categoryTitle`              |
 | `componentContainer`         |
 | `container`                  |
@@ -247,10 +251,14 @@ In order to apply CSS customizations to this and other blocks, follow the instru
 | `downloadLink`               |
 | `inputQuantity`              |
 | `productLabel`               |
+| `productTitle`               |
+| `productSku`                 |
 | `productThumb`               |
 | `reviewBlock`                |
 | `skuSelection`               |
 | `textContainer`              |
+| `textContainerTitle`         |
+| `textContainerDescription`   |
 | `title`                      |
 
 <!-- DOCS-IGNORE:start -->

@@ -301,6 +301,8 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     'componentContainer',
     'reviewBlock',
     'buttonsBlock',
+    'textContainerTitle',
+    'textContainerDescription',
   ] as const
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -308,21 +310,25 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     <div>
       {!componentOnly && (
         <div className={`${handles.textContainer} w-third-l w-100-ns fl-l`}>
-          <div className="flex-grow-1">
-            <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">{text}</h2>
-            <div className="t-body lh-copy c-muted-1 mb7 ml3 false">
-              {description}{' '}
-              {downloadText && (
-                <button
-                  className={`${handles.downloadLink} pointer c-link hover-c-link active-c-link no-underline underline-hover bn bg-transparent pl0`}
-                  onClick={() => {
-                    download()
-                  }}
-                >
-                  {downloadText}
-                </button>
-              )}
-            </div>
+          <h2
+            className={`t-heading-3 mb3 ml5 ml3-ns mt4 ${handles.textContainerTitle}`}
+          >
+            {text}
+          </h2>
+          <div
+            className={`t-body lh-copy c-muted-1 mb7 ml3 false ${handles.textContainerDescription}`}
+          >
+            {description}{' '}
+            {downloadText && (
+              <button
+                className={`${handles.downloadLink} pointer c-link hover-c-link active-c-link no-underline underline-hover bn bg-transparent pl0`}
+                onClick={() => {
+                  download()
+                }}
+              >
+                {downloadText}
+              </button>
+            )}
           </div>
         </div>
       )}

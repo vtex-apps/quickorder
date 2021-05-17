@@ -196,6 +196,8 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
     'componentContainer',
     'reviewBlock',
     'buttonsBlock',
+    'textContainerTitle',
+    'textContainerDescription',
   ] as const
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -225,11 +227,15 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
     <div>
       {!componentOnly && (
         <div className={`${handles.textContainer} w-third-l w-100-ns fl-l`}>
-          <div className="flex-grow-1">
-            <h2 className="t-heading-3 mb3 ml5 ml3-ns mt4">{text}</h2>
-            <div className="t-body lh-copy c-muted-1 mb7 ml3 false">
-              {description}
-            </div>
+          <h2
+            className={`t-heading-3 mb3 ml5 ml3-ns mt4 ${handles.textContainerTitle}`}
+          >
+            {text}
+          </h2>
+          <div
+            className={`t-body lh-copy c-muted-1 mb7 ml3 false ${handles.textContainerDescription}`}
+          >
+            {description}
           </div>
         </div>
       )}
