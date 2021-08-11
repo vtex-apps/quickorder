@@ -21,7 +21,6 @@ const removeDuplicates = (itemList: any) => {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       collection.quantity += item.quantity
       collection.content = `${key},${collection.quantity}`
-      console.info('Collections : ', collection)
     }
   })
 
