@@ -13,8 +13,11 @@ import { useCssHandles } from 'vtex.css-handles'
 import { ExecutionResult, useMutation } from 'react-apollo'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
-import { ParseText, GetText } from './utils'
+import { useOrderItems } from 'vtex.order-items/OrderItems'
+import { useOrderForm } from 'vtex.order-manager/OrderForm'
 import XLSX from 'xlsx'
+
+import { ParseText, GetText, itemsInSystem, getNewItems } from './utils'
 import ReviewBlock from './components/ReviewBlock'
 
 const messages = defineMessages({
@@ -50,6 +53,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     reviewState: false,
     showAddToCart: false,
   })
+
   const [refidLoading, setRefIdLoading] = useState<any>()
   const { reviewItems, reviewState, showAddToCart } = state
 
@@ -64,6 +68,8 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
 
   const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
   const { showToast } = useContext(ToastContext)
+  const { addItem } = useOrderItems()
+  const { orderForm } = useOrderForm()
 
   const translateMessage = (message: MessageDescriptor) => {
     return intl.formatMessage(message)
@@ -75,6 +81,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
 
     return translateMessage(messages.success)
   }
+
   const toastMessage = ({
     success,
     isNewItem,
@@ -90,6 +97,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
           href: '/checkout/#/cart',
         }
       : undefined
+
     showToast({ message, action })
   }
 
@@ -106,13 +114,17 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
 
     const ws = XLSX.utils.json_to_sheet(data, { header: finalHeaders })
     const wb = XLSX.utils.book_new()
+
     XLSX.utils.book_append_sheet(wb, ws, 'SheetJS')
     const exportFileName = `model-quickorder.xls`
+
     XLSX.writeFile(wb, exportFileName)
   }
+
   const onRefidLoading = (data: boolean) => {
     setRefIdLoading(data)
   }
+
   const onReviewItems = (items: any) => {
     if (items) {
       const show =
@@ -128,6 +140,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
         textAreaValue: GetText(items),
       })
     }
+
     return true
   }
 
@@ -154,17 +167,23 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   const processWb = (() => {
     const toJson = function toJson(workbook: any) {
       const result: any = {}
+
       workbook.SheetNames.forEach((sheetName: any) => {
         const roa = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
           header: 1,
         })
+
         if (roa.length) result[sheetName] = roa
       })
+
       return result
     }
+
     return (wb: any) => {
       let output: any = null
+
       output = toJson(wb)
+
       return output
     }
   })()
@@ -172,11 +191,14 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   const doFile = (files: any) => {
     const f = files[0]
     const reader: any = new FileReader()
+
     reader.onload = (e: any) => {
       let data = e.target.result
+
       data = new Uint8Array(data)
       const result = processWb(XLSX.read(data, { type: 'array' }))
       const sheetName = Object.getOwnPropertyNames(result)[0]
+
       result[sheetName].splice(0, 1)
       productsArray = result[sheetName]
       productsArray = productsArray.filter(item => item.length)
@@ -185,9 +207,11 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
         p[1] = (p[1] || '').toString().trim()
       })
     }
+
     reader.onerror = () => {
       // error
     }
+
     reader.readAsArrayBuffer(f)
   }
 
@@ -207,53 +231,71 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   const callAddToCart = async (items: any) => {
     const splitBy = 10
     const tempItems = items
-    const loopCount = Math.floor(items.length / splitBy) + 1
+
+    const existItems = itemsInSystem(orderForm?.items, tempItems)
+    const newItems = getNewItems(orderForm?.items, tempItems)
+
+    const loopCount = Math.floor(newItems.length / splitBy) + 1
+    const loopCountExist = Math.floor(existItems.length / splitBy) + 1
 
     const promises: Array<ExecutionResult<{ addToCart: OrderFormType }>> = []
     // let orderFormData = []
 
-    for (let i = 0; i < loopCount; i++) {
-      const chunk = tempItems.splice(0, splitBy)
-      if (chunk.length) {
-        const mutationChunk = await addToCart({
-          variables: {
-            items: chunk.map((item: any) => {
-              return {
-                ...item,
-              }
-            }),
-          },
-        })
+    if (existItems.length) {
+      for (let i = 0; i < loopCountExist; i++) {
+        const chunk = tempItems.splice(0, splitBy)
 
-        console.log('mutationChunk =>', mutationChunk)
-
-        mutationChunk.data && setOrderForm(mutationChunk.data.addToCart)
-
-        if (
-          mutationChunk.data?.addToCart?.messages?.generalMessages &&
-          mutationChunk.data.addToCart.messages.generalMessages.length
-        ) {
-          mutationChunk.data.addToCart.messages.generalMessages.map(
-            (msg: any) => {
-              return showToast({
-                message: msg.text,
-                action: undefined,
-                duration: 30000,
-              })
-            }
-          )
-        } else {
-          toastMessage({ success: true, isNewItem: true })
+        if (chunk.length) {
+          addItem(chunk)
         }
+      }
+    }
 
-        promises.push(mutationChunk)
+    if (newItems.length > 0) {
+      for (let i = 0; i < loopCount; i++) {
+        const chunk = tempItems.splice(0, splitBy)
+
+        if (chunk.length) {
+          // eslint-disable-next-line no-await-in-loop
+          const mutationChunk = await addToCart({
+            variables: {
+              items: chunk.map((item: any) => {
+                return {
+                  ...item,
+                }
+              }),
+            },
+          })
+
+          console.info('mutationChunk =>', mutationChunk)
+
+          mutationChunk.data && setOrderForm(mutationChunk.data.addToCart)
+
+          if (
+            mutationChunk.data?.addToCart?.messages?.generalMessages &&
+            mutationChunk.data.addToCart.messages.generalMessages.length
+          ) {
+            mutationChunk.data.addToCart.messages.generalMessages.map(
+              (msg: any) => {
+                return showToast({
+                  message: msg.text,
+                  action: undefined,
+                  duration: 30000,
+                })
+              }
+            )
+          } else {
+            toastMessage({ success: true, isNewItem: true })
+          }
+
+          promises.push(mutationChunk)
+        }
       }
     }
 
     Promise.all(promises).catch(() => {
       console.error(mutationError)
       toastMessage({ success: false, isNewItem: false })
-      return
     })
 
     // Update OrderForm from the context
@@ -264,8 +306,10 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
         quantity: item.quantity,
       }
     }
+
     // Send event to pixel-manager
     const pixelEventItems = items.map(adjustSkuItemForPixelEvent)
+
     push({
       event: 'addToCart',
       items: pixelEventItems,
@@ -288,6 +332,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
           seller,
         }
       })
+
     callAddToCart(items)
   }
 
@@ -304,6 +349,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     'textContainerTitle',
     'textContainerDescription',
   ] as const
+
   const handles = useCssHandles(CSS_HANDLES)
 
   return (
@@ -414,7 +460,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
 
 interface MessageDescriptor {
   id: string
-  description?: string | object
+  description?: any
   defaultMessage?: string
 }
 

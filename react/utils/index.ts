@@ -67,3 +67,41 @@ export const ParseText = (textAreaValue: string) => {
 
   return removeDuplicates(items)
 }
+
+/**
+ *
+ * @param orderFormItems
+ * @param itemsList
+ */
+export const itemsInSystem = (orderFormItems, itemsList) => {
+  return itemsList.filter(item =>
+    // eslint-disable-next-line eqeqeq
+    orderFormItems.some(data => data.id == item.id)
+  )
+}
+
+export const getNewItems = (orderFormItems, itemsList) => {
+  return itemsList.filter(
+    item =>
+      // eslint-disable-next-line eqeqeq
+      !orderFormItems.some(data => data.id == item.id)
+  )
+}
+
+// export const groupItems = (orderFormItems, itemsList) => {
+//   const existItems = itemsList.filter(item =>
+//     // eslint-disable-next-line eqeqeq
+//     orderFormItems.some(data => data.id == item.id)
+//   )
+//
+//   const newItems = itemsList.filter(
+//     item =>
+//       // eslint-disable-next-line eqeqeq
+//       !orderFormItems.some(data => data.id == item.id)
+//   )
+//
+//   console.info('Exist Items : ', existItems)
+//   console.info('New Items : ', newItems)
+//
+//   // itemsList.map(data => console.info('messss :', data))
+// }
