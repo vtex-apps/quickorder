@@ -6,4 +6,5 @@ type ItemsRefId {
   refid: String
   availability: String
   sellers: [ItemsSeller]
+  productName: String
 }

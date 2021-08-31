@@ -42,7 +42,7 @@
   "store/quickorder.review.label.lineNumber": "#",
   "store/quickorder.review.label.quantity": "Quantity",
   "store/quickorder.review.label.seller": "Seller",
-  "store/quickorder.review.label.sku": "SKU",
+  "store/quickorder.review.label.sku": "Product Name",
   "store/quickorder.review.label.status": "Status",
   "store/quickorder.skuNotFound": "SKU Not Found",
   "store/quickorder.upload.choose": "choose a file",

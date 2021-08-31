@@ -7,7 +7,6 @@ import {
   IconDelete,
   IconInfo,
   Tooltip,
-  Dropdown,
 } from 'vtex.styleguide'
 import { WrappedComponentProps, injectIntl, defineMessages } from 'react-intl'
 import PropTypes from 'prop-types'
@@ -328,6 +327,8 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
     const { data } = await client.query(query)
 
+    console.info('Data : ', data)
+
     validateRefids(data, reviewed)
     onRefidLoading(false)
   }
@@ -394,21 +395,21 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     })
   }
 
-  const updateLineSeller = (index: number, seller: string) => {
-    const items = reviewItems.map((item: any) => {
-      return item.index === index
-        ? {
-            ...item,
-            seller,
-          }
-        : item
-    })
-
-    setReviewState({
-      ...state,
-      reviewItems: items,
-    })
-  }
+  // const updateLineSeller = (index: number, seller: string) => {
+  //   const items = reviewItems.map((item: any) => {
+  //     return item.index === index
+  //       ? {
+  //           ...item,
+  //           seller,
+  //         }
+  //       : item
+  //   })
+  //
+  //   setReviewState({
+  //     ...state,
+  //     reviewItems: items,
+  //   })
+  // }
 
   const onBlurField = (line: number) => {
     const joinLines = GetText(reviewItems)
@@ -470,37 +471,37 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
           id: 'store/quickorder.review.label.quantity',
         }),
       },
-      seller: {
-        type: 'string',
-        title: intl.formatMessage({
-          id: 'store/quickorder.review.label.seller',
-        }),
-        cellRenderer: ({ rowData }: any) => {
-          if (rowData?.sellers?.length > 1) {
-            return (
-              <div className="mb5">
-                <Dropdown
-                  label="Regular"
-                  options={rowData.sellers.map((item: any) => {
-                    return {
-                      label: item.name,
-                      value: item.id,
-                    }
-                  })}
-                  value={rowData.seller}
-                  onChange={(_: any, v: any) =>
-                    updateLineSeller(rowData.index, v)
-                  }
-                />
-              </div>
-            )
-          }
-
-          return rowData.sellers && rowData.sellers.length
-            ? rowData.sellers[0].name
-            : ''
-        },
-      },
+      // seller: {
+      //   type: 'string',
+      //   title: intl.formatMessage({
+      //     id: 'store/quickorder.review.label.seller',
+      //   }),
+      //   cellRenderer: ({ rowData }: any) => {
+      //     if (rowData?.sellers?.length > 1) {
+      //       return (
+      //         <div className="mb5">
+      //           <Dropdown
+      //             label="Regular"
+      //             options={rowData.sellers.map((item: any) => {
+      //               return {
+      //                 label: item.name,
+      //                 value: item.id,
+      //               }
+      //             })}
+      //             value={rowData.seller}
+      //             onChange={(_: any, v: any) =>
+      //               updateLineSeller(rowData.index, v)
+      //             }
+      //           />
+      //         </div>
+      //       )
+      //     }
+      //
+      //     return rowData.sellers && rowData.sellers.length
+      //       ? rowData.sellers[0].name
+      //       : ''
+      //   },
+      // },
       error: {
         type: 'string',
         title: intl.formatMessage({

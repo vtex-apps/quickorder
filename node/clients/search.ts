@@ -5,6 +5,7 @@ interface RefIdArgs {
   refids: any
   orderFormId: string
 }
+
 interface Items {
   id: string
   quantity: number
@@ -29,7 +30,7 @@ export class Search extends ExternalClient {
 
     const url = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pub/sku/stockkeepingunitidsbyrefids`
 
-    const res = await axios.default.post(url, refids, {
+    const res = await axios.post(url, refids, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `bearer ${this.context.authToken}`,
@@ -58,6 +59,13 @@ export class Search extends ExternalClient {
         )
         result = await Promise.all(promises)
       }
+
+      // if(result.length){
+      //   const promise = await result.map(async (data:{sku: string | number , refid: string, sellers: any})=> this.getSkuById(data))
+      //   const rr = await Promise.all(promise)
+      //   console.info("Data : ",rr)
+      //
+      // }
 
       const orderForm = await this.getOrderForm(orderFormId)
 
@@ -126,7 +134,7 @@ export class Search extends ExternalClient {
       }
     }
     const url = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pvt/sku/stockkeepingunitbyid/${skuId}`
-    const res = await axios.default.get(url, {
+    const res = await axios.get(url, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `bearer ${this.context.authToken}`,
@@ -151,7 +159,7 @@ export class Search extends ExternalClient {
   public sellers = async () => {
     const url = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pvt/seller/list`
 
-    const res = await axios.default.get(url, {
+    const res = await axios.get(url, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `bearer ${this.context.authToken}`,
@@ -174,5 +182,26 @@ export class Search extends ExternalClient {
     }
 
     return result
+  }
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  private getSkuById = async (data: {
+    sku: string | number
+    refid: string
+    sellers: any
+  }) => {
+    if (data?.sku === null) {
+      return {}
+    }
+    const skuByIdUrl = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pvt/sku/stockkeepingunitbyid/${data?.sku}`
+    const res = await axios.get(skuByIdUrl, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `bearer ${this.context.authToken}`,
+      },
+    })
+
+    return res.data ?? {}
   }
 }
