@@ -30,6 +30,7 @@ export const queries = {
       items,
     }
   },
+  // eslint-disable-next-line @typescript-eslint/ban-types
   sellers: async (_: any, __: {}, ctx: Context) => {
     const {
       clients: { search },
