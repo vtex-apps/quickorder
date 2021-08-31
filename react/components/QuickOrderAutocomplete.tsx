@@ -1,13 +1,12 @@
 import React, { useState, useRef } from 'react'
 import { AutocompleteInput } from 'vtex.styleguide'
 import PropTypes from 'prop-types'
-
 import { WrappedComponentProps, injectIntl, defineMessages } from 'react-intl'
-
-import autocomplete from '../queries/autocomplete.gql'
-
+// eslint-disable-next-line no-restricted-imports
 import { uniq } from 'lodash'
 import { useApolloClient } from 'react-apollo'
+
+import autocomplete from '../queries/autocomplete.gql'
 
 const messages = defineMessages({
   placeholder: {
@@ -19,6 +18,7 @@ const messages = defineMessages({
 
 const getImageSrc = (img: string) => {
   const src: any = img ? img.match(/src=["']([^"']+)/) : []
+
   return !!src && src.length ? src[1] : ''
 }
 
@@ -31,12 +31,16 @@ const CustomOption = (props: any) => {
     const index = highlightableText
       .toLowerCase()
       .indexOf(searchTerm.toLowerCase())
+
     if (index === -1) {
       return highlightableText
     }
+
     const prefix = highlightableText.substring(0, index)
     const match = highlightableText.substr(index, searchTerm.length)
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     const suffix = highlightableText.substring(index + match.length)
+
     return (
       <span className="truncate">
         <span className="fw7">{prefix}</span>
@@ -72,6 +76,7 @@ const CustomOption = (props: any) => {
     </button>
   )
 }
+
 interface QuickOrderAutocompleteInt {
   onSelect: any
 }
@@ -90,6 +95,7 @@ const QuickOrderAutocomplete: StorefrontFunctionComponent<WrappedComponentProps 
         query: autocomplete,
         variables: { inputValue: value },
       })
+
       setOptions(
         !!data && !!data.autocomplete && !!data.autocomplete.itemsReturned
           ? data.autocomplete.itemsReturned
@@ -129,20 +135,21 @@ const QuickOrderAutocomplete: StorefrontFunctionComponent<WrappedComponentProps 
   }
 
   const input = {
-    onChange: (term: any) => {
-      if (term) {
+    onChange: (terms: any) => {
+      if (terms) {
         setLoading(true)
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current)
         }
+
         timeoutRef.current = setTimeout(() => {
           setLoading(false)
-          setTerm(term)
-          handleSearch({ value: term })
+          setTerm(terms)
+          handleSearch({ value: terms })
           timeoutRef.current = null
         }, 1000)
       } else {
-        setTerm(term)
+        setTerm(terms)
       }
     },
     onSearch: () => () => {},
@@ -150,6 +157,7 @@ const QuickOrderAutocomplete: StorefrontFunctionComponent<WrappedComponentProps 
     placeholder: intl.formatMessage(messages.placeholder),
     value: term,
   }
+
   return <AutocompleteInput input={input} options={options} />
 }
 
