@@ -208,54 +208,22 @@ export class Search extends ExternalClient {
    * @param sku
    * @param refid
    */
-  private getSkuById = async (sku: string, refid: string) => {
-    if (sku === null) {
-      return {}
-    }
-
+  public searchProductBySkuId = async (sku: string) => {
     const priceBySkuIdUrl = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pub/products/search/?fq=skuId:${sku}`
-    const priceRes = await axios.get(priceBySkuIdUrl, {
+    const res = await axios.get(priceBySkuIdUrl, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `bearer ${this.context.authToken}`,
       },
     })
-
-    const { items, productId, productName } = priceRes.data[0]
-    const { commertialOffer, sellerId, sellerName } = items[0].sellers[0]
-
-    const { AvailableQuantity, IsAvailable } = commertialOffer
-    const price = commertialOffer.SellingPrice
-      ? commertialOffer.SellingPrice
-      : commertialOffer.Price
-      ? commertialOffer.Price
-      : commertialOffer.ListPrice
-    const sellers = [
-      {
-        id: sellerId,
-        name: sellerName,
-      },
-    ]
-
-    return {
-      refid,
-      sku,
-      productId,
-      productName,
-      price,
-      availableQuantity: AvailableQuantity,
-      sellers,
-      availability: IsAvailable ? 'available' : 'unavailable',
-    }
+    return res?.status === 200 && res.data.length > 0? res.data[0]: {}
   }
 
   /**
    *
    * @param refIds
    */
-  public getSkuAvailability = async (refIds: string[]) => {
-    this.sellersList = await this.sellers()
-
+  public getSkusByRefIds = async (refIds: string[]) => {
     const url = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pub/sku/stockkeepingunitidsbyrefids`
     const res = await axios.post(url, refIds, {
       headers: {
@@ -263,31 +231,6 @@ export class Search extends ExternalClient {
         Authorization: `bearer ${this.context.authToken}`,
       },
     })
-
-    let result: any = []
-    const resultStr: any = {}
-
-    if (res.status === 200) {
-      const refs = Object.getOwnPropertyNames(res.data)
-
-      refs.forEach(id => {
-        resultStr[id] = {
-          sku: res.data[id],
-          refid: id,
-          sellers: this.sellersList,
-        }
-        result.push(resultStr[id])
-      })
-
-      if (this.sellersList?.length) {
-        const promises = result.map(async (o: any) =>
-          this.getSkuById(o.sku, o.refid)
-        )
-        result = await Promise.all(promises)
-      }
-
-      return result
-    }
-    return []
+    return res?.status === 200? res.data: {}
   }
 }

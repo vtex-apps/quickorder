@@ -54,8 +54,69 @@ export const queries = {
       clients: { search },
     } = ctx
 
+    // const sellers = await search.sellers()
+
+    const skuIds = await search.getSkusByRefIds(refIds)
+    const refIdsFound = Object.getOwnPropertyNames(skuIds)
+    const skus = refIdsFound.map((rfId: any) => ({
+        skuId: skuIds[rfId],
+        refId: rfId,
+    }))
+
+    const products = await Promise.all(skus.map(async (sku: any) =>
+      search.searchProductBySkuId(sku.skuId)
+    ))
+
+    const allSkus = (products?? []).filter((r: any) => Object.entries(r).length > 0)
+      .map((product: any) => {
+        if((product.items ?? []).length == 0 || (product.items[0]?.sellers ?? []).length == 0){
+          return {}
+        }
+        const { items, productId, productName } = product
+        const { commertialOffer, sellerId, sellerName } = items[0].sellers[0]
+
+        const { AvailableQuantity, IsAvailable } = commertialOffer
+        const price = commertialOffer.SellingPrice
+          ? commertialOffer.SellingPrice
+          : commertialOffer.Price
+          ? commertialOffer.Price
+          : commertialOffer.ListPrice
+
+        const itemId = items[0].itemId
+        const refId = skus.find((sku: any) => sku.skuId === itemId)?.refId
+
+        return {
+          refId,
+          sku: itemId,
+          productId,
+          productName,
+          price,
+          availableQuantity: AvailableQuantity,
+          seller: {
+            id: sellerId,
+            name: sellerName,
+          },
+          availability: IsAvailable ? 'available' : 'unavailable',
+        }
+      })
+
+    const itemsRequested = (refIds?? []).map((refId: string) => {
+      const existing = allSkus.find((s: any) => s.refId == refId)
+      console.log(JSON.stringify(refId))
+      return existing? existing: {
+        refid: refId,
+        sku: null,
+        productId: null,
+        productName: null,
+        price: null,
+        availableQuantity: null,
+        seller: null,
+        availability: 'unavailable'
+      }
+    })
+
     return {
-      items: await search.getSkuAvailability(refIds),
+      items: itemsRequested,
     }
   },
 }

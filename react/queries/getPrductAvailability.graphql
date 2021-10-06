@@ -1,5 +1,5 @@
 query getAvbProduct($refIds: [String]) {
-  getSkuAvailability(refIds: $refIds) @context(provider: "vtex.quickorder") {
+  getSkuAvailability(refIds: $refIds) @context(provider: "sbdsefuat.bulk-order") {
     items {
       refid
       sku

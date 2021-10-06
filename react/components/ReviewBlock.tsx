@@ -22,6 +22,7 @@ import OrderFormQuery from '../queries/orderForm.gql'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import GET_PRODUCT_DATA from '../queries/getPrductAvailability.graphql'
+// import { stubFalse } from 'lodash'
 
 const remove = <IconDelete />
 
@@ -209,70 +210,41 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     let error = false
 
     if (refidData) {
-      const refIdNotFound =
-        !!refidData && !!refidData.getSkuAvailability.items
-          ? refidData.getSkuAvailability.items.filter((item: any) => {
-              return item.sku === null
-            })
-          : []
+      const itemsFromQuery = refidData.getSkuAvailability?.items ?? []
+      const refIdNotFound = itemsFromQuery.filter((item: any) => {
+        return item.sku === null
+      })
 
-      const refIdFound =
-        !!refidData && !!refidData.getSkuAvailability.items
-          ? refidData.getSkuAvailability.items.filter((item: any) => {
-              return item.sku !== null
-            })
-          : []
+      const refIdFound = itemsFromQuery.filter((item: any) => {
+        return item.sku !== null
+      })
 
-      const refNotAvailable =
-        !!refidData && !!refidData.getSkuAvailability.items
-          ? refidData.getSkuAvailability.items.filter((item: any) => {
-              return item.availability !== 'available'
-            })
-          : []
+      const refNotAvailable = itemsFromQuery.filter((item: any) => {
+        return item.availability !== 'available'
+      })
 
       const vtexSku = (item: any) => {
-        let ret: any = null
+        let ret: any = itemsFromQuery.find((curr: any) => {
+          return !!item.sku && item.sku === curr.refid
+        })
 
-        if (!!refidData && !!refidData.getSkuAvailability.items) {
-          ret = refidData.getSkuAvailability.items.find((curr: any) => {
-            return !!item.sku && item.sku === curr.refid
-          })
-          if (!!ret && !!ret.sku) {
-            ret = ret.sku
-          }
-        }
-
-        return ret
+        return ret?.sku
       }
 
       const getPrice = (item: any) => {
-        let ret: any = null
+        let ret: any = itemsFromQuery.find((curr: any) => {
+          return !!item.sku && item.sku === curr.refid
+        })
 
-        if (!!refidData && !!refidData.getSkuAvailability.items) {
-          ret = refidData.getSkuAvailability.items.find((curr: any) => {
-            return !!item.sku && item.sku === curr.refid
-          })
-          if (!!ret && !!ret.price) {
-            ret = ret.price
-          }
-        }
-
-        return ret
+        return ret?.price
       }
 
       const getAvailableQuantity = (item: any) => {
-        let ret: any = null
+        let ret: any = itemsFromQuery.find((curr: any) => {
+          return !!item.sku && item.sku === curr.refid
+        })
 
-        if (!!refidData && !!refidData.getSkuAvailability.items) {
-          ret = refidData.getSkuAvailability.items.find((curr: any) => {
-            return !!item.sku && item.sku === curr.refid
-          })
-          if (!!ret && !!ret.availableQuantity) {
-            ret = ret.availableQuantity
-          }
-        }
-
-        return ret
+        return ret?.availableQuantity
       }
 
       // const getSellers = (item: any) => {
@@ -357,14 +329,18 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       refids = Object.getOwnPropertyNames(refids)
     }
 
-    const query = {
-      query: GET_PRODUCT_DATA,
-      variables: { refIds: refids },
+    try {
+      const { data } = await client.query({
+        query: GET_PRODUCT_DATA,
+        variables: { refIds: refids as string[] },
+      })
+
+      validateRefids(data, reviewed)
+    }
+    catch (error) {
+      console.log(error)
     }
 
-    const { data } = await client.query(query)
-
-    validateRefids(data, reviewed)
     onRefidLoading(false)
   }
 
