@@ -1,6 +1,6 @@
 {
-  "vendor": "vtex",
-  "name": "quickorder",
+  "vendor": "sbdsefuat",
+  "name": "bulk-order",
   "version": "3.2.0",
   "title": "Quickorder",
   "description": "Allow users to add multiple products to the cart at once",
