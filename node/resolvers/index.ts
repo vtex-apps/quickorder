@@ -1,4 +1,3 @@
-
 import {
   fieldResolvers as searchFieldResolvers,
   queries as searchQueries,

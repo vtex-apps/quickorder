@@ -25,11 +25,15 @@ export class Search extends ExternalClient {
     }).name
   }
 
+  /**
+   *
+   * @param refids
+   * @param orderFormId
+   */
   public skuFromRefIds = async ({ refids, orderFormId }: RefIdArgs) => {
     this.sellersList = await this.sellers()
 
     const url = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pub/sku/stockkeepingunitidsbyrefids`
-
     const res = await axios.post(url, refids, {
       headers: {
         'Content-Type': 'application/json',
@@ -60,15 +64,7 @@ export class Search extends ExternalClient {
         result = await Promise.all(promises)
       }
 
-      // if(result.length){
-      //   const promise = await result.map(async (data:{sku: string | number , refid: string, sellers: any})=> this.getSkuById(data))
-      //   const rr = await Promise.all(promise)
-      //   console.info("Data : ",rr)
-      //
-      // }
-
       const orderForm = await this.getOrderForm(orderFormId)
-
       const { items }: any = await this.simulate(result, orderForm)
 
       result = result.map((item: any) => {
@@ -81,6 +77,11 @@ export class Search extends ExternalClient {
     return result
   }
 
+  /**
+   *
+   * @param item
+   * @param items
+   */
   private getAvailability = (item: any, items: any) => {
     const [availabilityItem] = items.filter((curr: any) => {
       return curr.id === item.sku
@@ -88,6 +89,10 @@ export class Search extends ExternalClient {
     return availabilityItem?.availability ?? ''
   }
 
+  /**
+   *
+   * @param orderFormId
+   */
   private getOrderForm = async (orderFormId: string) => {
     return this.http.get(`/api/checkout/pub/orderForm/${orderFormId}`, {
       headers: {
@@ -97,6 +102,11 @@ export class Search extends ExternalClient {
     })
   }
 
+  /**
+   *
+   * @param refids
+   * @param orderForm
+   */
   private simulate = async (refids: [Items], orderForm: any) => {
     const {
       salesChannel,
@@ -125,6 +135,11 @@ export class Search extends ExternalClient {
     )
   }
 
+  /**
+   *
+   * @param skuId
+   * @param refid
+   */
   private sellerBySku = async (skuId: string, refid: string) => {
     if (skuId === null) {
       return {
@@ -140,6 +155,7 @@ export class Search extends ExternalClient {
         Authorization: `bearer ${this.context.authToken}`,
       },
     })
+
     return res.data?.SkuSellers
       ? {
           sku: skuId,
@@ -156,6 +172,9 @@ export class Search extends ExternalClient {
       : []
   }
 
+  /**
+   *
+   */
   public sellers = async () => {
     const url = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pvt/seller/list`
 
@@ -184,24 +203,91 @@ export class Search extends ExternalClient {
     return result
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  private getSkuById = async (data: {
-    sku: string | number
-    refid: string
-    sellers: any
-  }) => {
-    if (data?.sku === null) {
+  /**
+   *
+   * @param sku
+   * @param refid
+   */
+  private getSkuById = async (sku: string, refid: string) => {
+    if (sku === null) {
       return {}
     }
-    const skuByIdUrl = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pvt/sku/stockkeepingunitbyid/${data?.sku}`
-    const res = await axios.get(skuByIdUrl, {
+
+    const priceBySkuIdUrl = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pub/products/search/?fq=skuId:${sku}`
+    const priceRes = await axios.get(priceBySkuIdUrl, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `bearer ${this.context.authToken}`,
       },
     })
 
-    return res.data ?? {}
+    const { items, productId, productName } = priceRes.data[0]
+    const { commertialOffer, sellerId, sellerName } = items[0].sellers[0]
+
+    const { AvailableQuantity, IsAvailable } = commertialOffer
+    const price = commertialOffer.SellingPrice
+      ? commertialOffer.SellingPrice
+      : commertialOffer.Price
+      ? commertialOffer.Price
+      : commertialOffer.ListPrice
+    const sellers = [
+      {
+        id: sellerId,
+        name: sellerName,
+      },
+    ]
+
+    return {
+      refid,
+      sku,
+      productId,
+      productName,
+      price,
+      availableQuantity: AvailableQuantity,
+      sellers,
+      availability: IsAvailable ? 'available' : 'unavailable',
+    }
+  }
+
+  /**
+   *
+   * @param refIds
+   */
+  public getSkuAvailability = async (refIds: string[]) => {
+    this.sellersList = await this.sellers()
+
+    const url = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pub/sku/stockkeepingunitidsbyrefids`
+    const res = await axios.post(url, refIds, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `bearer ${this.context.authToken}`,
+      },
+    })
+
+    let result: any = []
+    const resultStr: any = {}
+
+    if (res.status === 200) {
+      const refs = Object.getOwnPropertyNames(res.data)
+
+      refs.forEach(id => {
+        resultStr[id] = {
+          sku: res.data[id],
+          refid: id,
+          sellers: this.sellersList,
+        }
+        result.push(resultStr[id])
+      })
+
+      if (this.sellersList?.length) {
+        const promises = result.map(async (o: any) =>
+          this.getSkuById(o.sku, o.refid)
+        )
+        result = await Promise.all(promises)
+      }
+
+      return result
+    }
+    return []
   }
 }

@@ -13,8 +13,15 @@ import PropTypes from 'prop-types'
 import { useApolloClient, useQuery } from 'react-apollo'
 
 import { ParseText, GetText } from '../utils'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import getRefIdTranslation from '../queries/refids.gql'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import OrderFormQuery from '../queries/orderForm.gql'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import GET_PRODUCT_DATA from '../queries/getPrductAvailability.graphql'
 
 const remove = <IconDelete />
 
@@ -203,22 +210,22 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
     if (refidData) {
       const refIdNotFound =
-        !!refidData && !!refidData.skuFromRefIds.items
-          ? refidData.skuFromRefIds.items.filter((item: any) => {
+        !!refidData && !!refidData.getSkuAvailability.items
+          ? refidData.getSkuAvailability.items.filter((item: any) => {
               return item.sku === null
             })
           : []
 
       const refIdFound =
-        !!refidData && !!refidData.skuFromRefIds.items
-          ? refidData.skuFromRefIds.items.filter((item: any) => {
+        !!refidData && !!refidData.getSkuAvailability.items
+          ? refidData.getSkuAvailability.items.filter((item: any) => {
               return item.sku !== null
             })
           : []
 
       const refNotAvailable =
-        !!refidData && !!refidData.skuFromRefIds.items
-          ? refidData.skuFromRefIds.items.filter((item: any) => {
+        !!refidData && !!refidData.getSkuAvailability.items
+          ? refidData.getSkuAvailability.items.filter((item: any) => {
               return item.availability !== 'available'
             })
           : []
@@ -226,8 +233,8 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       const vtexSku = (item: any) => {
         let ret: any = null
 
-        if (!!refidData && !!refidData.skuFromRefIds.items) {
-          ret = refidData.skuFromRefIds.items.find((curr: any) => {
+        if (!!refidData && !!refidData.getSkuAvailability.items) {
+          ret = refidData.getSkuAvailability.items.find((curr: any) => {
             return !!item.sku && item.sku === curr.refid
           })
           if (!!ret && !!ret.sku) {
@@ -238,20 +245,50 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         return ret
       }
 
-      const getSellers = (item: any) => {
-        let ret: any = []
+      const getPrice = (item: any) => {
+        let ret: any = null
 
-        if (!!refidData && !!refidData.skuFromRefIds.items) {
-          ret = refidData.skuFromRefIds.items.find((curr: any) => {
+        if (!!refidData && !!refidData.getSkuAvailability.items) {
+          ret = refidData.getSkuAvailability.items.find((curr: any) => {
             return !!item.sku && item.sku === curr.refid
           })
-          if (!!ret && !!ret.sellers) {
-            ret = ret.sellers
+          if (!!ret && !!ret.price) {
+            ret = ret.price
           }
         }
 
         return ret
       }
+
+      const getAvailableQuantity = (item: any) => {
+        let ret: any = null
+
+        if (!!refidData && !!refidData.getSkuAvailability.items) {
+          ret = refidData.getSkuAvailability.items.find((curr: any) => {
+            return !!item.sku && item.sku === curr.refid
+          })
+          if (!!ret && !!ret.availableQuantity) {
+            ret = ret.availableQuantity
+          }
+        }
+
+        return ret
+      }
+
+      // const getSellers = (item: any) => {
+      //   let ret: any = []
+      //
+      //   if (!!refidData && !!refidData.getSkuAvailability.items) {
+      //     ret = refidData.getSkuAvailability.items.find((curr: any) => {
+      //       return !!item.sku && item.sku === curr.refid
+      //     })
+      //     if (!!ret && !!ret.sellers) {
+      //       ret = ret.sellers
+      //     }
+      //   }
+      //
+      //   return ret
+      // }
 
       const errorMsg = (item: any) => {
         let ret: any = null
@@ -277,12 +314,12 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       }
 
       const items = reviewed.map((item: any) => {
-        const sellers = getSellers(item)
+        // const sellers = getSellers(item)
 
         return {
           ...item,
-          sellers: getSellers(item),
-          seller: sellers.length ? sellers[0].id : '1',
+          availableQuantity: getAvailableQuantity(item),
+          price: getPrice(item),
           vtexSku: vtexSku(item),
           error: errorMsg(item),
         }
@@ -321,13 +358,11 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     }
 
     const query = {
-      query: getRefIdTranslation,
-      variables: { refids, orderFormId },
+      query: GET_PRODUCT_DATA,
+      variables: { refIds: refids },
     }
 
     const { data } = await client.query(query)
-
-    console.info('Data : ', data)
 
     validateRefids(data, reviewed)
     onRefidLoading(false)
@@ -470,6 +505,14 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.quantity',
         }),
+      },
+      price: {
+        type: 'string',
+        title: 'Price',
+      },
+      availableQuantity: {
+        type: 'string',
+        title: 'Available Quantity',
       },
       // seller: {
       //   type: 'string',

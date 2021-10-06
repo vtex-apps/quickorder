@@ -9,7 +9,7 @@ export const fieldResolvers = {
 export const queries = {
   skuFromRefIds: async (
     _: any,
-    args: { refids: string; orderFormId: string },
+    args: { refids: [string]; orderFormId: string },
     ctx: Context
   ) => {
     const {
@@ -40,6 +40,22 @@ export const queries = {
     return {
       cacheId: 'sellers',
       items,
+    }
+  },
+  getSkuAvailability: async (
+    _: any,
+    args: { refIds: string[] },
+    ctx: Context
+  ) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const { refIds } = args
+    const {
+      clients: { search },
+    } = ctx
+
+    return {
+      items: await search.getSkuAvailability(refIds),
     }
   },
 }

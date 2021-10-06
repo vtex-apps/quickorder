@@ -70,6 +70,23 @@
         "host": "{{account}}.vtexcommercestable.com.br",
         "path": "/api/catalog_system/pub/sku/stockkeepingunitidsbyrefids"
       }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/catalog_system/pvt/seller/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/catalog_system/pub/products/search/*"
+      }
+    },
+    {
+      "name": "POWER_USER_DS"
     }
   ],
   "settingsSchema": {},

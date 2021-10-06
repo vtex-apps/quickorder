@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Added the Avble qty for bulk order.
 - Fixed the duplicate sku addition
 
 ## [3.2.0] - 2021-05-17
