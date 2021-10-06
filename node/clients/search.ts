@@ -221,14 +221,8 @@ export class Search extends ExternalClient {
       },
     })
 
-    // console.log('Res Data :',priceRes.data[0].items)
-
-    // console.log('URL : ', priceBySkuIdUrl)
-
     const { items, productId, productName } = priceRes.data[0]
     const { commertialOffer, sellerId, sellerName } = items[0].sellers[0]
-
-    // console.log("commertialOffer: ",commertialOffer)
 
     const { AvailableQuantity, IsAvailable } = commertialOffer
     const price = commertialOffer.SellingPrice
