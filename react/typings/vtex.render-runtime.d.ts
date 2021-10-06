@@ -25,13 +25,14 @@ declare module 'vtex.render-runtime' {
   }
 
   export const ChildBlock: ComponentType<ChildBlockProps>
-  export const useChildBlock = function({ id: string }): object {}
+  export const useChildBlock = function({ id: string }): any {}
 
   export const Helmet: ReactElement
   export const Link: ReactType
   export const NoSSR: ReactElement
   export const RenderContextConsumer: ReactElement
   export const canUseDOM: boolean
+  // eslint-disable-next-line @typescript-eslint/ban-types
   export const withRuntimeContext: <TOriginalProps extends {}>(
     Component: ComponentType<TOriginalProps & RenderContextProps>
   ) => ComponentType<TOriginalProps>

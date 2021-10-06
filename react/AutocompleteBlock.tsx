@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useState, useContext } from 'react'
 import {
   FormattedMessage,
@@ -13,9 +12,10 @@ import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import PropTypes from 'prop-types'
-import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
 import { useCssHandles } from 'vtex.css-handles'
 import { useApolloClient, useMutation } from 'react-apollo'
+
+import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
 import productQuery from './queries/product.gql'
 import './global.css'
 
@@ -44,6 +44,7 @@ const messages = defineMessages({
 })
 
 const AutocompleteBlock: StorefrontFunctionComponent<any &
+  // eslint-disable-next-line react/prop-types
   WrappedComponentProps> = ({ text, description, componentOnly, intl }) => {
   const client = useApolloClient()
   const { showToast } = useContext(ToastContext)
@@ -64,18 +65,23 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
   const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
 
   const translateMessage = (message: MessageDescriptor) => {
+    // eslint-disable-next-line react/prop-types
     return intl.formatMessage(message)
   }
+
   const resolveToastMessage = (success: boolean, isNewItem: boolean) => {
     if (!success) return translateMessage(messages.error)
     if (!isNewItem) return translateMessage(messages.duplicate)
 
     return translateMessage(messages.success)
   }
+
   const toastMessage = (arg: any) => {
     let message
     let action
+
     if (typeof arg === 'string') {
+      // eslint-disable-next-line react/prop-types
       message = intl.formatMessage(messages[arg])
     } else {
       const {
@@ -85,6 +91,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
         success: boolean
         isNewItem: boolean
       } = arg
+
       message = resolveToastMessage(success, isNewItem)
 
       action = success
@@ -94,6 +101,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
           }
         : undefined
     }
+
     showToast({ message, action })
   }
 
@@ -120,6 +128,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     if (error) {
       console.error(error)
       toastMessage({ success: false, isNewItem: false })
+
       return
     }
 
@@ -132,8 +141,10 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
         quantity: item.quantity,
       }
     }
+
     // Send event to pixel-manager
     const pixelEventItems = items.map(adjustSkuItemForPixelEvent)
+
     push({
       event: 'addToCart',
       items: pixelEventItems,
@@ -168,6 +179,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
         query: productQuery,
         variables: { slug: product[0].slug },
       }
+
       const { data } = await client.query(query)
       const selectedSku =
         data.product.items.length === 1 ? data.product.items[0].itemId : null
@@ -177,6 +189,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
             return item.sellerDefault === true
           }).sellerId
         : null
+
       setState({
         ...state,
         selectedItem:
@@ -185,6 +198,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
             : null,
       })
     }
+
     return true
   }
 
@@ -196,11 +210,13 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
       .sellers.find((s: any) => {
         return s.sellerDefault === true
       }).sellerId
+
     const newSelected = {
       ...selectedItem,
       seller,
       value,
     }
+
     setState({
       ...state,
       selectedItem: newSelected,
@@ -220,6 +236,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
           seller: selectedItem.seller,
         },
       ]
+
       callAddToCart(items)
     } else {
       toastMessage('selectSku')
@@ -240,6 +257,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     'componentContainer',
     'buttonClear',
   ] as const
+
   const handles = useCssHandles(CSS_HANDLES)
 
   return (
@@ -341,7 +359,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
                         callAddUnitToCart()
                       }}
                     >
-                      <FormattedMessage id="store/quickorder.autocomplete.addButton" />
+                      <FormattedMessage id="store/quickorder.addToCart" />
                     </Button>
                   </div>
                   <div
@@ -371,6 +389,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     </div>
   )
 }
+
 AutocompleteBlock.propTypes = {
   componentOnly: PropTypes.bool,
   text: PropTypes.string,
@@ -385,7 +404,7 @@ interface OrderFormContext {
 
 interface MessageDescriptor {
   id: string
-  description?: string | object
+  description?: Record<string, unknown>
   defaultMessage?: string
 }
 
