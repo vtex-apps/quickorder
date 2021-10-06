@@ -6,6 +6,14 @@ declare module 'vtex.styleguide' {
   export const ToastContext: Context<{ showToast: any }>
   export const IconClear: ComponentType<InputProps>
   export const Tag: ComponentType<InputProps>
+  export const Table: ComponentType<InputProps>
+  export const ButtonWithIcon: ComponentType<InputProps>
+  export const IconDelete: ComponentType<InputProps>
+  export const IconInfo: ComponentType<InputProps>
+  export const Tooltip: ComponentType<InputProps>
+  export const Spinner: ComponentType<InputProps>
+  export const Textarea: ComponentType<InputProps>
+  export const Dropzone: ComponentType<InputProps>
   export const AutocompleteInput: ComponentType<InputProps>
 
   interface InputProps {

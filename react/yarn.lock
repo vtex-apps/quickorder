@@ -5577,10 +5577,6 @@ verror@1.10.0:
   version "1.8.0"
   resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.pixel-manager@1.8.0/public/@types/vtex.pixel-manager#3ccfcb1927614984a5f7a3e5650c8c8d2bd3c0f4"
 
-"vtex.quickorder@https://pdp1--sbdsefuat.myvtex.com/_v/private/typings/linked/v1/vtex.quickorder@3.2.0+build1630351003/public/@types/vtex.quickorder":
-  version "3.2.0"
-  resolved "https://pdp1--sbdsefuat.myvtex.com/_v/private/typings/linked/v1/vtex.quickorder@3.2.0+build1630351003/public/@types/vtex.quickorder#ef4b373b0d40e7cf04121573f0df1ac68e4a0790"
-
 "vtex.render-runtime@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.131.0/public/@types/vtex.render-runtime":
   version "8.131.0"
   resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.131.0/public/@types/vtex.render-runtime#dcc88828e3d65ecb4e7538a3623a4b1ddd77e034"

@@ -1,0 +1,17 @@
+query getAvbProduct($refIds: [String]) {
+  getSkuAvailability(refIds: $refIds) @context(provider: "vtex.quickorder") {
+    items {
+      refid
+      sku
+      productId
+      availability
+      sellers {
+        id
+        name
+      }
+      availableQuantity
+      productName
+      price
+    }
+  }
+}

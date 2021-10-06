@@ -175,6 +175,8 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
   }
 
   const onReviewItems = (items: any) => {
+    console.info('Data in the onReviewItems : ', items)
+
     if (items) {
       const show =
         items.filter((item: any) => {
