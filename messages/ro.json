@@ -37,6 +37,7 @@
   "store/quickorder.category.addButton": "Adauga articole in carucior",
   "store/quickorder.category.loading": "Se incarca...",
   "store/quickorder.category.noneSelection": "Introduceti cantitati",
+  "store/quickorder.category.noProducts": "Fără produse",
   "store/quickorder.invalidPattern": "Pattern Invalid",
   "store/quickorder.review.label.content": "Continut",
   "store/quickorder.review.label.lineNumber": "#",

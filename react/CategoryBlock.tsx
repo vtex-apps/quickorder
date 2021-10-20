@@ -355,7 +355,9 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
         )
       })
     ) : (
-      <span>No products</span>
+      <span>
+        <FormattedMessage id="store/quickorder.category.noProducts" />
+      </span>
     )
   }
 

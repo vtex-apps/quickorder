@@ -37,6 +37,7 @@
   "store/quickorder.category.addButton": "Add items to Cart",
   "store/quickorder.category.loading": "Loading...",
   "store/quickorder.category.noneSelection": "Enter some quantity on the items",
+  "store/quickorder.category.noProducts": "Sin productos",
   "store/quickorder.invalidPattern": "Formato no válido",
   "store/quickorder.review.label.content": "Contenido",
   "store/quickorder.review.label.lineNumber": "#",
