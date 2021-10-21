@@ -37,6 +37,7 @@
   "store/quickorder.category.addButton": "Adicionar itens ao carrinho",
   "store/quickorder.category.loading": "Carregando...",
   "store/quickorder.category.noneSelection": "Informe alguma quantidade nos items desejados",
+  "store/quickorder.category.noProducts": "Sem produtos",
   "store/quickorder.invalidPattern": "Formato inválido",
   "store/quickorder.review.label.content": "Conteúdo",
   "store/quickorder.review.label.lineNumber": "#",
