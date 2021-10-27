@@ -82,7 +82,6 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
 
   const toastMessage = (arg: any) => {
     let message
-    let action
 
     if (typeof arg === 'string') {
       message = intl.formatMessage(messages[arg])
@@ -96,16 +95,9 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
       } = arg
 
       message = resolveToastMessage(success, isNewItem)
-
-      action = success
-        ? {
-            label: intl.formatMessage(messages.seeCart),
-            href: '/checkout/#/cart',
-          }
-        : undefined
     }
 
-    showToast({ message, action })
+    showToast({ message })
   }
 
   const _setState = (props: any) => {

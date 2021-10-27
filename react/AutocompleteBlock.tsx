@@ -78,7 +78,6 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
 
   const toastMessage = (arg: any) => {
     let message
-    let action
 
     if (typeof arg === 'string') {
       // eslint-disable-next-line react/prop-types
@@ -93,16 +92,9 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
       } = arg
 
       message = resolveToastMessage(success, isNewItem)
-
-      action = success
-        ? {
-            label: translateMessage(messages.seeCart),
-            href: '/checkout/#/cart',
-          }
-        : undefined
     }
 
-    showToast({ message, action })
+    showToast({ message })
   }
 
   const clear = () => {

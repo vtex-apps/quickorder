@@ -209,7 +209,7 @@ export class Search extends ExternalClient {
    * @param refid
    */
   public searchProductBySkuId = async (sku: string) => {
-    const priceBySkuIdUrl = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pub/products/search/?fq=skuId:${sku}`
+    const priceBySkuIdUrl = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pub/products/search?fq=skuId:${sku}`
     const res = await axios.get(priceBySkuIdUrl, {
       headers: {
         'Content-Type': 'application/json',

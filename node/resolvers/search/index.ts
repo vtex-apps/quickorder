@@ -61,7 +61,7 @@ export const queries = {
     const skus = refIdsFound.map((rfId: any) => ({
         skuId: skuIds[rfId],
         refId: rfId,
-    }))
+    })).filter((sku: any) => sku.skuId != null)
 
     const products = await Promise.all(skus.map(async (sku: any) =>
       search.searchProductBySkuId(sku.skuId)
@@ -83,10 +83,10 @@ export const queries = {
           : commertialOffer.ListPrice
 
         const itemId = items[0].itemId
-        const refId = skus.find((sku: any) => sku.skuId === itemId)?.refId
+        const skuRefId = skus.find((sku: any) => sku.skuId === itemId)?.refId
 
         return {
-          refId,
+          refid: skuRefId,
           sku: itemId,
           productId,
           productName,
@@ -101,8 +101,7 @@ export const queries = {
       })
 
     const itemsRequested = (refIds?? []).map((refId: string) => {
-      const existing = allSkus.find((s: any) => s.refId == refId)
-      console.log(JSON.stringify(refId))
+      const existing = allSkus.find((s: any) => s.refid === refId)
       return existing? existing: {
         refid: refId,
         sku: null,
