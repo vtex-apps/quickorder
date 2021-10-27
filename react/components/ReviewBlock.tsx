@@ -24,6 +24,8 @@ import OrderFormQuery from '../queries/orderForm.gql'
 import GET_PRODUCT_DATA from '../queries/getPrductAvailability.graphql'
 // import { stubFalse } from 'lodash'
 
+import GET_ACCOUNT_INFO from '../queries/orderSoldToAccount.graphql'
+
 const remove = <IconDelete />
 
 const messages = defineMessages({
@@ -134,7 +136,7 @@ const messages = defineMessages({
   },
 })
 
-let orderFormId = ''
+// let orderFormId = ''
 
 const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   onReviewItems,
@@ -144,12 +146,25 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 }: any) => {
   const client = useApolloClient()
 
-  const { data: orderFormData } = useQuery<{
-    orderForm
-  }>(OrderFormQuery, {
-    ssr: false,
-    skip: !!orderFormId,
-  })
+  // const { data: orderFormData } = useQuery<{
+  //   orderForm
+  // }>(OrderFormQuery, {
+  //   ssr: false,
+  //   skip: !!orderFormId,
+  // })
+
+  const { data: accountData, loading: accountDataLoading } = useQuery(
+    GET_ACCOUNT_INFO,
+    {
+      notifyOnNetworkStatusChange: true,
+      ssr: false,
+    }
+  )
+
+  const customerNumber = accountData?.getOrderSoldToAccount?.customerNumber ?? ''
+  const targetSystem = accountData?.getOrderSoldToAccount?.targetSystem ?? ''
+  const salesOrganizationCode =
+    accountData?.getOrderSoldToAccount?.salesOrganizationCode ?? ''
 
   const [state, setReviewState] = useState<any>({
     reviewItems:
@@ -163,9 +178,9 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
   const { reviewItems } = state
 
-  if (orderFormData?.orderForm?.orderFormId) {
-    orderFormId = orderFormData.orderForm.orderFormId
-  }
+  // if (orderFormData?.orderForm?.orderFormId) {
+  //   orderFormId = orderFormData.orderForm.orderFormId
+  // }
 
   const errorMessage = {
     'store/quickorder.valid': messages.valid,
@@ -332,7 +347,12 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     try {
       const { data } = await client.query({
         query: GET_PRODUCT_DATA,
-        variables: { refIds: refids as string[] },
+        variables: {
+          refIds: refids as string[],
+          customerNumber,
+          targetSystem,
+          salesOrganizationCode,
+        },
       })
 
       validateRefids(data, reviewed)
@@ -567,7 +587,9 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     },
   }
 
-  return (
+  return accountDataLoading ? (
+    <div />
+  ) : (
     <div>
       <Table schema={tableSchema} items={reviewItems} fullWidth />
     </div>

@@ -6,5 +6,5 @@ type Query {
     @cacheControl(scope: SEGMENT, maxAge: MEDIUM)
     @withSegment
 
-  getSkuAvailability(refIds: [String]): AvailableItems
+  getSkuAvailability(refIds: [String], customerNumber: String, targetSystem: String, salesOrganizationCode: String): AvailableItems
 }
