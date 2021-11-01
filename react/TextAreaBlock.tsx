@@ -220,7 +220,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
     'textContainerTitle',
     'textContainerDescription',
     'activeAddToCart',
-    'inactiveAddToCart'
+    'inactiveAddToCart',
   ] as const
 
   const handles = useCssHandles(CSS_HANDLES)
@@ -316,7 +316,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
                 <FormattedMessage id="store/quickorder.back" />
               </Button>
               {refidLoading && <Spinner />}
-              {showAddToCart? (
+              {showAddToCart ? (
                 <div className={handles.activeAddToCart}>
                   <Button
                     variation="primary"
@@ -329,7 +329,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
                     <FormattedMessage id="store/quickorder.addToCart" />
                   </Button>
                 </div>
-              ): (
+              ) : (
                 <div className={handles.inactiveAddToCart}>
                   <Button
                     variation="primary"

@@ -116,7 +116,7 @@ export const queries = {
 
     const allSkus = (products?? []).filter((r: any) => Object.entries(r).length > 0)
       .map((product: any) => {
-        if((product.items ?? []).length == 0 || (product.items[0]?.sellers ?? []).length == 0){
+        if((product.items ?? []).length === 0 || (product.items[0]?.sellers ?? []).length === 0){
           return {}
         }
         const { items, productId, productName } = product
@@ -131,7 +131,7 @@ export const queries = {
 
         if(targetSystem.toUpperCase() === 'SAP') {
           const productPlants = plantList.find((plant: any) => plant?.refId?.toLowerCase() === skuRefId.toLowerCase())?.plants?.map((plant: any) => plant.plant) ?? []
-          const selectedProductWearhouses = allInventoryByItemIds.find((inventory: any) => inventory.skuId == itemId)?.balance?.filter((wearhouse: any) => productPlants.includes(wearhouse.warehouseName)) ?? []
+          const selectedProductWearhouses = allInventoryByItemIds.find((inventory: any) => inventory.skuId === itemId)?.balance?.filter((wearhouse: any) => productPlants.includes(wearhouse.warehouseName)) ?? []
           availableQuantity = selectedProductWearhouses.reduce((partialSum: number, current: any) => partialSum + current?.totalQuantity ?? 0, 0)
           isAvailable = selectedProductWearhouses.length > 0
         }
@@ -182,9 +182,6 @@ export const queries = {
         availability: 'unavailable'
       }
     })
-
-
-    console.log(JSON.stringify(itemsRequested, null, 2))
 
     return {
       items: itemsRequested,

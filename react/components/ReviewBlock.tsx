@@ -23,7 +23,6 @@ import OrderFormQuery from '../queries/orderForm.gql'
 // @ts-ignore
 import GET_PRODUCT_DATA from '../queries/getPrductAvailability.graphql'
 // import { stubFalse } from 'lodash'
-
 import GET_ACCOUNT_INFO from '../queries/orderSoldToAccount.graphql'
 
 const remove = <IconDelete />
@@ -266,6 +265,14 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         return ret?.availableQuantity
       }
 
+      const getAvailability = (item: any) => {
+        let ret: any = itemsFromQuery.find((curr: any) => {
+          return !!item.sku && item.sku === curr.refid
+        })
+
+        return ret?.availability
+      }
+
       // const getSellers = (item: any) => {
       //   let ret: any = []
       //
@@ -313,6 +320,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
           price: getPrice(item),
           vtexSku: vtexSku(item),
           error: errorMsg(item),
+          availability: getAvailability(item),
         }
       })
 
