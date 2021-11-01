@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.0.4] - 2021-11-01
+
+## [0.0.3] - 2021-10-29
+
 ### Fixed
 
 - Added the Avble qty for bulk order.
