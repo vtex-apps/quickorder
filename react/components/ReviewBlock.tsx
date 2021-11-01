@@ -22,6 +22,8 @@ import OrderFormQuery from '../queries/orderForm.gql'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import GET_PRODUCT_DATA from '../queries/getPrductAvailability.graphql'
+// import { stubFalse } from 'lodash'
+import GET_ACCOUNT_INFO from '../queries/orderSoldToAccount.graphql'
 
 const remove = <IconDelete />
 
@@ -31,6 +33,9 @@ const messages = defineMessages({
   },
   available: {
     id: 'store/quickorder.available',
+  },
+  unavailable: {
+    id: 'store/quickorder.unavailable'
   },
   invalidPattern: {
     id: 'store/quickorder.invalidPattern',
@@ -133,7 +138,7 @@ const messages = defineMessages({
   },
 })
 
-let orderFormId = ''
+// let orderFormId = ''
 
 const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   onReviewItems,
@@ -143,12 +148,25 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 }: any) => {
   const client = useApolloClient()
 
-  const { data: orderFormData } = useQuery<{
-    orderForm
-  }>(OrderFormQuery, {
-    ssr: false,
-    skip: !!orderFormId,
-  })
+  // const { data: orderFormData } = useQuery<{
+  //   orderForm
+  // }>(OrderFormQuery, {
+  //   ssr: false,
+  //   skip: !!orderFormId,
+  // })
+
+  const { data: accountData, loading: accountDataLoading } = useQuery(
+    GET_ACCOUNT_INFO,
+    {
+      notifyOnNetworkStatusChange: true,
+      ssr: false,
+    }
+  )
+
+  const customerNumber = accountData?.getOrderSoldToAccount?.customerNumber ?? ''
+  const targetSystem = accountData?.getOrderSoldToAccount?.targetSystem ?? ''
+  const salesOrganizationCode =
+    accountData?.getOrderSoldToAccount?.salesOrganizationCode ?? ''
 
   const [state, setReviewState] = useState<any>({
     reviewItems:
@@ -162,13 +180,14 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
   const { reviewItems } = state
 
-  if (orderFormData?.orderForm?.orderFormId) {
-    orderFormId = orderFormData.orderForm.orderFormId
-  }
+  // if (orderFormData?.orderForm?.orderFormId) {
+  //   orderFormId = orderFormData.orderForm.orderFormId
+  // }
 
   const errorMessage = {
     'store/quickorder.valid': messages.valid,
     'store/quickorder.available': messages.available,
+    'store/quickorder.unavailable': messages.unavailable,
     'store/quickorder.invalidPattern': messages.invalidPattern,
     'store/quickorder.skuNotFound': messages.skuNotFound,
     'store/quickorder.withoutStock': messages.withoutStock,
@@ -209,70 +228,49 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     let error = false
 
     if (refidData) {
-      const refIdNotFound =
-        !!refidData && !!refidData.getSkuAvailability.items
-          ? refidData.getSkuAvailability.items.filter((item: any) => {
-              return item.sku === null
-            })
-          : []
+      const itemsFromQuery = refidData.getSkuAvailability?.items ?? []
+      const refIdNotFound = itemsFromQuery.filter((item: any) => {
+        return item.sku === null
+      })
 
-      const refIdFound =
-        !!refidData && !!refidData.getSkuAvailability.items
-          ? refidData.getSkuAvailability.items.filter((item: any) => {
-              return item.sku !== null
-            })
-          : []
+      const refIdFound = itemsFromQuery.filter((item: any) => {
+        return item.sku !== null
+      })
 
-      const refNotAvailable =
-        !!refidData && !!refidData.getSkuAvailability.items
-          ? refidData.getSkuAvailability.items.filter((item: any) => {
-              return item.availability !== 'available'
-            })
-          : []
+      const refNotAvailable = itemsFromQuery.filter((item: any) => {
+        return item.availability !== 'available'
+      })
 
       const vtexSku = (item: any) => {
-        let ret: any = null
+        let ret: any = itemsFromQuery.find((curr: any) => {
+          return !!item.sku && item.sku === curr.refid
+        })
 
-        if (!!refidData && !!refidData.getSkuAvailability.items) {
-          ret = refidData.getSkuAvailability.items.find((curr: any) => {
-            return !!item.sku && item.sku === curr.refid
-          })
-          if (!!ret && !!ret.sku) {
-            ret = ret.sku
-          }
-        }
-
-        return ret
+        return ret?.sku
       }
 
       const getPrice = (item: any) => {
-        let ret: any = null
+        let ret: any = itemsFromQuery.find((curr: any) => {
+          return !!item.sku && item.sku === curr.refid
+        })
 
-        if (!!refidData && !!refidData.getSkuAvailability.items) {
-          ret = refidData.getSkuAvailability.items.find((curr: any) => {
-            return !!item.sku && item.sku === curr.refid
-          })
-          if (!!ret && !!ret.price) {
-            ret = ret.price
-          }
-        }
-
-        return ret
+        return ret?.price
       }
 
       const getAvailableQuantity = (item: any) => {
-        let ret: any = null
+        let ret: any = itemsFromQuery.find((curr: any) => {
+          return !!item.sku && item.sku === curr.refid
+        })
 
-        if (!!refidData && !!refidData.getSkuAvailability.items) {
-          ret = refidData.getSkuAvailability.items.find((curr: any) => {
-            return !!item.sku && item.sku === curr.refid
-          })
-          if (!!ret && !!ret.availableQuantity) {
-            ret = ret.availableQuantity
-          }
-        }
+        return ret?.availableQuantity
+      }
 
-        return ret
+      const getAvailability = (item: any) => {
+        let ret: any = itemsFromQuery.find((curr: any) => {
+          return !!item.sku && item.sku === curr.refid
+        })
+
+        return ret?.availability
       }
 
       // const getSellers = (item: any) => {
@@ -322,6 +320,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
           price: getPrice(item),
           vtexSku: vtexSku(item),
           error: errorMsg(item),
+          availability: getAvailability(item),
         }
       })
 
@@ -357,14 +356,23 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       refids = Object.getOwnPropertyNames(refids)
     }
 
-    const query = {
-      query: GET_PRODUCT_DATA,
-      variables: { refIds: refids },
+    try {
+      const { data } = await client.query({
+        query: GET_PRODUCT_DATA,
+        variables: {
+          refIds: refids as string[],
+          customerNumber,
+          targetSystem,
+          salesOrganizationCode,
+        },
+      })
+
+      validateRefids(data, reviewed)
+    }
+    catch (error) {
+      console.log(error)
     }
 
-    const { data } = await client.query(query)
-
-    validateRefids(data, reviewed)
     onRefidLoading(false)
   }
 
@@ -553,7 +561,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         cellRenderer: ({ cellData, rowData }: any) => {
           if (rowData.error) {
             const text = intl.formatMessage(
-              errorMessage[cellData || 'store/quickorder.valid']
+              errorMessage[cellData !== null && cellData !== void 0 ? cellData : 'store/quickorder.valid']
             )
 
             return (
@@ -591,7 +599,9 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     },
   }
 
-  return (
+  return accountDataLoading ? (
+    <div />
+  ) : (
     <div>
       <Table schema={tableSchema} items={reviewItems} fullWidth />
     </div>

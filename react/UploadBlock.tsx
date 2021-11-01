@@ -91,14 +91,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   }) => {
     const message = resolveToastMessage(success, isNewItem)
 
-    const action = success
-      ? {
-          label: translateMessage(messages.seeCart),
-          href: '/checkout/#/cart',
-        }
-      : undefined
-
-    showToast({ message, action })
+    showToast({ message })
   }
 
   const download = () => {
@@ -129,7 +122,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     if (items) {
       const show =
         items.filter((item: any) => {
-          return !item.vtexSku
+          return !item.vtexSku || item.availability !== 'available'
         }).length === 0
 
       setState({
@@ -348,6 +341,8 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     'buttonsBlock',
     'textContainerTitle',
     'textContainerDescription',
+    'inactiveAddToCart',
+    'inactiveAddToCart'
   ] as const
 
   const handles = useCssHandles(CSS_HANDLES)
@@ -438,17 +433,29 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
                 <FormattedMessage id="store/quickorder.back" />
               </Button>
               {refidLoading && <Spinner />}
-              {showAddToCart && (
-                <Button
-                  variation="primary"
-                  size="small"
-                  isLoading={mutationLoading}
-                  onClick={() => {
-                    addToCartUpload()
-                  }}
-                >
-                  <FormattedMessage id="store/quickorder.addToCart" />
-                </Button>
+              {showAddToCart ? (
+                <div className={handles.inactiveAddToCart}>
+                  <Button
+                    variation="primary"
+                    size="small"
+                    isLoading={mutationLoading}
+                    onClick={() => {
+                      addToCartUpload()
+                    }}
+                  >
+                    <FormattedMessage id="store/quickorder.addToCart" />
+                  </Button>
+                </div>
+              ): (
+                <div className={handles.inactiveAddToCart}>
+                  <Button
+                    variation="primary"
+                    size="small"
+                    isLoading={mutationLoading}
+                  >
+                    <FormattedMessage id="store/quickorder.addToCart" />
+                  </Button>
+                </div>
               )}
             </div>
           </div>

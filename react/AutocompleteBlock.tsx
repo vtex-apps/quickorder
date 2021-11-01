@@ -5,7 +5,7 @@ import {
   injectIntl,
   defineMessages,
 } from 'react-intl'
-import { Button, Tag, Input, ToastContext, IconClear } from 'vtex.styleguide'
+import { Button, Tag, Input, ToastContext, IconClear, Spinner } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
 import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
@@ -13,10 +13,12 @@ import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import PropTypes from 'prop-types'
 import { useCssHandles } from 'vtex.css-handles'
-import { useApolloClient, useMutation } from 'react-apollo'
+import { useApolloClient, useMutation, useQuery } from 'react-apollo'
 
 import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
 import productQuery from './queries/product.gql'
+import GET_ACCOUNT_INFO from './queries/orderSoldToAccount.graphql'
+import GET_PRODUCT_DATA from './queries/getPrductAvailability.graphql'
 import './global.css'
 
 const messages = defineMessages({
@@ -52,6 +54,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     selectedItem: null,
     quantitySelected: 1,
   })
+  const [hideAddToCart, setHideAddToCart] = useState(true)
 
   const [addToCart, { error, loading }] = useMutation<
     { addToCart: OrderFormType },
@@ -63,6 +66,19 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
   const { promptOnCustomEvent } = settings
 
   const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
+
+  const { data: accountData, loading: accountDataLoading } = useQuery(
+    GET_ACCOUNT_INFO,
+    {
+      notifyOnNetworkStatusChange: true,
+      ssr: false,
+    }
+  )
+
+  const customerNumber = accountData?.getOrderSoldToAccount?.customerNumber ?? ''
+  const targetSystem = accountData?.getOrderSoldToAccount?.targetSystem ?? ''
+  const salesOrganizationCode =
+    accountData?.getOrderSoldToAccount?.salesOrganizationCode ?? ''
 
   const translateMessage = (message: MessageDescriptor) => {
     // eslint-disable-next-line react/prop-types
@@ -78,7 +94,6 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
 
   const toastMessage = (arg: any) => {
     let message
-    let action
 
     if (typeof arg === 'string') {
       // eslint-disable-next-line react/prop-types
@@ -93,16 +108,9 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
       } = arg
 
       message = resolveToastMessage(success, isNewItem)
-
-      action = success
-        ? {
-            label: translateMessage(messages.seeCart),
-            href: '/checkout/#/cart',
-          }
-        : undefined
     }
 
-    showToast({ message, action })
+    showToast({ message })
   }
 
   const clear = () => {
@@ -190,6 +198,37 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
           }).sellerId
         : null
 
+      // validate product
+      const refId = (data?.product?.items[0]?.referenceId ?? []).find((ref: any) => ref.Key === 'RefId')?.Value ?? ''
+      try {
+        const { data: productInfo } = await client.query({
+          query: GET_PRODUCT_DATA,
+          variables: {
+            refIds: [refId] as string[],
+            customerNumber,
+            targetSystem,
+            salesOrganizationCode,
+          },
+        })
+
+        if (productInfo) {
+          const itemsFromQuery = productInfo.getSkuAvailability?.items ?? []
+          const refIdNotFound = itemsFromQuery.filter((item: any) => {
+            return item.sku === null
+          })
+
+          const refNotAvailable = itemsFromQuery.filter((item: any) => {
+            return item.availability !== 'available'
+          })
+
+          if (itemsFromQuery.length > 0 && refIdNotFound.length === 0 && refNotAvailable.length === 0) {
+            setHideAddToCart(false)
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+
       setState({
         ...state,
         selectedItem:
@@ -256,11 +295,12 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     'textContainerDescription',
     'componentContainer',
     'buttonClear',
+    'inactiveAddToCart',
   ] as const
 
   const handles = useCssHandles(CSS_HANDLES)
 
-  return (
+  return accountDataLoading ? <Spinner /> :(
     <div>
       {!componentOnly && (
         <div className={`${handles.textContainer} w-third-l w-100-ns fl-l`}>
@@ -348,6 +388,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
                       }}
                     />
                   </div>
+                  { !hideAddToCart? (
                   <div
                     className={`flex flex-column w-40 fl ${handles.buttonAdd}`}
                   >
@@ -362,6 +403,16 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
                       <FormattedMessage id="store/quickorder.addToCart" />
                     </Button>
                   </div>
+                  ): (
+                      <div className={`flex flex-column w-40 fl ${handles.inactiveAddToCart}`}>
+                        <Button
+                          variation="primary"
+                          size="small"
+                        >
+                          <FormattedMessage id="store/quickorder.addToCart" />
+                        </Button>
+                    </div>)
+                  }
                   <div
                     className={`flex flex-column w-20 fl ${handles.buttonClear}`}
                   >
