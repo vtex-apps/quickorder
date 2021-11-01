@@ -35,6 +35,9 @@ const messages = defineMessages({
   available: {
     id: 'store/quickorder.available',
   },
+  unavailable: {
+    id: 'store/quickorder.unavailable'
+  },
   invalidPattern: {
     id: 'store/quickorder.invalidPattern',
   },
@@ -185,6 +188,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   const errorMessage = {
     'store/quickorder.valid': messages.valid,
     'store/quickorder.available': messages.available,
+    'store/quickorder.unavailable': messages.unavailable,
     'store/quickorder.invalidPattern': messages.invalidPattern,
     'store/quickorder.skuNotFound': messages.skuNotFound,
     'store/quickorder.withoutStock': messages.withoutStock,
@@ -549,7 +553,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         cellRenderer: ({ cellData, rowData }: any) => {
           if (rowData.error) {
             const text = intl.formatMessage(
-              errorMessage[cellData || 'store/quickorder.valid']
+              errorMessage[cellData !== null && cellData !== void 0 ? cellData : 'store/quickorder.valid']
             )
 
             return (

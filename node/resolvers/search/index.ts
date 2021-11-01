@@ -127,11 +127,13 @@ export const queries = {
         const { commertialOffer, sellerId, sellerName } = items[0].sellers[0]
 
         let availableQuantity = 0
+        let isAvailable = false
 
         if(targetSystem.toUpperCase() === 'SAP') {
           const productPlants = plantList.find((plant: any) => plant?.refId?.toLowerCase() === skuRefId.toLowerCase())?.plants?.map((plant: any) => plant.plant) ?? []
           const selectedProductWearhouses = allInventoryByItemIds.find((inventory: any) => inventory.skuId == itemId)?.balance?.filter((wearhouse: any) => productPlants.includes(wearhouse.warehouseName)) ?? []
           availableQuantity = selectedProductWearhouses.reduce((partialSum: number, current: any) => partialSum + current?.totalQuantity ?? 0, 0)
+          isAvailable = selectedProductWearhouses.length > 0
         }
         else if(targetSystem.toUpperCase() === 'JDE') {
           const { AvailableQuantity } = commertialOffer
@@ -143,6 +145,7 @@ export const queries = {
           )
 
           availableQuantity = (brandDataMatch?.trade === productBrand) ? AvailableQuantity: 0
+          isAvailable = brandDataMatch?.trade === productBrand
         }
 
         const price = commertialOffer.SellingPrice
@@ -162,7 +165,7 @@ export const queries = {
             id: sellerId,
             name: sellerName,
           },
-          availability: availableQuantity > 0 ? 'available' : 'unavailable',
+          availability: isAvailable ? 'available' : 'unavailable',
         }
       })
 

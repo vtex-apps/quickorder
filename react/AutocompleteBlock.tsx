@@ -182,6 +182,8 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
           }).sellerId
         : null
 
+      // validate product
+
       setState({
         ...state,
         selectedItem:
