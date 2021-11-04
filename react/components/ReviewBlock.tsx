@@ -273,6 +273,14 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         return ret?.availability
       }
 
+      const getSeller = (item: any) => {
+        let ret: any = itemsFromQuery.find((curr: any) => {
+          return !!item.sku && item.sku === curr.refid
+        })
+
+        return ret?.seller
+      }
+
       // const getSellers = (item: any) => {
       //   let ret: any = []
       //
@@ -321,6 +329,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
           vtexSku: vtexSku(item),
           error: errorMsg(item),
           availability: getAvailability(item),
+          seller: getSeller(item)?.id
         }
       })
 
@@ -514,14 +523,14 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
           id: 'store/quickorder.review.label.quantity',
         }),
       },
-      price: {
-        type: 'string',
-        title: 'Price',
-      },
-      availableQuantity: {
-        type: 'string',
-        title: 'Available Quantity',
-      },
+      // price: {
+      //   type: 'string',
+      //   title: 'Price',
+      // },
+      // availableQuantity: {
+      //   type: 'string',
+      //   title: 'Available Quantity',
+      // },
       // seller: {
       //   type: 'string',
       //   title: intl.formatMessage({
