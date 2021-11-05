@@ -165,8 +165,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
   const customerNumber =
     accountData?.getOrderSoldToAccount?.customerNumber ?? ''
-  const targetSystem =
-    accountData?.getOrderSoldToAccount?.targetSystem ?? ''
+  const targetSystem = accountData?.getOrderSoldToAccount?.targetSystem ?? ''
   const salesOrganizationCode =
     accountData?.getOrderSoldToAccount?.salesOrganizationCode ?? ''
 
@@ -244,7 +243,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       })
 
       const vtexSku = (item: any) => {
-        let ret: any = itemsFromQuery.find((curr: any) => {
+        const ret: any = itemsFromQuery.find((curr: any) => {
           return !!item.sku && item.sku === curr.refid
         })
 
@@ -252,7 +251,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       }
 
       const getPrice = (item: any) => {
-        let ret: any = itemsFromQuery.find((curr: any) => {
+        const ret: any = itemsFromQuery.find((curr: any) => {
           return !!item.sku && item.sku === curr.refid
         })
 
@@ -260,7 +259,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       }
 
       const getAvailableQuantity = (item: any) => {
-        let ret: any = itemsFromQuery.find((curr: any) => {
+        const ret: any = itemsFromQuery.find((curr: any) => {
           return !!item.sku && item.sku === curr.refid
         })
 
@@ -268,7 +267,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       }
 
       const getAvailability = (item: any) => {
-        let ret: any = itemsFromQuery.find((curr: any) => {
+        const ret: any = itemsFromQuery.find((curr: any) => {
           return !!item.sku && item.sku === curr.refid
         })
 
@@ -276,7 +275,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       }
 
       const getSeller = (item: any) => {
-        let ret: any = itemsFromQuery.find((curr: any) => {
+        const ret: any = itemsFromQuery.find((curr: any) => {
           return !!item.sku && item.sku === curr.refid
         })
 
@@ -331,7 +330,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
           vtexSku: vtexSku(item),
           error: errorMsg(item),
           availability: getAvailability(item),
-          seller: getSeller(item)?.id
+          seller: getSeller(item)?.id,
         }
       })
 
@@ -379,8 +378,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       })
 
       validateRefids(data, reviewed)
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error)
     }
 
@@ -573,7 +571,9 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
           if (rowData.error) {
             const text = intl.formatMessage(
               errorMessage[
-                cellData !== null && cellData !== void 0 ? cellData : 'store/quickorder.valid']
+                cellData !== null && cellData !== void 0
+                  ? cellData
+                  : 'store/quickorder.valid']
             )
 
             return (

@@ -342,7 +342,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     'textContainerTitle',
     'textContainerDescription',
     'inactiveAddToCart',
-    'inactiveAddToCart'
+    'inactiveAddToCart',
   ] as const
 
   const handles = useCssHandles(CSS_HANDLES)
@@ -446,7 +446,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
                     <FormattedMessage id="store/quickorder.addToCart" />
                   </Button>
                 </div>
-              ): (
+              ) : (
                 <div className={handles.inactiveAddToCart}>
                   <Button
                     variation="primary"
