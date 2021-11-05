@@ -1,7 +1,6 @@
 import { UserInputError } from '@vtex/api'
 
 import { resolvers as refidsResolvers } from './refids'
-
 import {
   BRAND_CLIENT_ACRONYM,
   BRAND_CLIENT_SCHEMA,
@@ -56,7 +55,12 @@ export const queries = {
   },
   getSkuAvailability: async (
     _: any,
-    args: { refIds: string[], customerNumber: string, targetSystem: string, salesOrganizationCode: string },
+    args: {
+      refIds: string[]
+      customerNumber: string
+      targetSystem: string
+      salesOrganizationCode: string
+    },
     ctx: Context
   ) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -68,55 +72,68 @@ export const queries = {
 
     const skuIds = await search.getSkusByRefIds(refIds)
     const refIdsFound = Object.getOwnPropertyNames(skuIds)
-    const skus = refIdsFound.map((rfId: any) => ({
+    const skus = refIdsFound
+      .map((rfId: any) => ({
         skuId: skuIds[rfId],
         refId: rfId,
-    })).filter((sku: any) => sku.skuId != null)
+      }))
+      .filter((sku: any) => sku.skuId != null)
 
-    const products = await Promise.all(skus.map(async (sku: any) =>
-      search.searchProductBySkuId(sku.skuId)
-    ))
+    const products = await Promise.all(
+      skus.map(async (sku: any) => search.searchProductBySkuId(sku.skuId))
+    )
 
-    const plants = await Promise.all(refIds.map((refId: string) => {
-      const where = `skuRefId=${refId} ${
-        salesOrganizationCode
-          ? `AND salesOrganizationCode=${salesOrganizationCode}`
-          : ''
-      }`
+    const plants = await Promise.all(
+      refIds.map((refId: string) => {
+        const where = `skuRefId=${refId} ${
+          salesOrganizationCode
+            ? `AND salesOrganizationCode=${salesOrganizationCode}`
+            : ''
+        }`
 
-      return masterdata.searchDocumentsWithPaginationInfo<SalesOrgPlant>({
-        dataEntity: PLANT_ACRONYM,
-        schema: PLANT_SCHEMA,
-        fields: PLANT_FIELDS,
-        where,
-        pagination: { pageSize: 100, page: 1 },
+        return masterdata.searchDocumentsWithPaginationInfo<SalesOrgPlant>({
+          dataEntity: PLANT_ACRONYM,
+          schema: PLANT_SCHEMA,
+          fields: PLANT_FIELDS,
+          where,
+          pagination: { pageSize: 100, page: 1 },
+        })
       })
-    }))
+    )
 
     const plantList = refIds.map((refId: string, index: number) => {
       return {
-        refId: refId,
-        plants: plants[index]?.data ?? []
+        refId,
+        plants: plants[index]?.data ?? [],
       }
     })
 
-    const brands = await masterdata.searchDocumentsWithPaginationInfo<BrandForClients>({
+    const brands = await masterdata.searchDocumentsWithPaginationInfo<
+      BrandForClients
+    >({
       dataEntity: BRAND_CLIENT_ACRONYM,
       schema: BRAND_CLIENT_SCHEMA,
       fields: BRNAD_CLIENT_FIELDS,
-      where: `(user=${customerNumber ?? ''} AND targetSystem=${targetSystem ?? ''})`,
+      where: `(user=${customerNumber ?? ''} AND targetSystem=${targetSystem ??
+        ''})`,
       pagination: { pageSize: 100, page: 1 },
     })
 
     const brandsList = brands?.data ?? []
 
-    const allInventoryByItemIds = await Promise.all((Object.values(skuIds ?? {}) as string[] ?? []).map((skuId: string) => {
-      return catalog.inventoryBySkuId(skuId)
-    }))
+    const allInventoryByItemIds = await Promise.all(
+      ((Object.values(skuIds ?? {}) as string[]) ?? []).map((skuId: string) => {
+        return catalog.inventoryBySkuId(skuId)
+      })
+    )
 
-    const allSkus = (products?? []).filter((r: any) => Object.entries(r).length > 0)
+    const allSkus = (products ?? [])
+      .filter((r: any) => Object.entries(r).length > 0)
       .map((product: any) => {
-        if((product.items ?? []).length === 0 || (product.items[0]?.sellers ?? []).length === 0){
+        if (
+          (product.items ?? []).length === 0 ||
+          (product.items[0]?.sellers ?? []).length === 0
+        ) {
           return {}
         }
         const { items, productId, productName } = product
@@ -128,14 +145,30 @@ export const queries = {
 
         let availableQuantity = 0
         let isAvailable = false
+        const unitMultiplier =
+          items.find((item: any) => item)?.unitMultiplier ?? 1
 
-        if(targetSystem.toUpperCase() === 'SAP') {
-          const productPlants = plantList.find((plant: any) => plant?.refId?.toLowerCase() === skuRefId.toLowerCase())?.plants?.map((plant: any) => plant.plant) ?? []
-          const selectedProductWearhouses = allInventoryByItemIds.find((inventory: any) => inventory.skuId === itemId)?.balance?.filter((wearhouse: any) => productPlants.includes(wearhouse.warehouseName)) ?? []
-          availableQuantity = selectedProductWearhouses.reduce((partialSum: number, current: any) => partialSum + current?.totalQuantity ?? 0, 0)
+        if (targetSystem.toUpperCase() === 'SAP') {
+          const productPlants =
+            plantList
+              .find(
+                (plant: any) =>
+                  plant?.refId?.toLowerCase() === skuRefId.toLowerCase()
+              )
+              ?.plants?.map((plant: any) => plant.plant) ?? []
+          const selectedProductWearhouses =
+            allInventoryByItemIds
+              .find((inventory: any) => inventory.skuId === itemId)
+              ?.balance?.filter((wearhouse: any) =>
+                productPlants.includes(wearhouse.warehouseName)
+              ) ?? []
+          availableQuantity = selectedProductWearhouses.reduce(
+            (partialSum: number, current: { totalQuantity: number }) =>
+              partialSum + current?.totalQuantity ?? 0,
+            0
+          )
           isAvailable = selectedProductWearhouses.length > 0
-        }
-        else if(targetSystem.toUpperCase() === 'JDE') {
+        } else if (targetSystem.toUpperCase() === 'JDE') {
           const { AvailableQuantity } = commertialOffer
 
           const productBrand = product.brand
@@ -144,7 +177,8 @@ export const queries = {
             (data: any) => data.trade === productBrand
           )
 
-          availableQuantity = (brandDataMatch?.trade === productBrand) ? AvailableQuantity: 0
+          availableQuantity =
+            brandDataMatch?.trade === productBrand ? AvailableQuantity : 0
           isAvailable = brandDataMatch?.trade === productBrand
         }
 
@@ -160,27 +194,30 @@ export const queries = {
           productId,
           productName,
           price,
-          availableQuantity: availableQuantity,
+          availableQuantity,
           seller: {
             id: sellerId,
             name: sellerName,
           },
           availability: isAvailable ? 'available' : 'unavailable',
+          unitMultiplier,
         }
       })
 
-    const itemsRequested = (refIds?? []).map((refId: string) => {
+    const itemsRequested = (refIds ?? []).map((refId: string) => {
       const existing = allSkus.find((s: any) => s.refid === refId)
-      return existing? existing: {
-        refid: refId,
-        sku: null,
-        productId: null,
-        productName: null,
-        price: null,
-        availableQuantity: null,
-        seller: null,
-        availability: 'unavailable'
-      }
+      return (
+        existing || {
+          refid: refId,
+          sku: null,
+          productId: null,
+          productName: null,
+          price: null,
+          availableQuantity: null,
+          seller: null,
+          availability: 'unavailable',
+        }
+      )
     })
 
     return {

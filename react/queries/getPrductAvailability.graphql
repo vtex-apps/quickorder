@@ -1,5 +1,15 @@
-query getAvbProduct($refIds: [String], $customerNumber: String, $targetSystem: String, $salesOrganizationCode: String) {
-  getSkuAvailability(refIds: $refIds, customerNumber: $customerNumber, targetSystem: $targetSystem, salesOrganizationCode: $salesOrganizationCode) @context(provider: "sbdsefuat.bulk-order") {
+query getAvbProduct(
+  $refIds: [String]
+  $customerNumber: String
+  $targetSystem: String
+  $salesOrganizationCode: String
+) {
+  getSkuAvailability(
+    refIds: $refIds
+    customerNumber: $customerNumber
+    targetSystem: $targetSystem
+    salesOrganizationCode: $salesOrganizationCode
+  ) @context(provider: "sbdsefuat.bulk-order") {
     items {
       refid
       sku
@@ -12,6 +22,7 @@ query getAvbProduct($refIds: [String], $customerNumber: String, $targetSystem: S
       availableQuantity
       productName
       price
+      unitMultiplier
     }
   }
 }

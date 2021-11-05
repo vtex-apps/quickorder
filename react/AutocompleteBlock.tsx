@@ -5,7 +5,14 @@ import {
   injectIntl,
   defineMessages,
 } from 'react-intl'
-import { Button, Tag, Input, ToastContext, IconClear, Spinner } from 'vtex.styleguide'
+import {
+  Button,
+  Tag,
+  ToastContext,
+  IconClear,
+  Spinner,
+  NumericStepper,
+} from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
 import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
@@ -54,6 +61,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     selectedItem: null,
     quantitySelected: 1,
   })
+
   const [hideAddToCart, setHideAddToCart] = useState(true)
 
   const [addToCart, { error, loading }] = useMutation<
@@ -75,7 +83,9 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     }
   )
 
-  const customerNumber = accountData?.getOrderSoldToAccount?.customerNumber ?? ''
+  const customerNumber =
+    accountData?.getOrderSoldToAccount?.customerNumber ?? ''
+
   const targetSystem = accountData?.getOrderSoldToAccount?.targetSystem ?? ''
   const salesOrganizationCode =
     accountData?.getOrderSoldToAccount?.salesOrganizationCode ?? ''
@@ -199,7 +209,11 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
         : null
 
       // validate product
-      const refId = (data?.product?.items[0]?.referenceId ?? []).find((ref: any) => ref.Key === 'RefId')?.Value ?? ''
+      const refId =
+        (data?.product?.items[0]?.referenceId ?? []).find(
+          (ref: any) => ref.Key === 'RefId'
+        )?.Value ?? ''
+
       try {
         const { data: productInfo } = await client.query({
           query: GET_PRODUCT_DATA,
@@ -221,12 +235,16 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
             return item.availability !== 'available'
           })
 
-          if (itemsFromQuery.length > 0 && refIdNotFound.length === 0 && refNotAvailable.length === 0) {
+          if (
+            itemsFromQuery.length > 0 &&
+            refIdNotFound.length === 0 &&
+            refNotAvailable.length === 0
+          ) {
             setHideAddToCart(false)
           }
         }
-      } catch (error) {
-        console.log(error)
+      } catch (err) {
+        console.error(err)
       }
 
       setState({
@@ -300,10 +318,57 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
 
   const handles = useCssHandles(CSS_HANDLES)
 
-  return accountDataLoading ? <Spinner /> :(
-    <div>
+  const numberValidator = (minQty: number, unit: number, value: number) => {
+    const actualQty = value * unit
+    const adjustedQty =
+      minQty % unit === 0
+        ? actualQty < minQty
+          ? minQty
+          : actualQty
+        : actualQty < minQty
+        ? minQty + (unit - (minQty % unit))
+        : actualQty
+
+    return adjustedQty / unit
+  }
+
+  const numStepper = (itemSelected: any, selectedQuantity: number) => {
+    const minQty =
+      itemSelected.data.product.properties
+        .find(
+          (property: { name: string }) =>
+            property.name === 'Minimum Order Quantity'
+        )
+        ?.values.find(value => value) ?? 1
+
+    const unit =
+      itemSelected.data.product.items.find(item => item)?.unitMultiplier ?? 1
+
+    return (
+      <div>
+        <NumericStepper
+          size="small"
+          minValue={1}
+          value={numberValidator(minQty, unit, selectedQuantity)}
+          unitMultiplier={unit}
+          maxValue={9999999}
+          onChange={(e: any) => {
+            setState({
+              ...state,
+              quantitySelected: e.value,
+            })
+          }}
+        />
+      </div>
+    )
+  }
+
+  return accountDataLoading ? (
+    <Spinner />
+  ) : (
+    <div className="flex">
       {!componentOnly && (
-        <div className={`${handles.textContainer} w-third-l w-100-ns fl-l`}>
+        <div className={`${handles.textContainer} w-20-l w-100-ns fl-l`}>
           <h2
             className={`${handles.textContainerTitle} t-heading-3 mb3 ml5 ml3-ns mt4`}
           >
@@ -318,7 +383,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
       )}
       <div
         className={`${handles.componentContainer} ${
-          !componentOnly ? 'w-two-thirds-l w-100-ns fr-l' : ''
+          !componentOnly ? 'w-80-l w-100-ns fr-l flex' : ''
         }`}
       >
         <div className="w-100 mb5">
@@ -326,7 +391,10 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
             {!selectedItem && <QuickOrderAutocomplete onSelect={onSelect} />}
             {!!selectedItem && (
               <div>
-                <div className="w-two-thirds-l w-100-ns fl-l">
+                <div
+                  className="w-one-thirds-l w-100-ns fl-l"
+                  style={{ maxWidth: '430px', width: '100%' }}
+                >
                   <div
                     className={`flex flex-column w-10 fl ${handles.productThumb}`}
                   >
@@ -372,47 +440,39 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
                       )}
                   </div>
                 </div>
-                <div className="w-third-l w-100-ns fr-l">
+                <div
+                  className="w-two-thirds-l w-100-ns fr-l"
+                  style={{ maxWidth: '430px', width: '100%' }}
+                >
                   <div
                     className={`flex flex-column w-40 ph5-l ph2 p fl ${handles.inputQuantity}`}
                   >
-                    <Input
-                      value={quantitySelected}
-                      size="small"
-                      type="number"
-                      onChange={(e: any) => {
-                        setState({
-                          ...state,
-                          quantitySelected: e.target.value,
-                        })
-                      }}
-                    />
+                    {numStepper(selectedItem, quantitySelected)}
                   </div>
-                  { !hideAddToCart? (
-                  <div
-                    className={`flex flex-column w-40 fl ${handles.buttonAdd}`}
-                  >
-                    <Button
-                      variation="primary"
-                      size="small"
-                      isLoading={loading}
-                      onClick={() => {
-                        callAddUnitToCart()
-                      }}
+                  {!hideAddToCart ? (
+                    <div
+                      className={`flex flex-column w-40 fl ${handles.buttonAdd}`}
                     >
-                      <FormattedMessage id="store/quickorder.addToCart" />
-                    </Button>
-                  </div>
-                  ): (
-                      <div className={`flex flex-column w-40 fl ${handles.inactiveAddToCart}`}>
-                        <Button
-                          variation="primary"
-                          size="small"
-                        >
-                          <FormattedMessage id="store/quickorder.addToCart" />
-                        </Button>
-                    </div>)
-                  }
+                      <Button
+                        variation="primary"
+                        size="small"
+                        isLoading={loading}
+                        onClick={() => {
+                          callAddUnitToCart()
+                        }}
+                      >
+                        <FormattedMessage id="store/quickorder.addToCart" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div
+                      className={`flex flex-column w-40 fl ${handles.inactiveAddToCart}`}
+                    >
+                      <Button variation="primary" size="small">
+                        <FormattedMessage id="store/quickorder.addToCart" />
+                      </Button>
+                    </div>
+                  )}
                   <div
                     className={`flex flex-column w-20 fl ${handles.buttonClear}`}
                   >

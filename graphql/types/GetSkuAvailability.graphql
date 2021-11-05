@@ -10,4 +10,5 @@ type AvailableItem {
   availableQuantity: String
   productName: String
   price: Float
+  unitMultiplier: Int
 }
