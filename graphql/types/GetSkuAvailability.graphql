@@ -6,7 +6,7 @@ type AvailableItem {
   sku: String
   productId: String
   availability: String
-  sellers: [ItemsSeller]
+  seller: ItemsSeller
   availableQuantity: String
   productName: String
   price: Float

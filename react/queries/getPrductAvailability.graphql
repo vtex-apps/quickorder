@@ -5,7 +5,7 @@ query getAvbProduct($refIds: [String], $customerNumber: String, $targetSystem: S
       sku
       productId
       availability
-      sellers {
+      seller {
         id
         name
       }
