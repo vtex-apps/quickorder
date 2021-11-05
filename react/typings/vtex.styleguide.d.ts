@@ -15,6 +15,7 @@ declare module 'vtex.styleguide' {
   export const Textarea: ComponentType<InputProps>
   export const Dropzone: ComponentType<InputProps>
   export const AutocompleteInput: ComponentType<InputProps>
+  export const Collapsible: ComponentType<InputProps>
   export const NumericStepper: ComponentType<NumericStepperProps>
 
   interface InputProps {

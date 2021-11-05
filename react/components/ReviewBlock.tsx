@@ -35,7 +35,7 @@ const messages = defineMessages({
     id: 'store/quickorder.available',
   },
   unavailable: {
-    id: 'store/quickorder.unavailable'
+    id: 'store/quickorder.unavailable',
   },
   invalidPattern: {
     id: 'store/quickorder.invalidPattern',
@@ -163,8 +163,10 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     }
   )
 
-  const customerNumber = accountData?.getOrderSoldToAccount?.customerNumber ?? ''
-  const targetSystem = accountData?.getOrderSoldToAccount?.targetSystem ?? ''
+  const customerNumber =
+    accountData?.getOrderSoldToAccount?.customerNumber ?? ''
+  const targetSystem =
+    accountData?.getOrderSoldToAccount?.targetSystem ?? ''
   const salesOrganizationCode =
     accountData?.getOrderSoldToAccount?.salesOrganizationCode ?? ''
 
@@ -379,7 +381,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       validateRefids(data, reviewed)
     }
     catch (error) {
-      console.log(error)
+      console.error(error)
     }
 
     onRefidLoading(false)
@@ -570,7 +572,8 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         cellRenderer: ({ cellData, rowData }: any) => {
           if (rowData.error) {
             const text = intl.formatMessage(
-              errorMessage[cellData !== null && cellData !== void 0 ? cellData : 'store/quickorder.valid']
+              errorMessage[
+                cellData !== null && cellData !== void 0 ? cellData : 'store/quickorder.valid']
             )
 
             return (
