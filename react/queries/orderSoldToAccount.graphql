@@ -1,0 +1,9 @@
+query OrderSoldToAccount($orderFormId: String) {
+  getOrderSoldToAccount(orderFormId: $orderFormId) {
+    cacheId
+    customerNumber
+    targetSystem
+    receiverName
+    salesOrganizationCode
+  }
+}

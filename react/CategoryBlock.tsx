@@ -82,7 +82,6 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
 
   const toastMessage = (arg: any) => {
     let message
-    let action
 
     if (typeof arg === 'string') {
       message = intl.formatMessage(messages[arg])
@@ -96,16 +95,9 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
       } = arg
 
       message = resolveToastMessage(success, isNewItem)
-
-      action = success
-        ? {
-            label: intl.formatMessage(messages.seeCart),
-            href: '/checkout/#/cart',
-          }
-        : undefined
     }
 
-    showToast({ message, action })
+    showToast({ message })
   }
 
   const _setState = (props: any) => {
@@ -276,6 +268,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
   const thumb = (url: string) => {
     const td = url.split('/')
     const ids = td[td.indexOf('ids') + 1]
+
     return url.replace(ids, `${ids}-50-50`)
   }
 
@@ -286,7 +279,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
           <div key={`ifany_${i}`}>
             {b.items.length
               ? b.items.map((content: any) => {
-                  console.log('Content =>', content)
+                  console.info('Content =>', content)
                   const [referenceId] = content.referenceId
                   const [image] = content.images
 
@@ -305,6 +298,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
                             width="50"
                             height="50"
                             className={`pr5 ${handles.categoryProductThumb}`}
+                            alt={image.imageLabel}
                           />
                         )}
                         <span className={handles.categoryProductTitle}>
@@ -314,7 +308,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
                           <span
                             className={`pl5 ${handles.categoryProductReference}`}
                           >
-                            {referenceId['Value']}
+                            {referenceId.Value}
                           </span>
                         )}
                       </div>

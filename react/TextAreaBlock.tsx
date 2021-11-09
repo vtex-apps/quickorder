@@ -1,11 +1,11 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import {
-  FormattedMessage,
   defineMessages,
-  WrappedComponentProps,
+  FormattedMessage,
   injectIntl,
+  WrappedComponentProps,
 } from 'react-intl'
-import { Button, Textarea, ToastContext, Spinner } from 'vtex.styleguide'
+import { Button, Spinner, Textarea, ToastContext } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
 import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
@@ -13,9 +13,11 @@ import { useCssHandles } from 'vtex.css-handles'
 import { useMutation } from 'react-apollo'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
+import { useOrderItems } from 'vtex.order-items/OrderItems'
+import { useOrderForm } from 'vtex.order-manager/OrderForm'
 
 import ReviewBlock from './components/ReviewBlock'
-import { ParseText, GetText } from './utils'
+import { getNewItems, GetText, itemsInSystem, ParseText } from './utils'
 
 const messages = defineMessages({
   success: {
@@ -66,6 +68,8 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
 
   const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
   const { showToast } = useContext(ToastContext)
+  const { addItem } = useOrderItems()
+  const { orderForm } = useOrderForm()
 
   const translateMessage = (message: MessageDescriptor) => {
     return intl.formatMessage(message)
@@ -77,6 +81,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
 
     return translateMessage(messages.success)
   }
+
   const toastMessage = ({
     success,
     isNewItem,
@@ -86,75 +91,91 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
   }) => {
     const message = resolveToastMessage(success, isNewItem)
 
-    const action = success
-      ? {
-          label: translateMessage(messages.seeCart),
-          href: '/checkout/#/cart',
-        }
-      : undefined
-    showToast({ message, action })
+    showToast({ message })
   }
 
   const callAddToCart = async (items: any) => {
-    const mutationResult = await addToCart({
-      variables: {
-        items: items.map((item: any) => {
-          return {
-            ...item,
-          }
-        }),
-      },
-    })
+    const existItems = itemsInSystem(orderForm?.items, items)
+    const newItems = getNewItems(orderForm?.items, items)
 
-    if (mutationError) {
-      console.error(mutationError)
-      toastMessage({ success: false, isNewItem: false })
-      return
-    }
+    if (existItems.length > 0) {
+      addItem(existItems)
 
-    // Update OrderForm from the context
-    mutationResult.data && setOrderForm(mutationResult.data.addToCart)
-
-    const adjustSkuItemForPixelEvent = (item: any) => {
-      return {
-        skuId: item.id,
-        quantity: item.quantity,
+      if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
+        showInstallPrompt()
       }
-    }
-    // Send event to pixel-manager
-    const pixelEventItems = items.map(adjustSkuItemForPixelEvent)
-    push({
-      event: 'addToCart',
-      items: pixelEventItems,
-    })
 
-    if (
-      mutationResult.data?.addToCart?.messages?.generalMessages &&
-      mutationResult.data.addToCart.messages.generalMessages.length
-    ) {
-      mutationResult.data.addToCart.messages.generalMessages.map((msg: any) => {
-        return showToast({
-          message: msg.text,
-          action: undefined,
-          duration: 30000,
-        })
-      })
-    } else {
       toastMessage({ success: true, isNewItem: true })
     }
 
-    if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
-      showInstallPrompt()
+    if (newItems.length > 0) {
+      const mutationResult = await addToCart({
+        variables: {
+          items: newItems.map((item: any) => {
+            return {
+              ...item,
+            }
+          }),
+        },
+      })
+
+      if (mutationError) {
+        console.error(mutationError)
+        toastMessage({ success: false, isNewItem: false })
+
+        return
+      }
+
+      // Update OrderForm from the context
+      mutationResult.data && setOrderForm(mutationResult.data.addToCart)
+
+      const adjustSkuItemForPixelEvent = (item: any) => {
+        return {
+          skuId: item.id,
+          quantity: item.quantity,
+        }
+      }
+
+      // Send event to pixel-manager
+      const pixelEventItems = items.map(adjustSkuItemForPixelEvent)
+
+      push({
+        event: 'addToCart',
+        items: pixelEventItems,
+      })
+
+      if (
+        mutationResult.data?.addToCart?.messages?.generalMessages &&
+        mutationResult.data.addToCart.messages.generalMessages.length
+      ) {
+        mutationResult.data.addToCart.messages.generalMessages.map(
+          (msg: any) => {
+            return showToast({
+              message: msg.text,
+              action: undefined,
+              duration: 30000,
+            })
+          }
+        )
+      } else {
+        toastMessage({ success: true, isNewItem: true })
+      }
+
+      if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
+        showInstallPrompt()
+      }
     }
 
     return showInstallPrompt
   }
 
   const onReviewItems = (items: any) => {
+    console.info('Data in the onReviewItems : ', items)
+
     if (items) {
       const show =
         items.filter((item: any) => {
-          return !item.vtexSku
+          return !item.vtexSku || item.availability !== 'available'
         }).length === 0
 
       setState({
@@ -165,6 +186,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
         textAreaValue: GetText(items),
       })
     }
+
     return true
   }
 
@@ -173,6 +195,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
     const error = !!items.filter((item: any) => {
       return item.error !== null
     }).length
+
     setState({
       ...state,
       reviewItems: items,
@@ -198,24 +221,30 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
     'buttonsBlock',
     'textContainerTitle',
     'textContainerDescription',
+    'activeAddToCart',
+    'inactiveAddToCart',
   ] as const
+
   const handles = useCssHandles(CSS_HANDLES)
 
   const addToCartCopyNPaste = () => {
     const items: any = reviewItems
       .filter((item: any) => item.error === null && item.vtexSku !== null)
-      .map(({ vtexSku, quantity, seller }: any) => {
+      .map(({ vtexSku, quantity, seller, unit }: any) => {
         return {
           id: parseInt(vtexSku, 10),
-          quantity: parseFloat(quantity),
+          quantity: parseFloat(quantity) / unit,
           seller,
         }
       })
+
     callAddToCart(items)
   }
+
   const onRefidLoading = (data: boolean) => {
     setRefIdLoading(data)
   }
+
   const backList = () => {
     setState({
       ...state,
@@ -289,17 +318,29 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
                 <FormattedMessage id="store/quickorder.back" />
               </Button>
               {refidLoading && <Spinner />}
-              {showAddToCart && (
-                <Button
-                  variation="primary"
-                  size="small"
-                  isLoading={mutationLoading}
-                  onClick={() => {
-                    addToCartCopyNPaste()
-                  }}
-                >
-                  <FormattedMessage id="store/quickorder.addToCart" />
-                </Button>
+              {showAddToCart ? (
+                <div className={handles.activeAddToCart}>
+                  <Button
+                    variation="primary"
+                    size="small"
+                    isLoading={mutationLoading}
+                    onClick={() => {
+                      addToCartCopyNPaste()
+                    }}
+                  >
+                    <FormattedMessage id="store/quickorder.addToCart" />
+                  </Button>
+                </div>
+              ) : (
+                <div className={handles.inactiveAddToCart}>
+                  <Button
+                    variation="primary"
+                    size="small"
+                    isLoading={mutationLoading}
+                  >
+                    <FormattedMessage id="store/quickorder.addToCart" />
+                  </Button>
+                </div>
               )}
             </div>
           </div>
@@ -311,7 +352,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
 
 interface MessageDescriptor {
   id: string
-  description?: string | object
+  description?: any
   defaultMessage?: string
 }
 

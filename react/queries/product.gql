@@ -1,9 +1,14 @@
 query Product($slug: String) {
   product(slug: $slug) @context(provider: "vtex.search-graphql") {
     productName
+    properties {
+      name
+      values
+    }
     items {
       itemId
       name
+      unitMultiplier
       sellers {
         sellerId
         sellerName

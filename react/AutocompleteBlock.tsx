@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useState, useContext } from 'react'
 import {
   FormattedMessage,
@@ -6,18 +5,30 @@ import {
   injectIntl,
   defineMessages,
 } from 'react-intl'
-import { Button, Tag, Input, ToastContext, IconClear } from 'vtex.styleguide'
+import {
+  Button,
+  Tag,
+  ToastContext,
+  IconClear,
+  Spinner,
+  NumericStepper,
+} from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
 import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import PropTypes from 'prop-types'
-import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
 import { useCssHandles } from 'vtex.css-handles'
-import { useApolloClient, useMutation } from 'react-apollo'
+import { useApolloClient, useMutation, useQuery } from 'react-apollo'
+import { useOrderItems } from 'vtex.order-items/OrderItems'
+
+import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
 import productQuery from './queries/product.gql'
+import GET_ACCOUNT_INFO from './queries/orderSoldToAccount.graphql'
+import GET_PRODUCT_DATA from './queries/getPrductAvailability.graphql'
 import './global.css'
+import { getNewItems, itemsInSystem } from './utils'
 
 const messages = defineMessages({
   success: {
@@ -44,6 +55,7 @@ const messages = defineMessages({
 })
 
 const AutocompleteBlock: StorefrontFunctionComponent<any &
+  // eslint-disable-next-line react/prop-types
   WrappedComponentProps> = ({ text, description, componentOnly, intl }) => {
   const client = useApolloClient()
   const { showToast } = useContext(ToastContext)
@@ -51,6 +63,8 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     selectedItem: null,
     quantitySelected: 1,
   })
+
+  const [hideAddToCart, setHideAddToCart] = useState(true)
 
   const [addToCart, { error, loading }] = useMutation<
     { addToCart: OrderFormType },
@@ -60,22 +74,41 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
   const { push } = usePixel()
   const { settings = {}, showInstallPrompt = undefined } = usePWA() || {}
   const { promptOnCustomEvent } = settings
+  const { addItem } = useOrderItems()
+  const { setOrderForm, orderForm }: OrderFormContext = OrderForm.useOrderForm()
 
-  const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
+  const { data: accountData, loading: accountDataLoading } = useQuery(
+    GET_ACCOUNT_INFO,
+    {
+      notifyOnNetworkStatusChange: true,
+      ssr: false,
+    }
+  )
+
+  const customerNumber =
+    accountData?.getOrderSoldToAccount?.customerNumber ?? ''
+
+  const targetSystem = accountData?.getOrderSoldToAccount?.targetSystem ?? ''
+  const salesOrganizationCode =
+    accountData?.getOrderSoldToAccount?.salesOrganizationCode ?? ''
 
   const translateMessage = (message: MessageDescriptor) => {
+    // eslint-disable-next-line react/prop-types
     return intl.formatMessage(message)
   }
+
   const resolveToastMessage = (success: boolean, isNewItem: boolean) => {
     if (!success) return translateMessage(messages.error)
     if (!isNewItem) return translateMessage(messages.duplicate)
 
     return translateMessage(messages.success)
   }
+
   const toastMessage = (arg: any) => {
     let message
-    let action
+
     if (typeof arg === 'string') {
+      // eslint-disable-next-line react/prop-types
       message = intl.formatMessage(messages[arg])
     } else {
       const {
@@ -85,16 +118,11 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
         success: boolean
         isNewItem: boolean
       } = arg
-      message = resolveToastMessage(success, isNewItem)
 
-      action = success
-        ? {
-            label: translateMessage(messages.seeCart),
-            href: '/checkout/#/cart',
-          }
-        : undefined
+      message = resolveToastMessage(success, isNewItem)
     }
-    showToast({ message, action })
+
+    showToast({ message })
   }
 
   const clear = () => {
@@ -107,56 +135,76 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
 
   const { selectedItem, quantitySelected } = state
   const callAddToCart = async (items: any) => {
-    const mutationResult = await addToCart({
-      variables: {
-        items: items.map((item: any) => {
-          return {
-            ...item,
-          }
-        }),
-      },
-    })
+    const existItems = itemsInSystem(orderForm?.items, items)
+    const newItems = getNewItems(orderForm?.items, items)
 
-    if (error) {
-      console.error(error)
-      toastMessage({ success: false, isNewItem: false })
-      return
-    }
+    if (existItems.length > 0) {
+      addItem(existItems)
 
-    // Update OrderForm from the context
-    mutationResult.data && setOrderForm(mutationResult.data.addToCart)
-
-    const adjustSkuItemForPixelEvent = (item: any) => {
-      return {
-        skuId: item.id,
-        quantity: item.quantity,
+      if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
+        showInstallPrompt()
       }
-    }
-    // Send event to pixel-manager
-    const pixelEventItems = items.map(adjustSkuItemForPixelEvent)
-    push({
-      event: 'addToCart',
-      items: pixelEventItems,
-    })
 
-    if (
-      mutationResult.data?.addToCart?.messages?.generalMessages &&
-      mutationResult.data.addToCart.messages.generalMessages.length
-    ) {
-      mutationResult.data.addToCart.messages.generalMessages.map((msg: any) => {
-        return showToast({
-          message: msg.text,
-          action: undefined,
-          duration: 30000,
-        })
-      })
-    } else {
       toastMessage({ success: true, isNewItem: true })
-      clear()
     }
 
-    if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
-      showInstallPrompt()
+    if (newItems.length > 0) {
+      const mutationResult = await addToCart({
+        variables: {
+          items: items.map((item: any) => {
+            return {
+              ...item,
+            }
+          }),
+        },
+      })
+
+      if (error) {
+        console.error(error)
+        toastMessage({ success: false, isNewItem: false })
+
+        return
+      }
+
+      // Update OrderForm from the context
+      mutationResult.data && setOrderForm(mutationResult.data.addToCart)
+
+      const adjustSkuItemForPixelEvent = (item: any) => {
+        return {
+          skuId: item.id,
+          quantity: item.quantity,
+        }
+      }
+
+      // Send event to pixel-manager
+      const pixelEventItems = items.map(adjustSkuItemForPixelEvent)
+
+      push({
+        event: 'addToCart',
+        items: pixelEventItems,
+      })
+
+      if (
+        mutationResult.data?.addToCart?.messages?.generalMessages &&
+        mutationResult.data.addToCart.messages.generalMessages.length
+      ) {
+        mutationResult.data.addToCart.messages.generalMessages.map(
+          (msg: any) => {
+            return showToast({
+              message: msg.text,
+              action: undefined,
+              duration: 30000,
+            })
+          }
+        )
+      } else {
+        toastMessage({ success: true, isNewItem: true })
+        clear()
+      }
+
+      if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
+        showInstallPrompt()
+      }
     }
 
     return showInstallPrompt
@@ -168,6 +216,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
         query: productQuery,
         variables: { slug: product[0].slug },
       }
+
       const { data } = await client.query(query)
       const selectedSku =
         data.product.items.length === 1 ? data.product.items[0].itemId : null
@@ -177,6 +226,46 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
             return item.sellerDefault === true
           }).sellerId
         : null
+
+      // validate product
+      const refId =
+        (data?.product?.items[0]?.referenceId ?? []).find(
+          (ref: any) => ref.Key === 'RefId'
+        )?.Value ?? ''
+
+      try {
+        const { data: productInfo } = await client.query({
+          query: GET_PRODUCT_DATA,
+          variables: {
+            refIds: [refId] as string[],
+            customerNumber,
+            targetSystem,
+            salesOrganizationCode,
+          },
+        })
+
+        if (productInfo) {
+          const itemsFromQuery = productInfo.getSkuAvailability?.items ?? []
+          const refIdNotFound = itemsFromQuery.filter((item: any) => {
+            return item.sku === null
+          })
+
+          const refNotAvailable = itemsFromQuery.filter((item: any) => {
+            return item.availability !== 'available'
+          })
+
+          if (
+            itemsFromQuery.length > 0 &&
+            refIdNotFound.length === 0 &&
+            refNotAvailable.length === 0
+          ) {
+            setHideAddToCart(false)
+          }
+        }
+      } catch (err) {
+        console.error(err)
+      }
+
       setState({
         ...state,
         selectedItem:
@@ -185,6 +274,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
             : null,
       })
     }
+
     return true
   }
 
@@ -196,11 +286,13 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
       .sellers.find((s: any) => {
         return s.sellerDefault === true
       }).sellerId
+
     const newSelected = {
       ...selectedItem,
       seller,
       value,
     }
+
     setState({
       ...state,
       selectedItem: newSelected,
@@ -220,6 +312,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
           seller: selectedItem.seller,
         },
       ]
+
       callAddToCart(items)
     } else {
       toastMessage('selectSku')
@@ -239,13 +332,62 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     'textContainerDescription',
     'componentContainer',
     'buttonClear',
+    'inactiveAddToCart',
   ] as const
+
   const handles = useCssHandles(CSS_HANDLES)
 
-  return (
-    <div>
+  const numberValidator = (minQty: number, unit: number, value: number) => {
+    const actualQty = value * unit
+    const adjustedQty =
+      minQty % unit === 0
+        ? actualQty < minQty
+          ? minQty
+          : actualQty
+        : actualQty < minQty
+        ? minQty + (unit - (minQty % unit))
+        : actualQty
+
+    return adjustedQty / unit
+  }
+
+  const numStepper = (itemSelected: any, selectedQuantity: number) => {
+    const minQty =
+      itemSelected.data.product.properties
+        .find(
+          (property: { name: string }) =>
+            property.name === 'Minimum Order Quantity'
+        )
+        ?.values.find(value => value) ?? 1
+
+    const unit =
+      itemSelected.data.product.items.find(item => item)?.unitMultiplier ?? 1
+
+    return (
+      <div>
+        <NumericStepper
+          size="small"
+          minValue={1}
+          value={numberValidator(minQty, unit, selectedQuantity)}
+          unitMultiplier={unit}
+          maxValue={9999999}
+          onChange={(e: any) => {
+            setState({
+              ...state,
+              quantitySelected: e.value,
+            })
+          }}
+        />
+      </div>
+    )
+  }
+
+  return accountDataLoading ? (
+    <Spinner />
+  ) : (
+    <div className="flex">
       {!componentOnly && (
-        <div className={`${handles.textContainer} w-third-l w-100-ns fl-l`}>
+        <div className={`${handles.textContainer} w-20-l w-100-ns fl-l`}>
           <h2
             className={`${handles.textContainerTitle} t-heading-3 mb3 ml5 ml3-ns mt4`}
           >
@@ -260,7 +402,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
       )}
       <div
         className={`${handles.componentContainer} ${
-          !componentOnly ? 'w-two-thirds-l w-100-ns fr-l' : ''
+          !componentOnly ? 'w-80-l w-100-ns fr-l flex' : ''
         }`}
       >
         <div className="w-100 mb5">
@@ -268,7 +410,10 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
             {!selectedItem && <QuickOrderAutocomplete onSelect={onSelect} />}
             {!!selectedItem && (
               <div>
-                <div className="w-two-thirds-l w-100-ns fl-l">
+                <div
+                  className="w-one-thirds-l w-100-ns fl-l"
+                  style={{ maxWidth: '430px', width: '100%' }}
+                >
                   <div
                     className={`flex flex-column w-10 fl ${handles.productThumb}`}
                   >
@@ -314,36 +459,39 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
                       )}
                   </div>
                 </div>
-                <div className="w-third-l w-100-ns fr-l">
+                <div
+                  className="w-two-thirds-l w-100-ns fr-l"
+                  style={{ maxWidth: '430px', width: '100%' }}
+                >
                   <div
                     className={`flex flex-column w-40 ph5-l ph2 p fl ${handles.inputQuantity}`}
                   >
-                    <Input
-                      value={quantitySelected}
-                      size="small"
-                      type="number"
-                      onChange={(e: any) => {
-                        setState({
-                          ...state,
-                          quantitySelected: e.target.value,
-                        })
-                      }}
-                    />
+                    {numStepper(selectedItem, quantitySelected)}
                   </div>
-                  <div
-                    className={`flex flex-column w-40 fl ${handles.buttonAdd}`}
-                  >
-                    <Button
-                      variation="primary"
-                      size="small"
-                      isLoading={loading}
-                      onClick={() => {
-                        callAddUnitToCart()
-                      }}
+                  {!hideAddToCart ? (
+                    <div
+                      className={`flex flex-column w-40 fl ${handles.buttonAdd}`}
                     >
-                      <FormattedMessage id="store/quickorder.autocomplete.addButton" />
-                    </Button>
-                  </div>
+                      <Button
+                        variation="primary"
+                        size="small"
+                        isLoading={loading}
+                        onClick={() => {
+                          callAddUnitToCart()
+                        }}
+                      >
+                        <FormattedMessage id="store/quickorder.addToCart" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div
+                      className={`flex flex-column w-40 fl ${handles.inactiveAddToCart}`}
+                    >
+                      <Button variation="primary" size="small">
+                        <FormattedMessage id="store/quickorder.addToCart" />
+                      </Button>
+                    </div>
+                  )}
                   <div
                     className={`flex flex-column w-20 fl ${handles.buttonClear}`}
                   >
@@ -371,6 +519,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     </div>
   )
 }
+
 AutocompleteBlock.propTypes = {
   componentOnly: PropTypes.bool,
   text: PropTypes.string,
@@ -385,7 +534,7 @@ interface OrderFormContext {
 
 interface MessageDescriptor {
   id: string
-  description?: string | object
+  description?: Record<string, unknown>
   defaultMessage?: string
 }
 

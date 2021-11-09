@@ -1,0 +1,15 @@
+type AvailableItems {
+  items: [AvailableItem]
+}
+type AvailableItem {
+  refid: String
+  sku: String
+  productId: String
+  availability: String
+  seller: ItemsSeller
+  availableQuantity: String
+  productName: String
+  price: Float
+  unitMultiplier: Int
+  minQty: Int
+}

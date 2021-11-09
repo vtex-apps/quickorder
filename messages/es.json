@@ -54,5 +54,6 @@
   "store/toaster.cart.duplicated": "Elemento duplicado",
   "store/toaster.cart.error": "Error al agregar productos al carrito",
   "store/toaster.cart.seeCart": "Ver el carrito",
-  "store/toaster.cart.success": "Productos agregados correctamente"
+  "store/toaster.cart.success": "Productos agregados correctamente",
+  "store/quickorder.unavailable": "Item not available in the store"
 }

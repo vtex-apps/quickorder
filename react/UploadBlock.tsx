@@ -13,8 +13,11 @@ import { useCssHandles } from 'vtex.css-handles'
 import { ExecutionResult, useMutation } from 'react-apollo'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
-import { ParseText, GetText } from './utils'
+import { useOrderItems } from 'vtex.order-items/OrderItems'
+import { useOrderForm } from 'vtex.order-manager/OrderForm'
 import XLSX from 'xlsx'
+
+import { ParseText, GetText, itemsInSystem, getNewItems } from './utils'
 import ReviewBlock from './components/ReviewBlock'
 
 const messages = defineMessages({
@@ -45,13 +48,12 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   intl,
 }: any) => {
   let productsArray: any = []
-  const [state, setState] = useState<any>({
-    reviewItems: [],
-    reviewState: false,
-    showAddToCart: false,
-  })
+  const [state, setState] = useState<any>({})
+
   const [refidLoading, setRefIdLoading] = useState<any>()
-  const { reviewItems, reviewState, showAddToCart } = state
+  const [reviewItems, setReviewItems] = useState<any>([])
+  const [reviewState, setReviewState] = useState(false)
+  const [showAddToCart, setShowAddToCart] = useState(false)
 
   const [
     addToCart,
@@ -64,6 +66,8 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
 
   const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
   const { showToast } = useContext(ToastContext)
+  const { addItem } = useOrderItems()
+  const { orderForm } = useOrderForm()
 
   const translateMessage = (message: MessageDescriptor) => {
     return intl.formatMessage(message)
@@ -75,6 +79,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
 
     return translateMessage(messages.success)
   }
+
   const toastMessage = ({
     success,
     isNewItem,
@@ -84,13 +89,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   }) => {
     const message = resolveToastMessage(success, isNewItem)
 
-    const action = success
-      ? {
-          label: translateMessage(messages.seeCart),
-          href: '/checkout/#/cart',
-        }
-      : undefined
-    showToast({ message, action })
+    showToast({ message })
   }
 
   const download = () => {
@@ -106,28 +105,32 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
 
     const ws = XLSX.utils.json_to_sheet(data, { header: finalHeaders })
     const wb = XLSX.utils.book_new()
+
     XLSX.utils.book_append_sheet(wb, ws, 'SheetJS')
     const exportFileName = `model-quickorder.xls`
+
     XLSX.writeFile(wb, exportFileName)
   }
+
   const onRefidLoading = (data: boolean) => {
     setRefIdLoading(data)
   }
+
   const onReviewItems = (items: any) => {
     if (items) {
       const show =
         items.filter((item: any) => {
-          return !item.vtexSku
+          return !item.vtexSku || item.availability !== 'available'
         }).length === 0
 
+      setReviewItems(items)
+      setReviewState(true)
+      setShowAddToCart(show)
       setState({
-        ...state,
-        reviewItems: items,
-        reviewState: true,
-        showAddToCart: show,
         textAreaValue: GetText(items),
       })
     }
+
     return true
   }
 
@@ -143,9 +146,9 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
       return item.error !== null
     }).length
 
+    setReviewItems(items)
     setState({
       ...state,
-      reviewItems: items,
       hasError: error,
     })
     onReviewItems(items)
@@ -154,17 +157,23 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   const processWb = (() => {
     const toJson = function toJson(workbook: any) {
       const result: any = {}
+
       workbook.SheetNames.forEach((sheetName: any) => {
         const roa = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
           header: 1,
         })
+
         if (roa.length) result[sheetName] = roa
       })
+
       return result
     }
+
     return (wb: any) => {
       let output: any = null
+
       output = toJson(wb)
+
       return output
     }
   })()
@@ -172,11 +181,14 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   const doFile = (files: any) => {
     const f = files[0]
     const reader: any = new FileReader()
+
     reader.onload = (e: any) => {
       let data = e.target.result
+
       data = new Uint8Array(data)
       const result = processWb(XLSX.read(data, { type: 'array' }))
       const sheetName = Object.getOwnPropertyNames(result)[0]
+
       result[sheetName].splice(0, 1)
       productsArray = result[sheetName]
       productsArray = productsArray.filter(item => item.length)
@@ -185,9 +197,11 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
         p[1] = (p[1] || '').toString().trim()
       })
     }
+
     reader.onerror = () => {
       // error
     }
+
     reader.readAsArrayBuffer(f)
   }
 
@@ -198,63 +212,83 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   const handleReset = () => {}
 
   const backList = () => {
+    setReviewState(false)
     setState({
       ...state,
-      reviewState: false,
     })
   }
 
   const callAddToCart = async (items: any) => {
     const splitBy = 10
     const tempItems = items
-    const loopCount = Math.floor(items.length / splitBy) + 1
+
+    const existItems = itemsInSystem(orderForm?.items, tempItems)
+    const newItems = getNewItems(orderForm?.items, tempItems)
+
+    const loopCount = Math.floor(newItems.length / splitBy) + 1
+    const loopCountExist = Math.floor(existItems.length / splitBy) + 1
 
     const promises: Array<ExecutionResult<{ addToCart: OrderFormType }>> = []
     // let orderFormData = []
 
-    for (let i = 0; i < loopCount; i++) {
-      const chunk = tempItems.splice(0, splitBy)
-      if (chunk.length) {
-        const mutationChunk = await addToCart({
-          variables: {
-            items: chunk.map((item: any) => {
-              return {
-                ...item,
-              }
-            }),
-          },
-        })
+    if (existItems.length) {
+      for (let i = 0; i < loopCountExist; i++) {
+        const chunk = tempItems.splice(0, splitBy)
 
-        console.log('mutationChunk =>', mutationChunk)
-
-        mutationChunk.data && setOrderForm(mutationChunk.data.addToCart)
-
-        if (
-          mutationChunk.data?.addToCart?.messages?.generalMessages &&
-          mutationChunk.data.addToCart.messages.generalMessages.length
-        ) {
-          mutationChunk.data.addToCart.messages.generalMessages.map(
-            (msg: any) => {
-              return showToast({
-                message: msg.text,
-                action: undefined,
-                duration: 30000,
-              })
-            }
-          )
-        } else {
-          toastMessage({ success: true, isNewItem: true })
+        if (chunk.length) {
+          addItem(chunk)
         }
-
-        promises.push(mutationChunk)
       }
+
+      toastMessage({ success: true, isNewItem: true })
     }
 
-    Promise.all(promises).catch(() => {
-      console.error(mutationError)
-      toastMessage({ success: false, isNewItem: false })
-      return
-    })
+    if (newItems.length > 0) {
+      for (let i = 0; i < loopCount; i++) {
+        const chunk = tempItems.splice(0, splitBy)
+
+        if (chunk.length) {
+          // eslint-disable-next-line no-await-in-loop
+          const mutationChunk = await addToCart({
+            variables: {
+              items: chunk.map((item: any) => {
+                return {
+                  ...item,
+                }
+              }),
+            },
+          })
+
+          console.info('mutationChunk =>', mutationChunk)
+
+          mutationChunk.data && setOrderForm(mutationChunk.data.addToCart)
+
+          if (
+            mutationChunk.data?.addToCart?.messages?.generalMessages &&
+            mutationChunk.data.addToCart.messages.generalMessages.length
+          ) {
+            mutationChunk.data.addToCart.messages.generalMessages.map(
+              (msg: any) => {
+                return showToast({
+                  message: msg.text,
+                  action: undefined,
+                  duration: 30000,
+                })
+              }
+            )
+          } else {
+            toastMessage({ success: true, isNewItem: true })
+          }
+
+          promises.push(mutationChunk)
+        }
+      }
+
+      Promise.all(promises).catch(() => {
+        console.error(mutationError)
+        toastMessage({ success: false, isNewItem: false })
+      })
+    }
 
     // Update OrderForm from the context
 
@@ -264,8 +298,10 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
         quantity: item.quantity,
       }
     }
+
     // Send event to pixel-manager
     const pixelEventItems = items.map(adjustSkuItemForPixelEvent)
+
     push({
       event: 'addToCart',
       items: pixelEventItems,
@@ -281,13 +317,14 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   const addToCartUpload = () => {
     const items: any = reviewItems
       .filter((item: any) => item.error === null && item.vtexSku !== null)
-      .map(({ vtexSku, quantity, seller }: any) => {
+      .map(({ vtexSku, quantity, seller, unit }: any) => {
         return {
           id: parseInt(vtexSku, 10),
-          quantity: parseFloat(quantity),
+          quantity: parseFloat(quantity) / unit,
           seller,
         }
       })
+
     callAddToCart(items)
   }
 
@@ -303,7 +340,10 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     'buttonsBlock',
     'textContainerTitle',
     'textContainerDescription',
+    'inactiveAddToCart',
+    'activeAddToCart',
   ] as const
+
   const handles = useCssHandles(CSS_HANDLES)
 
   return (
@@ -392,17 +432,29 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
                 <FormattedMessage id="store/quickorder.back" />
               </Button>
               {refidLoading && <Spinner />}
-              {showAddToCart && (
-                <Button
-                  variation="primary"
-                  size="small"
-                  isLoading={mutationLoading}
-                  onClick={() => {
-                    addToCartUpload()
-                  }}
-                >
-                  <FormattedMessage id="store/quickorder.addToCart" />
-                </Button>
+              {showAddToCart ? (
+                <div className={handles.activeAddToCart}>
+                  <Button
+                    variation="primary"
+                    size="small"
+                    isLoading={mutationLoading}
+                    onClick={() => {
+                      addToCartUpload()
+                    }}
+                  >
+                    <FormattedMessage id="store/quickorder.addToCart" />
+                  </Button>
+                </div>
+              ) : (
+                <div className={handles.inactiveAddToCart}>
+                  <Button
+                    variation="primary"
+                    size="small"
+                    isLoading={mutationLoading}
+                  >
+                    <FormattedMessage id="store/quickorder.addToCart" />
+                  </Button>
+                </div>
               )}
             </div>
           </div>
@@ -414,7 +466,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
 
 interface MessageDescriptor {
   id: string
-  description?: string | object
+  description?: any
   defaultMessage?: string
 }
 

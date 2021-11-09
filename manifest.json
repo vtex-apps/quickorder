@@ -1,7 +1,7 @@
 {
-  "vendor": "vtex",
-  "name": "quickorder",
-  "version": "3.2.0",
+  "vendor": "sbdsefuat",
+  "name": "bulk-order",
+  "version": "0.0.4",
   "title": "Quickorder",
   "description": "Allow users to add multiple products to the cart at once",
   "defaultLocale": "en-US",
@@ -35,7 +35,8 @@
     "vtex.pixel-manager": "1.x",
     "vtex.store-resources": "0.x",
     "vtex.css-handles": "0.x",
-    "vtex.store-icons": "0.x"
+    "vtex.store-icons": "0.x",
+    "sbdsefuat.checkout-simulation": "1.x"
   },
   "policies": [
     {
@@ -70,6 +71,40 @@
         "host": "{{account}}.vtexcommercestable.com.br",
         "path": "/api/catalog_system/pub/sku/stockkeepingunitidsbyrefids"
       }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/catalog_system/pvt/seller/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/catalog_system/pub/products/search/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "api.vtex.com",
+        "path": "/api/dataentities/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "/api/logistics/pvt/inventory/skus/*"
+      }
+    },
+    {
+      "name": "POWER_USER_DS"
+    },
+    {
+      "name": "LogisticsAdmin"
     }
   ],
   "settingsSchema": {},

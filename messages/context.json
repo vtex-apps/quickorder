@@ -54,5 +54,6 @@
   "store/toaster.cart.duplicated": "store/toaster.cart.duplicated",
   "store/toaster.cart.error": "store/toaster.cart.error",
   "store/toaster.cart.seeCart": "store/toaster.cart.seeCart",
-  "store/toaster.cart.success": "store/toaster.cart.success"
+  "store/toaster.cart.success": "store/toaster.cart.success",
+  "store/quickorder.unavailable": "store/quickorder.unavailable"
 }

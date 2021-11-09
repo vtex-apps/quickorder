@@ -13,7 +13,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged && yarn lint:locales && yarn locales:fix",
-      "pre-push": "yarn verify"
+      "pre-push": "yarn verify --no-verify"
     }
   },
   "lint-staged": {

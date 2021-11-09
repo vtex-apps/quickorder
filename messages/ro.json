@@ -54,5 +54,6 @@
   "store/toaster.cart.duplicated": "Articol duplicat",
   "store/toaster.cart.error": "Eroare la adaugarea produselor in cos",
   "store/toaster.cart.seeCart": "Vezi cos",
-  "store/toaster.cart.success": "Produse adaugate in cos"
+  "store/toaster.cart.success": "Produse adaugate in cos",
+  "store/quickorder.unavailable": "Item not available in the store"
 }
