@@ -239,6 +239,8 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
           addItem(chunk)
         }
       }
+
+      toastMessage({ success: true, isNewItem: true })
     }
 
     if (newItems.length > 0) {
@@ -281,12 +283,12 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
           promises.push(mutationChunk)
         }
       }
-    }
 
-    Promise.all(promises).catch(() => {
-      console.error(mutationError)
-      toastMessage({ success: false, isNewItem: false })
-    })
+      Promise.all(promises).catch(() => {
+        console.error(mutationError)
+        toastMessage({ success: false, isNewItem: false })
+      })
+    }
 
     // Update OrderForm from the context
 
@@ -308,6 +310,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
       showInstallPrompt()
     }
+
     return showInstallPrompt
   }
 

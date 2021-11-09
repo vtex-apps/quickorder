@@ -104,6 +104,8 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
       if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
         showInstallPrompt()
       }
+
+      toastMessage({ success: true, isNewItem: true })
     }
 
     if (newItems.length > 0) {

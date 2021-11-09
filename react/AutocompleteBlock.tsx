@@ -21,12 +21,14 @@ import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import PropTypes from 'prop-types'
 import { useCssHandles } from 'vtex.css-handles'
 import { useApolloClient, useMutation, useQuery } from 'react-apollo'
+import { useOrderItems } from 'vtex.order-items/OrderItems'
 
 import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
 import productQuery from './queries/product.gql'
 import GET_ACCOUNT_INFO from './queries/orderSoldToAccount.graphql'
 import GET_PRODUCT_DATA from './queries/getPrductAvailability.graphql'
 import './global.css'
+import { getNewItems, itemsInSystem } from './utils'
 
 const messages = defineMessages({
   success: {
@@ -72,8 +74,8 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
   const { push } = usePixel()
   const { settings = {}, showInstallPrompt = undefined } = usePWA() || {}
   const { promptOnCustomEvent } = settings
-
-  const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
+  const { addItem } = useOrderItems()
+  const { setOrderForm, orderForm }: OrderFormContext = OrderForm.useOrderForm()
 
   const { data: accountData, loading: accountDataLoading } = useQuery(
     GET_ACCOUNT_INFO,
@@ -133,59 +135,76 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
 
   const { selectedItem, quantitySelected } = state
   const callAddToCart = async (items: any) => {
-    const mutationResult = await addToCart({
-      variables: {
-        items: items.map((item: any) => {
-          return {
-            ...item,
-          }
-        }),
-      },
-    })
+    const existItems = itemsInSystem(orderForm?.items, items)
+    const newItems = getNewItems(orderForm?.items, items)
 
-    if (error) {
-      console.error(error)
-      toastMessage({ success: false, isNewItem: false })
+    if (existItems.length > 0) {
+      addItem(existItems)
 
-      return
-    }
-
-    // Update OrderForm from the context
-    mutationResult.data && setOrderForm(mutationResult.data.addToCart)
-
-    const adjustSkuItemForPixelEvent = (item: any) => {
-      return {
-        skuId: item.id,
-        quantity: item.quantity,
+      if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
+        showInstallPrompt()
       }
-    }
 
-    // Send event to pixel-manager
-    const pixelEventItems = items.map(adjustSkuItemForPixelEvent)
-
-    push({
-      event: 'addToCart',
-      items: pixelEventItems,
-    })
-
-    if (
-      mutationResult.data?.addToCart?.messages?.generalMessages &&
-      mutationResult.data.addToCart.messages.generalMessages.length
-    ) {
-      mutationResult.data.addToCart.messages.generalMessages.map((msg: any) => {
-        return showToast({
-          message: msg.text,
-          action: undefined,
-          duration: 30000,
-        })
-      })
-    } else {
       toastMessage({ success: true, isNewItem: true })
-      clear()
     }
 
-    if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
-      showInstallPrompt()
+    if (newItems.length > 0) {
+      const mutationResult = await addToCart({
+        variables: {
+          items: items.map((item: any) => {
+            return {
+              ...item,
+            }
+          }),
+        },
+      })
+
+      if (error) {
+        console.error(error)
+        toastMessage({ success: false, isNewItem: false })
+
+        return
+      }
+
+      // Update OrderForm from the context
+      mutationResult.data && setOrderForm(mutationResult.data.addToCart)
+
+      const adjustSkuItemForPixelEvent = (item: any) => {
+        return {
+          skuId: item.id,
+          quantity: item.quantity,
+        }
+      }
+
+      // Send event to pixel-manager
+      const pixelEventItems = items.map(adjustSkuItemForPixelEvent)
+
+      push({
+        event: 'addToCart',
+        items: pixelEventItems,
+      })
+
+      if (
+        mutationResult.data?.addToCart?.messages?.generalMessages &&
+        mutationResult.data.addToCart.messages.generalMessages.length
+      ) {
+        mutationResult.data.addToCart.messages.generalMessages.map(
+          (msg: any) => {
+            return showToast({
+              message: msg.text,
+              action: undefined,
+              duration: 30000,
+            })
+          }
+        )
+      } else {
+        toastMessage({ success: true, isNewItem: true })
+        clear()
+      }
+
+      if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
+        showInstallPrompt()
+      }
     }
 
     return showInstallPrompt
