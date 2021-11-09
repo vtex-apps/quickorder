@@ -6,7 +6,7 @@ import {
   IconInfo,
   Input,
   Table,
-  Tooltip
+  Tooltip,
 } from 'vtex.styleguide'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl'
 import PropTypes from 'prop-types'
@@ -541,8 +541,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       unit: {
         hidden: true,
         type: 'string',
-        title: 'Unit'
-
+        title: 'Unit',
       },
       // price: {
       //   type: 'string',
@@ -588,13 +587,15 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.status',
         }),
+
         cellRenderer: ({ cellData, rowData }: any) => {
           if (rowData.error) {
             const text = intl.formatMessage(
               errorMessage[
                 cellData !== null && cellData !== void 0
                   ? cellData
-                  : 'store/quickorder.valid']
+                  : 'store/quickorder.valid'
+                ]
             )
 
             return (

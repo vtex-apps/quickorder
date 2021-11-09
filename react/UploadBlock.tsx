@@ -52,7 +52,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
 
   const [refidLoading, setRefIdLoading] = useState<any>()
   const [reviewItems, setReviewItems] = useState<any>([])
-  const [reviewState,setReviewState] = useState(false)
+  const [reviewState, setReviewState] = useState(false)
   const [showAddToCart, setShowAddToCart] = useState(false)
 
   const [
@@ -308,21 +308,19 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
       showInstallPrompt()
     }
-
     return showInstallPrompt
   }
 
   const addToCartUpload = () => {
-
     const items: any = reviewItems
       .filter((item: any) => item.error === null && item.vtexSku !== null)
-        .map(({ vtexSku, quantity, seller, unit }: any) => {
-          return {
-            id: parseInt(vtexSku, 10),
-            quantity: parseFloat(quantity) / unit,
-            seller,
-          }
-        })
+      .map(({ vtexSku, quantity, seller, unit }: any) => {
+        return {
+          id: parseInt(vtexSku, 10),
+          quantity: parseFloat(quantity) / unit,
+          seller,
+        }
+      })
 
     callAddToCart(items)
   }
