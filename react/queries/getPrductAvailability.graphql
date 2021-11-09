@@ -23,6 +23,7 @@ query getAvbProduct(
       productName
       price
       unitMultiplier
+      minQty
     }
   }
 }

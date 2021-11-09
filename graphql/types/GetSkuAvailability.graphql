@@ -11,4 +11,5 @@ type AvailableItem {
   productName: String
   price: Float
   unitMultiplier: Int
+  minQty: Int
 }

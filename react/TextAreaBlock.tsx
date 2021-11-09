@@ -228,10 +228,10 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
   const addToCartCopyNPaste = () => {
     const items: any = reviewItems
       .filter((item: any) => item.error === null && item.vtexSku !== null)
-      .map(({ vtexSku, quantity, seller }: any) => {
+      .map(({ vtexSku, quantity, seller, unit }: any) => {
         return {
           id: parseInt(vtexSku, 10),
-          quantity: parseFloat(quantity),
+          quantity: parseFloat(quantity)/unit,
           seller,
         }
       })

@@ -1,24 +1,17 @@
 /* eslint-disable vtex/prefer-early-return */
-import React, { useState, useEffect } from 'react'
-import {
-  Table,
-  Input,
-  ButtonWithIcon,
-  IconDelete,
-  IconInfo,
-  Tooltip,
-} from 'vtex.styleguide'
-import { WrappedComponentProps, injectIntl, defineMessages } from 'react-intl'
+import React, { useEffect, useState } from 'react'
+import { ButtonWithIcon, IconDelete, IconInfo, Input, Table, Tooltip,} from 'vtex.styleguide'
+import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl'
 import PropTypes from 'prop-types'
 import { useApolloClient, useQuery } from 'react-apollo'
 
-import { ParseText, GetText } from '../utils'
+import { GetText, ParseText, validateQuantity } from '../utils'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import getRefIdTranslation from '../queries/refids.gql'
+// import getRefIdTranslation from '../queries/refids.gql'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import OrderFormQuery from '../queries/orderForm.gql'
+// import OrderFormQuery from '../queries/orderForm.gql'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import GET_PRODUCT_DATA from '../queries/getPrductAvailability.graphql'
@@ -227,6 +220,17 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
   const validateRefids = (refidData: any, reviewed: any) => {
     let error = false
+
+    reviewed = reviewed.map(i => {
+      const unit = refidData.getSkuAvailability?.items?.find(d => i.sku === d.refid)?.unitMultiplier
+      const minQty = refidData.getSkuAvailability?.items?.find(d => i.sku === d.refid)?.minQty
+      i.quantity = validateQuantity(minQty, unit, i.quantity)
+      return {
+        ...i,
+        unit,
+        minQty
+      }
+    })
 
     if (refidData) {
       const itemsFromQuery = refidData.getSkuAvailability?.items ?? []
@@ -522,6 +526,12 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.quantity',
         }),
+      },
+      unit: {
+        hidden: true,
+        type: 'string',
+        title: "Unit"
+
       },
       // price: {
       //   type: 'string',

@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unwanted columns from review table
 - Fix add to cart issues
 - Fix numeric stepper.
+- Fix the quantity validation against MOQ and UM.
+- Fix the add to cart quantity.
 
 ## [0.0.4] - 2021-11-01
 

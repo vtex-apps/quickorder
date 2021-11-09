@@ -142,6 +142,7 @@ export const queries = {
         const skuRefId = skus.find((sku: any) => sku.skuId === itemId)?.refId
         // const refId = (items[0]?.referenceId ?? []).find((ref: any) => ref.Key === 'RefId')?.Value ?? ''
         const { commertialOffer, sellerId, sellerName } = items[0].sellers[0]
+        const minQty = product['Minimum Order Quantity'].find((d: string) => d)
 
         let availableQuantity = 0
         let isAvailable = false
@@ -201,6 +202,7 @@ export const queries = {
           },
           availability: isAvailable ? 'available' : 'unavailable',
           unitMultiplier,
+          minQty,
         }
       })
 
