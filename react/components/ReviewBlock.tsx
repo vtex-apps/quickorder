@@ -595,7 +595,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
                 cellData !== null && cellData !== void 0
                   ? cellData
                   : 'store/quickorder.valid'
-                ]
+              ]
             )
 
             return (
