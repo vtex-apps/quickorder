@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix numeric stepper.
 - Fix the quantity validation against MOQ and UM.
 - Fix the add to cart quantity.
+- Fix the add to cart behaviour in pdp search.
 
 ## [0.0.4] - 2021-11-01
 
