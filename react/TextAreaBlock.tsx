@@ -231,7 +231,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
       .map(({ vtexSku, quantity, seller, unit }: any) => {
         return {
           id: parseInt(vtexSku, 10),
-          quantity: parseFloat(quantity)/unit,
+          quantity: parseFloat(quantity) / unit,
           seller,
         }
       })

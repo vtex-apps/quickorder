@@ -99,18 +99,17 @@ export const getNewItems = (orderFormItems, itemsList) => {
 }
 
 export const validateQuantity = (minQty: number, unit: number, qty: number) => {
-
   qty = Math.round(qty / unit)
 
-  const actualQty =  qty * unit
+  const actualQty = qty * unit
 
   return minQty % unit === 0
     ? actualQty < minQty
       ? minQty
       : actualQty
     : actualQty < minQty
-      ? minQty + (unit - (minQty % unit))
-      : actualQty
+    ? minQty + (unit - (minQty % unit))
+    : actualQty
 }
 
 // export const groupItems = (orderFormItems, itemsList) => {

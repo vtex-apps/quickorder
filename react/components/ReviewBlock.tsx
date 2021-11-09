@@ -1,6 +1,13 @@
 /* eslint-disable vtex/prefer-early-return */
 import React, { useEffect, useState } from 'react'
-import { ButtonWithIcon, IconDelete, IconInfo, Input, Table, Tooltip,} from 'vtex.styleguide'
+import {
+  ButtonWithIcon,
+  IconDelete,
+  IconInfo,
+  Input,
+  Table,
+  Tooltip
+} from 'vtex.styleguide'
 import { defineMessages, injectIntl, WrappedComponentProps } from 'react-intl'
 import PropTypes from 'prop-types'
 import { useApolloClient, useQuery } from 'react-apollo'
@@ -222,13 +229,17 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     let error = false
 
     reviewed = reviewed.map(i => {
-      const unit = refidData.getSkuAvailability?.items?.find(d => i.sku === d.refid)?.unitMultiplier
-      const minQty = refidData.getSkuAvailability?.items?.find(d => i.sku === d.refid)?.minQty
+      const unit = refidData.getSkuAvailability?.items?.find(
+        d => i.sku === d.refid
+      )?.unitMultiplier
+      const minQty = refidData.getSkuAvailability?.items?.find(
+        d => i.sku === d.refid
+      )?.minQty
       i.quantity = validateQuantity(minQty, unit, i.quantity)
       return {
         ...i,
         unit,
-        minQty
+        minQty,
       }
     })
 
@@ -530,7 +541,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       unit: {
         hidden: true,
         type: 'string',
-        title: "Unit"
+        title: 'Unit'
 
       },
       // price: {
