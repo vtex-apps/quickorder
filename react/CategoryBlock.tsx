@@ -22,6 +22,7 @@ import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import { useCssHandles } from 'vtex.css-handles'
 import { graphql, useApolloClient, compose, useMutation } from 'react-apollo'
 
+import getProducts from './queries/productsQuery.gql'
 import getCategories from './queries/categoriesQuery.gql'
 import SearchByCategory from './queries/productsByCategory.gql'
 
@@ -55,13 +56,15 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     categoryItems: {},
     quantitySelected: {},
     defaultSeller: {},
+    rootCategoryProductMap: {}
   })
 
   const { showToast } = useContext(ToastContext)
 
   const client = useApolloClient()
 
-  const { categoryItems, quantitySelected, defaultSeller } = state
+  const { categoryItems, quantitySelected, defaultSeller, rootCategoryProductMap } = state
+
   const [addToCart, { error, loading }] = useMutation<
     { addToCart: OrderFormType },
     { items: [] }
@@ -106,6 +109,17 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     }
 
     showToast({ message, action })
+  }
+
+  const fetchProductsByCategory = async (category: string) => {
+
+    const query = {
+      query: getProducts,
+      variables: { category: category },
+    }
+    client.query(query).then((result) => {
+      rootCategoryProductMap[category] = result.data.products
+    })
   }
 
   const _setState = (props: any) => {
@@ -286,7 +300,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
           <div key={`ifany_${i}`}>
             {b.items.length
               ? b.items.map((content: any) => {
-                  console.log('Content =>', content)
+                  // console.log('Content =>', content)
                   const [referenceId] = content.referenceId
                   const [image] = content.images
 
@@ -394,6 +408,10 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
         isOpen={item.isOpen}
         onClick={() => {
           openClose(item.id, item.href)
+          // Gets the product information only when carot has been pressed
+          if (item.name in rootCategoryProductMap && rootCategoryProductMap[item.name] === undefined) {
+            fetchProductsByCategory(item.name)
+          }
         }}
       >
         <div className={`${handles.categoriesProductContainer}`}>
@@ -467,6 +485,9 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
               </div>
             </div>
             {categories.map((item: any) => {
+              if (!(item.name in rootCategoryProductMap)) {
+                rootCategoryProductMap[item.name] = undefined
+              }
               return <div key={item.id}>{collapsible(item)}</div>
             })}
           </div>
@@ -494,4 +515,6 @@ interface OrderFormContext {
   setOrderForm: (orderForm: Partial<OrderFormType>) => void
 }
 
-export default injectIntl(compose(graphql(getCategories))(CategoryBlock))
+export default injectIntl(compose(
+  graphql(getCategories),
+)(CategoryBlock))
