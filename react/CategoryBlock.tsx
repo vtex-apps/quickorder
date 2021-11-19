@@ -13,6 +13,7 @@ import {
   Button,
   ToastContext,
   Spinner,
+  Tag
 } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
 import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
@@ -56,7 +57,13 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     categoryItems: {},
     quantitySelected: {},
     defaultSeller: {},
-    rootCategoryProductMap: {}
+    rootCategoryProductMap: {
+      // Root level category: true/false
+      // True = visited, False = not visited
+      visitedCategory: {},
+      // All the items with their respective units
+      unitMultiplierList: {}
+    }
   })
 
   const { showToast } = useContext(ToastContext)
@@ -117,9 +124,16 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
       query: getProducts,
       variables: { category: category },
     }
-    client.query(query).then((result) => {
-      rootCategoryProductMap[category] = result.data.products
-    })
+    const result = await client.query(query)
+
+    rootCategoryProductMap.visitedCategory[category] = true
+    for (const products of result.data.products) {
+      for (const item of products.items) {
+        if (item.unitMultiplier > 1) {
+          rootCategoryProductMap.unitMultiplierList[item.itemId] = item
+        }
+      }
+    }
   }
 
   const _setState = (props: any) => {
@@ -303,7 +317,6 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
                   // console.log('Content =>', content)
                   const [referenceId] = content.referenceId
                   const [image] = content.images
-
                   return (
                     <div
                       className="flex flex-row pa2 pl4 bg-white hover-bg-near-white"
@@ -329,6 +342,13 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
                             className={`pl5 ${handles.categoryProductReference}`}
                           >
                             {referenceId['Value']}
+                          </span>
+                        )}
+                        {content.itemId in rootCategoryProductMap.unitMultiplierList && (
+                          <span className="pl5 mr4">
+                            <Tag type="warning" variation="low">
+                              Unit Multiplier of {rootCategoryProductMap.unitMultiplierList[content.itemId].unitMultiplier}
+                            </Tag>
                           </span>
                         )}
                       </div>
@@ -408,8 +428,9 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
         isOpen={item.isOpen}
         onClick={() => {
           openClose(item.id, item.href)
-          // Gets the product information only when carot has been pressed
-          if (item.name in rootCategoryProductMap && rootCategoryProductMap[item.name] === undefined) {
+          // Gets the product information only when root level category is pressed and the item wasn't already fetched
+          if (item.name in rootCategoryProductMap.visitedCategory && rootCategoryProductMap.visitedCategory[item.name] === false) {
+
             fetchProductsByCategory(item.name)
           }
         }}
@@ -485,8 +506,9 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
               </div>
             </div>
             {categories.map((item: any) => {
-              if (!(item.name in rootCategoryProductMap)) {
-                rootCategoryProductMap[item.name] = undefined
+              // Add visited node if its not in set
+              if (!(item.name in rootCategoryProductMap.visitedCategory)) {
+                rootCategoryProductMap.visitedCategory[item.name] = false
               }
               return <div key={item.id}>{collapsible(item)}</div>
             })}
