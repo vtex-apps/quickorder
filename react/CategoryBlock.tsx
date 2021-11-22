@@ -321,7 +321,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     return quantity
   }
 
-  const calculateMultiples = (quantity: number, contentItemId: string) => {
+  const roundToNearestMultiple = (quantity: number, contentItemId: string) => {
     if (contentItemId in rootCategoryProductMap.unitMultiplierList) {
       const multiplier = rootCategoryProductMap.unitMultiplierList[contentItemId].unitMultiplier
       toastMessage('multiplier')
@@ -404,7 +404,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
                             })
                           }}
                           onBlur={() => {
-                            const roundedValue = calculateMultiples(quantitySelected[content.itemId] || 0, content.itemId)
+                            const roundedValue = roundToNearestMultiple(quantitySelected[content.itemId] || 0, content.itemId)
                             const newQtd = quantitySelected
                             quantitySelected[content.itemId] = String(roundedValue)
                             _setState({

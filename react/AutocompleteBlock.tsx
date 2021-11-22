@@ -35,6 +35,11 @@ const messages = defineMessages({
     defaultMessage: '',
     label: '',
   },
+  multiplier: {
+    id: 'store/quickorder.category.multiplier',
+    defaultMessage: '',
+    label: '',
+  },
   error: { id: 'store/toaster.cart.error', defaultMessage: '', label: '' },
   seeCart: {
     id: 'store/toaster.cart.seeCart',
@@ -49,7 +54,8 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
   const { showToast } = useContext(ToastContext)
   const [state, setState] = useState<any>({
     selectedItem: null,
-    quantitySelected: 1,
+    quantitySelected: 0,
+    unitMultiplier: 1,
   })
 
   const [addToCart, { error, loading }] = useMutation<
@@ -101,11 +107,12 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     setState({
       ...state,
       selectedItem: null,
-      quantitySelected: 1,
+      quantitySelected: 0,
+      unitMultiplier: 1,
     })
   }
 
-  const { selectedItem, quantitySelected } = state
+  const { selectedItem, quantitySelected, unitMultiplier } = state
   const callAddToCart = async (items: any) => {
     const mutationResult = await addToCart({
       variables: {
@@ -177,12 +184,18 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
             return item.sellerDefault === true
           }).sellerId
         : null
+
+      let multiplier = 1
+      if (data.product.items.length === 1) {
+        multiplier = data.product.items[0].unitMultiplier
+      }
       setState({
         ...state,
         selectedItem:
           !!product && product.length
             ? { ...product[0], value: selectedSku, seller, data }
             : null,
+        unitMultiplier: multiplier
       })
     }
     return true
@@ -201,9 +214,11 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
       seller,
       value,
     }
+    const matchedItem = selectedItem.data.product.items.find(item => item.itemId === value)
     setState({
       ...state,
       selectedItem: newSelected,
+      unitMultiplier: matchedItem.unitMultiplier
     })
   }
 
@@ -216,7 +231,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
       const items = [
         {
           id: parseInt(selectedItem.value, 10),
-          quantity: parseFloat(quantitySelected),
+          quantity: calculateDivisible(parseFloat(quantitySelected), unitMultiplier),
           seller: selectedItem.seller,
         },
       ]
@@ -224,6 +239,23 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
     } else {
       toastMessage('selectSku')
     }
+  }
+
+
+  const calculateDivisible = (quantity: number, multiplier: number) => {
+    if (multiplier) {
+      return quantity / multiplier
+    }
+    return quantity
+  }
+
+  const roundToNearestMultiple = (quantity: number, multiplier: number) => {
+    if (multiplier) {
+      toastMessage('multiplier')
+      return Math.round(quantity / multiplier) * multiplier
+    }
+
+    return quantity
   }
 
   const CSS_HANDLES = [
@@ -285,6 +317,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
                     <span className={`${handles.productTitle}`}>
                       {selectedItem.label}
                     </span>
+
                     {!!selectedItem &&
                       selectedItem.data.product.items.length > 1 && (
                         <div className={`${handles.productSku} flex flex-row`}>
@@ -313,6 +346,15 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
                         </div>
                       )}
                   </div>
+                  {!!selectedItem && unitMultiplier && (
+                    <div className={`flex flex-column w-90 fl ${handles.productLabel}`}>
+                      <span className="mr4">
+                        <Tag type="warning" variation="low">
+                          Unit Multiplier of {unitMultiplier}
+                        </Tag>
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="w-third-l w-100-ns fr-l">
                   <div
@@ -322,10 +364,18 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
                       value={quantitySelected}
                       size="small"
                       type="number"
+                      step={unitMultiplier}
                       onChange={(e: any) => {
                         setState({
                           ...state,
                           quantitySelected: e.target.value,
+                        })
+                      }}
+                      onBlur={() => {
+                        const roundedValue = roundToNearestMultiple(quantitySelected, unitMultiplier)
+                        setState({
+                          ...state,
+                          quantitySelected: roundedValue,
                         })
                       }}
                     />
