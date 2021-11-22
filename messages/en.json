@@ -37,6 +37,7 @@
   "store/quickorder.category.addButton": "Add items to Cart",
   "store/quickorder.category.loading": "Loading...",
   "store/quickorder.category.noneSelection": "Enter some quantity on the items",
+  "store/quickorder.category.multiplier": "The item quantity has been rounded to the closest multiple of the unit multiplier",
   "store/quickorder.invalidPattern": "Invalid pattern",
   "store/quickorder.review.label.content": "Content",
   "store/quickorder.review.label.lineNumber": "#",

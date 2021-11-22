@@ -43,6 +43,11 @@ const messages = defineMessages({
     defaultMessage: '',
     label: '',
   },
+  multiplier: {
+    id: 'store/quickorder.category.multiplier',
+    defaultMessage: '',
+    label: '',
+  },
   error: { id: 'store/toaster.cart.error', defaultMessage: '', label: '' },
   seeCart: {
     id: 'store/toaster.cart.seeCart',
@@ -96,6 +101,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
 
     if (typeof arg === 'string') {
       message = intl.formatMessage(messages[arg])
+      console.log(message)
     } else {
       const {
         success,
@@ -290,7 +296,7 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
       const items = skus.map((item: any) => {
         return {
           id: parseInt(item, 10),
-          quantity: parseFloat(quantitySelected[item]),
+          quantity: calculateDivisible(parseFloat(quantitySelected[item]), item),
           seller: defaultSeller[item],
         }
       })
@@ -305,6 +311,24 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     const td = url.split('/')
     const ids = td[td.indexOf('ids') + 1]
     return url.replace(ids, `${ids}-50-50`)
+  }
+
+  const calculateDivisible = (quantity: number, contentItemId: string) => {
+    if (contentItemId in rootCategoryProductMap.unitMultiplierList) {
+      const multiplier = rootCategoryProductMap.unitMultiplierList[contentItemId].unitMultiplier
+      return quantity / multiplier
+    }
+    return quantity
+  }
+
+  const calculateMultiples = (quantity: number, contentItemId: string) => {
+    if (contentItemId in rootCategoryProductMap.unitMultiplierList) {
+      const multiplier = rootCategoryProductMap.unitMultiplierList[contentItemId].unitMultiplier
+      toastMessage('multiplier')
+      return Math.round(quantity / multiplier) * multiplier
+    }
+
+    return quantity
   }
 
   const drawProducts = (a: any) => {
@@ -377,6 +401,14 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
                             _setState({
                               quantitySelected: newQtd,
                               defaultSeller: newSeller,
+                            })
+                          }}
+                          onBlur={() => {
+                            const roundedValue = calculateMultiples(quantitySelected[content.itemId] || 0, content.itemId)
+                            const newQtd = quantitySelected
+                            quantitySelected[content.itemId] = String(roundedValue)
+                            _setState({
+                              quantitySelected: newQtd,
                             })
                           }}
                         />

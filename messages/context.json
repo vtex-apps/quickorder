@@ -37,6 +37,7 @@
   "store/quickorder.category.addButton": "store/quickorder.category.addButton",
   "store/quickorder.category.loading": "store/quickorder.category.loading",
   "store/quickorder.category.noneSelection": "store/quickorder.category.noneSelection",
+  "store/quickorder.category.multiplier": "store/quickorder.category.multiplier",
   "store/quickorder.invalidPattern": "store/quickorder.invalidPattern",
   "store/quickorder.review.label.content": "store/quickorder.review.label.content",
   "store/quickorder.review.label.lineNumber": "store/quickorder.review.label.lineNumber",
