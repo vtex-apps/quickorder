@@ -4,6 +4,7 @@ query getSkuFromRefIds($refids: [String], $orderFormId: String) {
       sku
       refid
       availability
+      unitMultiplier
       sellers {
         id
         name

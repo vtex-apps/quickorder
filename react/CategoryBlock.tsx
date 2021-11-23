@@ -101,7 +101,6 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
 
     if (typeof arg === 'string') {
       message = intl.formatMessage(messages[arg])
-      console.log(message)
     } else {
       const {
         success,

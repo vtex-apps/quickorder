@@ -5,5 +5,6 @@ type ItemsRefId {
   sku: String
   refid: String
   availability: String
+  unitMultiplier: Float
   sellers: [ItemsSeller]
 }

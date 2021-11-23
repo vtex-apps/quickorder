@@ -42,6 +42,7 @@
   "store/quickorder.review.label.content": "store/quickorder.review.label.content",
   "store/quickorder.review.label.lineNumber": "store/quickorder.review.label.lineNumber",
   "store/quickorder.review.label.quantity": "store/quickorder.review.label.quantity",
+  "store/quickorder.review.label.multiplier": "store/quickorder.review.label.multiplier",
   "store/quickorder.review.label.seller": "store/quickorder.review.label.seller",
   "store/quickorder.review.label.sku": "store/quickorder.review.label.sku",
   "store/quickorder.review.label.status": "store/quickorder.review.label.status",

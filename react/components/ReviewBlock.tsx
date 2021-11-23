@@ -239,6 +239,21 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         return ret
       }
 
+      const getUnitMultiplier = (item: any) => {
+        let ret: any = null
+
+        if (!!refidData && !!refidData.skuFromRefIds.items) {
+          ret = refidData.skuFromRefIds.items.find((curr: any) => {
+            return !!item.sku && item.sku === curr.refid
+          })
+          if (!!ret && !!ret.unitMultiplier) {
+            ret = ret.unitMultiplier
+          }
+        }
+
+        return ret
+      }
+
       const getSellers = (item: any) => {
         let ret: any = []
 
@@ -280,11 +295,13 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       const items = reviewed.map((item: any) => {
         const sellers = getSellers(item)
 
+        console.log(item)
         return {
           ...item,
           sellers: getSellers(item),
           seller: sellers.length ? sellers[0].id : '1',
           vtexSku: vtexSku(item),
+          unitMultiplier: getUnitMultiplier(item),
           error: errorMsg(item),
         }
       })
@@ -468,6 +485,12 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         type: 'string',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.quantity',
+        }),
+      },
+      unitMultiplier: {
+        type: 'float',
+        title: intl.formatMessage({
+          id: 'store/quickorder.review.label.multiplier',
         }),
       },
       seller: {
