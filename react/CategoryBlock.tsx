@@ -23,7 +23,6 @@ import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import { useCssHandles } from 'vtex.css-handles'
 import { graphql, useApolloClient, compose, useMutation } from 'react-apollo'
 
-import getProducts from './queries/productsQuery.gql'
 import getCategories from './queries/categoriesQuery.gql'
 import SearchByCategory from './queries/productsByCategory.gql'
 
@@ -62,20 +61,15 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     categoryItems: {},
     quantitySelected: {},
     defaultSeller: {},
-    rootCategoryProductMap: {
-      // Root level category: true/false
-      // True = visited, False = not visited
-      visitedCategory: {},
-      // All the items with their respective units
-      unitMultiplierList: {}
-    }
+    // All the items with their respective units
+    unitMultiplierList: {}
   })
 
   const { showToast } = useContext(ToastContext)
 
   const client = useApolloClient()
 
-  const { categoryItems, quantitySelected, defaultSeller, rootCategoryProductMap } = state
+  const { categoryItems, quantitySelected, defaultSeller, unitMultiplierList } = state
 
   const [addToCart, { error, loading }] = useMutation<
     { addToCart: OrderFormType },
@@ -121,24 +115,6 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
     }
 
     showToast({ message, action })
-  }
-
-  const fetchProductsByCategory = async (category: string) => {
-
-    const query = {
-      query: getProducts,
-      variables: { category: category },
-    }
-    const result = await client.query(query)
-
-    rootCategoryProductMap.visitedCategory[category] = true
-    for (const products of result.data.products) {
-      for (const item of products.items) {
-        if (item.unitMultiplier > 1) {
-          rootCategoryProductMap.unitMultiplierList[item.itemId] = item
-        }
-      }
-    }
   }
 
   const _setState = (props: any) => {
@@ -270,6 +246,13 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
         query: SearchByCategory,
         variables: { selectedFacets },
       })
+      for (const product of dataProducts.productSearch.products) {
+        for (const item of product.items) {
+          if (item.unitMultiplier > 1) {
+            unitMultiplierList[item.itemId] = item
+          }
+        }
+      }
 
       setOptions(
         categoryId,
@@ -313,16 +296,16 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
   }
 
   const calculateDivisible = (quantity: number, contentItemId: string) => {
-    if (contentItemId in rootCategoryProductMap.unitMultiplierList) {
-      const multiplier = rootCategoryProductMap.unitMultiplierList[contentItemId].unitMultiplier
+    if (contentItemId in unitMultiplierList) {
+      const multiplier = unitMultiplierList[contentItemId].unitMultiplier
       return quantity / multiplier
     }
     return quantity
   }
 
   const roundToNearestMultiple = (quantity: number, contentItemId: string) => {
-    if (contentItemId in rootCategoryProductMap.unitMultiplierList) {
-      const multiplier = rootCategoryProductMap.unitMultiplierList[contentItemId].unitMultiplier
+    if (contentItemId in unitMultiplierList) {
+      const multiplier = unitMultiplierList[contentItemId].unitMultiplier
       toastMessage('multiplier')
       return Math.round(quantity / multiplier) * multiplier
     }
@@ -367,10 +350,10 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
                             {referenceId['Value']}
                           </span>
                         )}
-                        {content.itemId in rootCategoryProductMap.unitMultiplierList && (
+                        {content.itemId in unitMultiplierList && (
                           <span className="pl5 mr4">
                             <Tag type="warning" variation="low">
-                              Unit Multiplier of {rootCategoryProductMap.unitMultiplierList[content.itemId].unitMultiplier}
+                              Unit Multiplier of {unitMultiplierList[content.itemId].unitMultiplier}
                             </Tag>
                           </span>
                         )}
@@ -459,11 +442,6 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
         isOpen={item.isOpen}
         onClick={() => {
           openClose(item.id, item.href)
-          // Gets the product information only when root level category is pressed and the item wasn't already fetched
-          if (item.name in rootCategoryProductMap.visitedCategory && rootCategoryProductMap.visitedCategory[item.name] === false) {
-
-            fetchProductsByCategory(item.name)
-          }
         }}
       >
         <div className={`${handles.categoriesProductContainer}`}>
@@ -537,10 +515,6 @@ const CategoryBlock: StorefrontFunctionComponent<WrappedComponentProps &
               </div>
             </div>
             {categories.map((item: any) => {
-              // Add visited node if its not in set
-              if (!(item.name in rootCategoryProductMap.visitedCategory)) {
-                rootCategoryProductMap.visitedCategory[item.name] = false
-              }
               return <div key={item.id}>{collapsible(item)}</div>
             })}
           </div>
