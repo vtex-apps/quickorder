@@ -254,13 +254,13 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
       const items = reviewed.map((item: any) => {
         const sellers = item.sku ? mappedRefId[item.sku]?.sellers : '1'
-
         return {
           ...item,
           sellers: item.sku ? mappedRefId[item.sku]?.sellers : '1',
           seller: sellers.length ? sellers[0].id : '1',
           vtexSku: item.sku ? mappedRefId[item.sku]?.sku : '1',
           unitMultiplier: item.sku ? mappedRefId[item.sku]?.unitMultiplier : '1',
+          totalQuantity: (item.sku ? mappedRefId[item.sku]?.unitMultiplier : '1') * item.quantity,
           error: errorMsg(item),
         }
       })
@@ -450,6 +450,12 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         type: 'float',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.multiplier',
+        }),
+      },
+      totalQuantity: {
+        type: 'float',
+        title: intl.formatMessage({
+          id: 'store/quickorder.review.label.totalQuantity',
         }),
       },
       seller: {
