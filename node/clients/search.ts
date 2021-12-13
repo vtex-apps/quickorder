@@ -60,23 +60,19 @@ export class Search extends ExternalClient {
 
       const orderForm = await this.getOrderForm(orderFormId)
 
-     const {items}: any = await this.simulate(result, orderForm)
+      // Maps the items into K, V pair (item SKU, item Object)
+      let {items}: any = await this.simulate(result, orderForm)
+      items = items.reduce((acc: any, item: any)=> (acc[item.id]=item,acc),{});
 
-     result = result.map((item: any) => {
-       return {
-         ...item,
-         availability: this.getAvailability(item, items)
-       }
-     })
+      result = result.map((item: any) => {
+        return {
+          ...item,
+          unitMultiplier: items[item.sku]?.unitMultiplier ?? 1,
+          availability: items[item.sku]?.availability ?? ''
+        }
+      })
     }
     return result
-  }
-
-  private getAvailability = (item: any, items: any) => {
-    const [availabilityItem] = items.filter((curr: any) => {
-      return curr.id === item.sku
-    })
-    return availabilityItem?.availability ?? ''
   }
 
   private getOrderForm = async (orderFormId: string) => {

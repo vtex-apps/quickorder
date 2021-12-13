@@ -5,6 +5,7 @@ query SearchByCategory($selectedFacets: [SelectedFacetInput]) {
       items {
         itemId
         nameComplete
+        unitMultiplier
         sellers {
           sellerId
           sellerName

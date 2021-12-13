@@ -4,6 +4,7 @@ query Product($slug: String) {
     items {
       itemId
       name
+      unitMultiplier
       sellers {
         sellerId
         sellerName

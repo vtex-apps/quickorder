@@ -224,34 +224,9 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
             })
           : []
 
-      const vtexSku = (item: any) => {
-        let ret: any = null
-
-        if (!!refidData && !!refidData.skuFromRefIds.items) {
-          ret = refidData.skuFromRefIds.items.find((curr: any) => {
-            return !!item.sku && item.sku === curr.refid
-          })
-          if (!!ret && !!ret.sku) {
-            ret = ret.sku
-          }
-        }
-
-        return ret
-      }
-
-      const getSellers = (item: any) => {
-        let ret: any = []
-
-        if (!!refidData && !!refidData.skuFromRefIds.items) {
-          ret = refidData.skuFromRefIds.items.find((curr: any) => {
-            return !!item.sku && item.sku === curr.refid
-          })
-          if (!!ret && !!ret.sellers) {
-            ret = ret.sellers
-          }
-        }
-
-        return ret
+      let mappedRefId = {}
+      if (!!refidData && !!refidData.skuFromRefIds.items) {
+        mappedRefId = refidData.skuFromRefIds.items.reduce((acc: any, item: any)=> (acc[item.refid]=item,acc),{});
       }
 
       const errorMsg = (item: any) => {
@@ -278,13 +253,14 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       }
 
       const items = reviewed.map((item: any) => {
-        const sellers = getSellers(item)
-
+        const sellers = item.sku ? mappedRefId[item.sku]?.sellers : '1'
         return {
           ...item,
-          sellers: getSellers(item),
+          sellers: item.sku ? mappedRefId[item.sku]?.sellers : '1',
           seller: sellers.length ? sellers[0].id : '1',
-          vtexSku: vtexSku(item),
+          vtexSku: item.sku ? mappedRefId[item.sku]?.sku : '1',
+          unitMultiplier: item.sku ? mappedRefId[item.sku]?.unitMultiplier : '1',
+          totalQuantity: (item.sku ? mappedRefId[item.sku]?.unitMultiplier : '1') * item.quantity,
           error: errorMsg(item),
         }
       })
@@ -468,6 +444,18 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         type: 'string',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.quantity',
+        }),
+      },
+      unitMultiplier: {
+        type: 'float',
+        title: intl.formatMessage({
+          id: 'store/quickorder.review.label.multiplier',
+        }),
+      },
+      totalQuantity: {
+        type: 'float',
+        title: intl.formatMessage({
+          id: 'store/quickorder.review.label.totalQuantity',
         }),
       },
       seller: {
