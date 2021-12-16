@@ -232,7 +232,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
   return (
     <div>
       {!componentOnly && (
-        <div className={`${handles.textContainer} w-third-l w-100-ns fl-l`}>
+        <div className={`${handles.textContainer} w-20-l w-100-ns fl-l`}>
           <h2
             className={`t-heading-3 mb3 ml5 ml3-ns mt4 ${handles.textContainerTitle}`}
           >
@@ -248,12 +248,12 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
 
       <div
         className={`${handles.componentContainer} ${
-          !componentOnly ? 'w-two-thirds-l w-100-ns fr-l' : ''
+          !componentOnly ? 'w-80-l w-100-ns fr-l pb6' : ''
         }`}
       >
         {!reviewState && (
           <div className="w-100 mb5">
-            <div className="bg-base t-body c-on-base pa7 br3 b--muted-4">
+            <div className="bg-base t-body c-on-base ph6 br3 b--muted-4">
               <Textarea
                 value={textAreaValue}
                 onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
@@ -276,7 +276,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
         )}
 
         {reviewState && (
-          <div className={`w-100 pa6 ${handles.reviewBlock}`}>
+          <div className={`w-100 ph6 ${handles.reviewBlock}`}>
             <ReviewBlock
               reviewedItems={reviewItems}
               onReviewItems={onReviewItems}
