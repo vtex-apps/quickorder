@@ -43,6 +43,7 @@
   "store/quickorder.review.label.lineNumber": "#",
   "store/quickorder.review.label.quantity": "Cantitate",
   "store/quickorder.review.label.multiplier": "Multiplicator unitar",
+  "store/quickorder.review.label.totalQuantity": "Total Quantity",
   "store/quickorder.review.label.seller": "Vanzator",
   "store/quickorder.review.label.sku": "SKU",
   "store/quickorder.review.label.status": "Stare",
