@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed a bug where the add to cart button will spin forever when given a faulty item SKU
+
 ## [3.3.0] - 2021-12-13
 
 ### Added
