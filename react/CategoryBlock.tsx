@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-key */
 import PropTypes from 'prop-types'
 import React, { useState, useContext } from 'react'

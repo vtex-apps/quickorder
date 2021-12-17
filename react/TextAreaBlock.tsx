@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useContext } from 'react'
 import {
   FormattedMessage,
@@ -156,7 +157,6 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
         items.filter((item: any) => {
           return !item.vtexSku
         }).length === 0
-
       setState({
         ...state,
         reviewItems: items,
@@ -211,6 +211,12 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
           seller,
         }
       })
+
+    if (items.length === 0) {
+      toastMessage({ success: false, isNewItem: false })
+      return
+    }
+
     callAddToCart(items)
   }
   const onRefidLoading = (data: boolean) => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable vtex/prefer-early-return */
 import React, { useState, useEffect } from 'react'
 import {
@@ -257,7 +258,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         return {
           ...item,
           sellers: item.sku ? mappedRefId[item.sku]?.sellers : '1',
-          seller: sellers.length ? sellers[0].id : '1',
+          seller: sellers?.length ? sellers[0].id : '1',
           vtexSku: item.sku ? mappedRefId[item.sku]?.sku : '1',
           unitMultiplier: item.sku ? mappedRefId[item.sku]?.unitMultiplier : '1',
           totalQuantity: (item.sku ? mappedRefId[item.sku]?.unitMultiplier : '1') * item.quantity,
