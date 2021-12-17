@@ -6,4 +6,20 @@ declare module 'vtex.styleguide' {
   interface InputProps {
     [key: string]: any
   }
+
+  export const Button
+  export const Dropzone
+  export const ToastContext
+  export const Spinner
+  export const Textarea
+  export const Table
+  export const ButtonWithIcon
+  export const IconDelete
+  export const IconInfo
+  export const Tooltip
+  export const Dropdown
+  export const AutocompleteInput
+  export const IconClear
+  export const Tag
+  export const Collapsible
 }

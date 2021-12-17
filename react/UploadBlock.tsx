@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useContext } from 'react'
 import {
   FormattedMessage,
@@ -288,6 +289,12 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
           seller,
         }
       })
+
+    if (items.length === 0) {
+      toastMessage({ success: false, isNewItem: false })
+      return
+    }
+
     callAddToCart(items)
   }
 
