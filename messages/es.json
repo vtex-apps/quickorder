@@ -43,7 +43,7 @@
   "store/quickorder.review.label.lineNumber": "#",
   "store/quickorder.review.label.quantity": "Cantidad",
   "store/quickorder.review.label.multiplier": "Multiplicador de unidades",
-  "store/quickorder.review.label.totalQuantity": "Total Quantity",
+  "store/quickorder.review.label.totalQuantity": "Cantidad total",
   "store/quickorder.review.label.seller": "Seller",
   "store/quickorder.review.label.sku": "SKU",
   "store/quickorder.review.label.status": "Estado",
