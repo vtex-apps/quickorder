@@ -406,6 +406,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.lineNumber',
         }),
+        width: 50,
         // eslint-disable-next-line react/display-name
         cellRenderer: ({ rowData }: any) => {
           return <div>{parseInt(rowData.line, 10) + 1}</div>
@@ -440,24 +441,28 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       sku: {
         type: 'string',
         title: intl.formatMessage({ id: 'store/quickorder.review.label.sku' }),
+        width: 125
       },
       quantity: {
         type: 'string',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.quantity',
         }),
+        width: 75
       },
       unitMultiplier: {
         type: 'float',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.multiplier',
         }),
+        width: 100
       },
       totalQuantity: {
         type: 'float',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.totalQuantity',
         }),
+        width: 100
       },
       seller: {
         type: 'string',
@@ -467,9 +472,8 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         cellRenderer: ({ rowData }: any) => {
           if (rowData?.sellers?.length > 1) {
             return (
-              <div className="mb5">
+              <div>
                 <Dropdown
-                  label="Regular"
                   options={rowData.sellers.map((item: any) => {
                     return {
                       label: item.name,
@@ -495,6 +499,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.status',
         }),
+        width: 75,
         cellRenderer: ({ cellData, rowData }: any) => {
           if (rowData.error) {
             const text = intl.formatMessage(
@@ -518,6 +523,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       delete: {
         type: 'object',
         title: ' ',
+        width: 75,
         // eslint-disable-next-line react/display-name
         cellRenderer: ({ rowData }: any) => {
           return (
