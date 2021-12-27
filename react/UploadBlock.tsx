@@ -64,6 +64,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   const { promptOnCustomEvent } = settings
 
   const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
+    const orderForm = OrderForm.useOrderForm()
   const { showToast } = useContext(ToastContext)
 
   const translateMessage = (message: MessageDescriptor) => {
@@ -216,9 +217,17 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     for (let i = 0; i < loopCount; i++) {
       const chunk = tempItems.splice(0, splitBy)
       if (chunk.length) {
+          let currentItemsInCart = orderForm.orderForm.items
         const mutationChunk = await addToCart({
           variables: {
             items: chunk.map((item: any) => {
+                let existsInCurrentOrder = currentItemsInCart.filter(
+                  el => el.id === item.id.toString()
+                )
+                if (existsInCurrentOrder.length > 0) {
+                  item['quantity'] =
+                    item['quantity'] + existsInCurrentOrder[0]['quantity']
+                }
               return {
                 ...item,
               }
@@ -289,13 +298,20 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
           seller,
         }
       })
-
-    if (items.length === 0) {
-      toastMessage({ success: false, isNewItem: false })
-      return
+      const merge = internalItems => {
+        return internalItems.reduce((acc, val) => {
+          const { id, quantity } = val
+          const ind = acc.findIndex(el => el.id === id)
+          if (ind !== -1) {
+            acc[ind].quantity += quantity
+          } else {
+            acc.push(val)
     }
-
-    callAddToCart(items)
+          return acc
+        }, [])
+      }
+      const mergedItems = merge(items)
+      callAddToCart(mergedItems)
   }
 
   const CSS_HANDLES = [

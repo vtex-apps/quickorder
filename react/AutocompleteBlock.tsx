@@ -69,6 +69,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
   const { promptOnCustomEvent } = settings
 
   const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
+    const orderForm = OrderForm.useOrderForm()
 
   const translateMessage = (message: MessageDescriptor) => {
     return intl.formatMessage(message)
@@ -115,9 +116,17 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
 
   const { selectedItem, quantitySelected, unitMultiplier } = state
   const callAddToCart = async (items: any) => {
+      let currentItemsInCart = orderForm.orderForm.items
     const mutationResult = await addToCart({
       variables: {
         items: items.map((item: any) => {
+            let existsInCurrentOrder = currentItemsInCart.filter(
+              el => el.id === item.id.toString()
+            )
+            if (existsInCurrentOrder.length > 0) {
+              item['quantity'] =
+                item['quantity'] + existsInCurrentOrder[0]['quantity']
+            }
           return {
             ...item,
           }
