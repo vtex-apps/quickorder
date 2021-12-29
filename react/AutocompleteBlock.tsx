@@ -365,6 +365,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
                       value={quantitySelected}
                       size="small"
                       type="number"
+                      min="1"
                       step={unitMultiplier}
                       onChange={(e: any) => {
                         setState({
