@@ -98,7 +98,7 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
   }
 
   const callAddToCart = async (items: any) => {
-      let currentItemsInCart = orderForm.orderForm.items
+    const currentItemsInCart = orderForm.orderForm.items
     const mutationResult = await addToCart({
       variables: {
         items: items.map((item: any) => {

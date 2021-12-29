@@ -217,7 +217,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     for (let i = 0; i < loopCount; i++) {
       const chunk = tempItems.splice(0, splitBy)
       if (chunk.length) {
-          let currentItemsInCart = orderForm.orderForm.items
+        const currentItemsInCart = orderForm.orderForm.items
         const mutationChunk = await addToCart({
           variables: {
             items: chunk.map((item: any) => {
