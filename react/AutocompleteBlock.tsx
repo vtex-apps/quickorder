@@ -368,10 +368,12 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
                       min="1"
                       step={unitMultiplier}
                       onChange={(e: any) => {
-                        setState({
-                          ...state,
-                          quantitySelected: e.target.value,
-                        })
+                        if(e.target.value > 0){
+                          setState({
+                            ...state,
+                            quantitySelected: e.target.value,
+                          })
+                        }
                       }}
                       onBlur={() => {
                         const roundedValue = roundToNearestMultiple(quantitySelected, unitMultiplier)
