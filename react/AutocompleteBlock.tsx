@@ -123,7 +123,7 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
             const [existsInCurrentOrder] = currentItemsInCart.filter(
               el => el.id === item.id.toString()
             )
-            if (existsInCurrentOrder?.length > 0) {
+            if (existsInCurrentOrder) {
               item.quantity = item.quantity + existsInCurrentOrder.quantity
             }
           return {
