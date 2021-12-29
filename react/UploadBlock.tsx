@@ -221,12 +221,11 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
         const mutationChunk = await addToCart({
           variables: {
             items: chunk.map((item: any) => {
-                let existsInCurrentOrder = currentItemsInCart.filter(
+                const [existsInCurrentOrder] = currentItemsInCart.filter(
                   el => el.id === item.id.toString()
                 )
-                if (existsInCurrentOrder.length > 0) {
-                  item['quantity'] =
-                    item['quantity'] + existsInCurrentOrder[0]['quantity']
+                if (existsInCurrentOrder?.length > 0) {
+                  item.quantity = item.quantity + existsInCurrentOrder.quantity
                 }
               return {
                 ...item,

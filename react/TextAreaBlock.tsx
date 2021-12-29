@@ -102,12 +102,11 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
     const mutationResult = await addToCart({
       variables: {
         items: items.map((item: any) => {
-            let existsInCurrentOrder = currentItemsInCart.filter(
+            const [existsInCurrentOrder] = currentItemsInCart.filter(
               el => el.id === item.id.toString()
             )
-            if (existsInCurrentOrder.length > 0) {
-              item['quantity'] =
-                item['quantity'] + existsInCurrentOrder[0]['quantity']
+            if (existsInCurrentOrder?.length > 0) {
+              item.quantity = item.quantity + existsInCurrentOrder.quantity
             }
           return {
             ...item,

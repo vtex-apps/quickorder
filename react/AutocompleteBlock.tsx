@@ -116,16 +116,15 @@ const AutocompleteBlock: StorefrontFunctionComponent<any &
 
   const { selectedItem, quantitySelected, unitMultiplier } = state
   const callAddToCart = async (items: any) => {
-      let currentItemsInCart = orderForm.orderForm.items
+    const currentItemsInCart = orderForm.orderForm.items
     const mutationResult = await addToCart({
       variables: {
         items: items.map((item: any) => {
-            let existsInCurrentOrder = currentItemsInCart.filter(
+            const [existsInCurrentOrder] = currentItemsInCart.filter(
               el => el.id === item.id.toString()
             )
-            if (existsInCurrentOrder.length > 0) {
-              item['quantity'] =
-                item['quantity'] + existsInCurrentOrder[0]['quantity']
+            if (existsInCurrentOrder?.length > 0) {
+              item.quantity = item.quantity + existsInCurrentOrder.quantity
             }
           return {
             ...item,
