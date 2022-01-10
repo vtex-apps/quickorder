@@ -156,6 +156,8 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
       showInstallPrompt()
     }
 
+    backList()
+
     return showInstallPrompt
   }
 

@@ -283,6 +283,8 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
     if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
       showInstallPrompt()
     }
+    
+    backList()
 
     return showInstallPrompt
   }
