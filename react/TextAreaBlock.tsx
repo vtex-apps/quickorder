@@ -276,15 +276,17 @@ const TextAreaBlock: StorefrontFunctionComponent<TextAreaBlockInterface &
                 }
               />
               <div className={`mt2 flex justify-end ${handles.buttonValidate}`}>
-                <Button
-                  variation="secondary"
-                  size="regular"
-                  onClick={() => {
-                    parseText()
-                  }}
-                >
-                  <FormattedMessage id="store/quickorder.validate" />
-                </Button>
+                {textAreaValue &&(
+                  <Button
+                    variation="secondary"
+                    size="regular"
+                    onClick={() => {
+                      parseText()
+                    }}
+                  >
+                    <FormattedMessage id="store/quickorder.validate" />
+                  </Button>
+                )}
               </div>
             </div>
           </div>
