@@ -372,7 +372,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
             <div
               className={`bg-base t-body c-on-base ph6 pb6 br3 b--muted-4 ${handles.dropzoneContainer}`}
             >
-              <Dropzone onDropAccepted={handleFile} onFileReset={handleReset}>
+              <Dropzone onDropAccepted={handleFile} onFileReset={handleReset} accept=".xls,xlsx">
                 <div className="pt7">
                   <div>
                     <span className={`f4 ${handles.dropzoneText}`}>
