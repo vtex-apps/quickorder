@@ -132,6 +132,7 @@ let orderFormId = ''
 
 const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
   onReviewItems,
+  hiddenColumns,
   reviewedItems,
   onRefidLoading,
   intl,
@@ -207,27 +208,27 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       const refIdNotFound =
         !!refidData && !!refidData.skuFromRefIds.items
           ? refidData.skuFromRefIds.items.filter((item: any) => {
-              return item.sku === null
-            })
+            return item.sku === null
+          })
           : []
 
       const refIdFound =
         !!refidData && !!refidData.skuFromRefIds.items
           ? refidData.skuFromRefIds.items.filter((item: any) => {
-              return item.sku !== null
-            })
+            return item.sku !== null
+          })
           : []
 
       const refNotAvailable =
         !!refidData && !!refidData.skuFromRefIds.items
           ? refidData.skuFromRefIds.items.filter((item: any) => {
-              return item.availability !== 'available'
-            })
+            return item.availability !== 'available'
+          })
           : []
 
       let mappedRefId = {}
       if (!!refidData && !!refidData.skuFromRefIds.items) {
-        mappedRefId = refidData.skuFromRefIds.items.reduce((acc: any, item: any)=> (acc[item.refid]=item,acc),{});
+        mappedRefId = refidData.skuFromRefIds.items.reduce((acc: any, item: any) => (acc[item.refid] = item, acc), {});
       }
 
       const errorMsg = (item: any) => {
@@ -243,8 +244,8 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         ret = notfound
           ? 'store/quickorder.skuNotFound'
           : found?.availability && found.availability !== 'available'
-          ? `store/quickorder.${found.availability}`
-          : null
+            ? `store/quickorder.${found.availability}`
+            : null
 
         return ret
       }
@@ -359,9 +360,9 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     const items = reviewItems.map((item: any) => {
       return item.index === index
         ? {
-            ...item,
-            content,
-          }
+          ...item,
+          content,
+        }
         : item
     })
 
@@ -375,9 +376,9 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     const items = reviewItems.map((item: any) => {
       return item.index === index
         ? {
-            ...item,
-            seller,
-          }
+          ...item,
+          seller,
+        }
         : item
     })
 
@@ -399,9 +400,14 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     }
   }
 
-  const tableSchema = {
+  let tableSchema = {
     properties: {
-      line: {
+    }
+  }
+
+  const createSchema = (hiddenColumns: any) => {
+    if (hiddenColumns.indexOf("line") == -1) {
+      tableSchema["properties"]["line"] = {
         type: 'object',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.lineNumber',
@@ -411,8 +417,11 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
         cellRenderer: ({ rowData }: any) => {
           return <div>{parseInt(rowData.line, 10) + 1}</div>
         },
-      },
-      content: {
+      }
+    }
+
+    if (hiddenColumns.indexOf("content") == -1) {
+      tableSchema["properties"]["content"] = {
         type: 'object',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.content',
@@ -437,34 +446,49 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
           return <span>{cellData}</span>
         },
-      },
-      sku: {
+      }
+    }
+
+    if (hiddenColumns.indexOf("sku") == -1) {
+      tableSchema["properties"]["sku"] = {
         type: 'string',
         title: intl.formatMessage({ id: 'store/quickorder.review.label.sku' }),
         width: 125
-      },
-      quantity: {
+      }
+    }
+
+    if (hiddenColumns.indexOf("quantity") == -1) {
+      tableSchema["properties"]["quantity"] = {
         type: 'string',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.quantity',
         }),
         width: 75
-      },
-      unitMultiplier: {
+      }
+    }
+
+    if (hiddenColumns.indexOf("unitMultiplier") == -1) {
+      tableSchema["properties"]["unitMultiplier"] = {
         type: 'float',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.multiplier',
         }),
         width: 100
-      },
-      totalQuantity: {
+      }
+    }
+
+    if (hiddenColumns.indexOf("totalQuantity") == -1) {
+      tableSchema["properties"]["totalQuantity"] = {
         type: 'float',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.totalQuantity',
         }),
         width: 100
-      },
-      seller: {
+      }
+    }
+
+    if (hiddenColumns.indexOf("seller") == -1) {
+      tableSchema["properties"]["seller"] = {
         type: 'string',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.seller',
@@ -493,8 +517,11 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
             ? rowData.sellers[0].name
             : ''
         },
-      },
-      error: {
+      }
+    }
+
+    if (hiddenColumns.indexOf("error") == -1) {
+      tableSchema["properties"]["error"] = {
         type: 'string',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.status',
@@ -519,8 +546,11 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
           return intl.formatMessage({ id: 'store/quickorder.valid' })
         },
-      },
-      delete: {
+      }
+    }
+
+    if (hiddenColumns.indexOf("delete") == -1) {
+      tableSchema["properties"]["delete"] = {
         type: 'object',
         title: ' ',
         width: 75,
@@ -538,9 +568,11 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
             </div>
           )
         },
-      },
-    },
+      }
+    }
   }
+
+  createSchema(hiddenColumns ?? [])
 
   return (
     <div>
@@ -552,6 +584,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 ReviewBlock.propTypes = {
   onReviewItems: PropTypes.func,
   reviewItems: PropTypes.array,
+  hiddenColumns: PropTypes.array,
   onRefidLoading: PropTypes.func,
 }
 

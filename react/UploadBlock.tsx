@@ -40,6 +40,7 @@ const messages = defineMessages({
 const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
   WrappedComponentProps> = ({
   text,
+  hiddenColumns,
   description,
   downloadText,
   componentOnly,
@@ -398,6 +399,7 @@ const UploadBlock: StorefrontFunctionComponent<UploadBlockInterface &
           <div className={`w-100 ph6 ${handles.reviewBlock}`}>
             <ReviewBlock
               reviewedItems={reviewItems}
+              hiddenColumns={hiddenColumns}
               onReviewItems={onReviewItems}
               onRefidLoading={onRefidLoading}
             />
