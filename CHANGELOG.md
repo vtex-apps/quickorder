@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Enhancement 
+
+- Adding an option as a prop to make the columns of the review block hideable
+
 ## [3.4.1] - 2022-01-07
 
 ## [3.4.0] - 2021-12-29
