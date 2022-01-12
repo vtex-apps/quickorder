@@ -1,6 +1,4 @@
-import { ExternalClient, InstanceOptions, IOContext } from '@vtex/api'
-
-const axios = require('axios')
+import { InstanceOptions, IOContext, JanusClient } from '@vtex/api'
 
 interface RefIdArgs {
   refids: any
@@ -12,9 +10,16 @@ interface Items {
   seller: string
 }
 
-export class Search extends ExternalClient {
-  public constructor(ctx: IOContext, opts?: InstanceOptions) {
-    super(`http://${ctx.account}.vtexcommercestable.com.br/`, ctx, opts)
+export class Search extends JanusClient {
+  constructor(context: IOContext, options?: InstanceOptions) {
+    super(context, {
+      ...options,
+      headers: {
+        ...options?.headers,
+        VtexIdClientAutCookie: context.authToken,
+      },
+      timeout: 5000,
+    })
   }
 
   private sellersList: any[] | undefined
@@ -25,12 +30,15 @@ export class Search extends ExternalClient {
     }).name
   }
 
-  public skuFromRefIds = async ({ refids, orderFormId }: RefIdArgs) => {
+  public skuFromRefIds = async ({
+    refids,
+    orderFormId,
+  }: RefIdArgs): Promise<any> => {
     this.sellersList = await this.sellers()
 
-    const url = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pub/sku/stockkeepingunitidsbyrefids`
+    const url = `/api/catalog_system/pub/sku/stockkeepingunitidsbyrefids`
 
-    const res = await axios.default.post(url, refids, {
+    const res: any = await this.http.postRaw(url, refids, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `bearer ${this.context.authToken}`,
@@ -44,7 +52,7 @@ export class Search extends ExternalClient {
     if (res.status === 200) {
       const refs = Object.getOwnPropertyNames(res.data)
 
-      refs.forEach(id => {
+      refs.forEach((id) => {
         resultStr[id] = {
           sku: res.data[id],
           refid: id,
@@ -54,21 +62,24 @@ export class Search extends ExternalClient {
       })
 
       if (this.sellersList?.length) {
-        const promises = result.map(async (o: any) => this.sellerBySku(o.sku, o.refid))
+        const promises = result.map(async (o: any) =>
+          this.sellerBySku(o.sku, o.refid)
+        )
         result = await Promise.all(promises)
       }
 
       const orderForm = await this.getOrderForm(orderFormId)
 
-      // Maps the items into K, V pair (item SKU, item Object)
-      let {items}: any = await this.simulate(result, orderForm)
-      items = items.reduce((acc: any, item: any)=> (acc[item.id]=item,acc),{});
+      const { items }: any = await this.simulate(result, orderForm)
+      items.foreach((item: any) => {
+        items[item.id] = item
+      })
 
       result = result.map((item: any) => {
         return {
           ...item,
           unitMultiplier: items[item.sku]?.unitMultiplier ?? 1,
-          availability: items[item.sku]?.availability ?? ''
+          availability: items[item.sku]?.availability ?? '',
         }
       })
     }
@@ -85,60 +96,69 @@ export class Search extends ExternalClient {
   }
 
   private simulate = async (refids: [Items], orderForm: any) => {
-    const {salesChannel, storePreferencesData: {
-      countryCode
-    },
-    shippingData} = orderForm
-    const items = refids.filter((item: any) => {
-      return !!item.sku
-    }).map((item: any) => {
-      const [seller] = item.sellers
-      return {
-        id: item.sku,
-        quantity: 1,
-        seller: seller?.id,
+    const {
+      salesChannel,
+      storePreferencesData: { countryCode },
+      shippingData,
+    } = orderForm
+    const items = refids
+      .filter((item: any) => {
+        return !!item.sku
+      })
+      .map((item: any) => {
+        const [seller] = item.sellers
+        return {
+          id: item.sku,
+          quantity: 1,
+          seller: seller?.id,
+        }
+      })
+
+    return this.http.post(
+      `/api/checkout/pub/orderForms/simulation?sc=${salesChannel}`,
+      {
+        items,
+        country: countryCode,
+        postalCode: shippingData?.address?.postalCode ?? '',
       }
-    })
-    return this.http.post(`/api/checkout/pub/orderForms/simulation?sc=${salesChannel}`, {
-      items,
-      country: countryCode,
-      postalCode: shippingData?.address?.postalCode ?? ''
-    })
+    )
   }
 
   private sellerBySku = async (skuId: string, refid: string) => {
-    if(skuId === null) {
+    if (skuId === null) {
       return {
         sku: null,
         refid,
-        sellers: null
+        sellers: null,
       }
     }
-    const url = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pvt/sku/stockkeepingunitbyid/${skuId}`
-    const res = await axios.default.get(url, {
+    const url = `/api/catalog_system/pvt/sku/stockkeepingunitbyid/${skuId}`
+    const res = await this.http.getRaw(url, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `bearer ${this.context.authToken}`,
       },
     })
-    return res.data?.SkuSellers ? {
-      sku: skuId,
-      refid,
-      sellers: res.data.SkuSellers.filter((item: any) => {
-        return item.IsActive === true
-      }).map(({ SellerId }: any) => {
-        return {
-          id: SellerId,
-          name: this.getNameFromId(SellerId),
+    return res.data?.SkuSellers
+      ? {
+          sku: skuId,
+          refid,
+          sellers: res.data.SkuSellers.filter((item: any) => {
+            return item.IsActive === true
+          }).map(({ SellerId }: any) => {
+            return {
+              id: SellerId,
+              name: this.getNameFromId(SellerId),
+            }
+          }),
         }
-      })
-    } : []
+      : []
   }
 
-  public sellers = async () => {
-    const url = `http://${this.context.account}.vtexcommercestable.com.br/api/catalog_system/pvt/seller/list`
+  public sellers = async (): Promise<any> => {
+    const url = `/api/seller-register/pvt/sellers`
 
-    const res = await axios.default.get(url, {
+    const res = await this.http.getRaw(url, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `bearer ${this.context.authToken}`,
@@ -148,14 +168,14 @@ export class Search extends ExternalClient {
     let result: any = []
 
     if (res.status === 200) {
-      result = res.data
-        .filter(({ IsActive }: any) => {
-          return IsActive === true
+      result = res.data.items
+        .filter((item: any) => {
+          return item.isActive === true
         })
-        .map(({ SellerId, Name }: any) => {
+        .map(({ id, name }: any) => {
           return {
-            id: SellerId,
-            name: Name,
+            id,
+            name,
           }
         })
     }
