@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.5.0] - 2022-01-14
+
 ### Added
 
 - Ability to run SonarCloud external PR after checking the code by adding a label to it
