@@ -31,6 +31,7 @@
   "store/quickorder.autocomplete.addButton": "Agregar",
   "store/quickorder.autocomplete.placeholder": "Buscar un producto...",
   "store/quickorder.autocomplete.selectSku": "Por favor, seleccione un SKU",
+  "store/quickorder.autocomplete.multiplierOf": "Multiplicador de unidades de",
   "store/quickorder.available": "Disponible",
   "store/quickorder.back": "Atrás",
   "store/quickorder.cannotBeDelivered": "No se puede entregar",
