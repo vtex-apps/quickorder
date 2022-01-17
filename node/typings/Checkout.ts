@@ -76,25 +76,25 @@ interface OrderForm {
   messages: any[]
   items: OrderFormItem[]
   selectableGifts: any[]
-  totalizers: { id: string; name: string; value: number }[]
+  totalizers: Array<{ id: string; name: string; value: number }>
   shippingData: {
     address: CheckoutAddress
-    logisticsInfo: {
+    logisticsInfo: Array<{
       itemIndex: number
       selectedSla: string
       selectedDeliveryChannel: string
       addressId: string
-      slas: {
+      slas: Array<{
         id: string
         deliveryChannel: string
         name: string
-        deliveryIds: {
+        deliveryIds: Array<{
           courierId: string
           warehouseId: string
           dockId: string
           courierName: string
           quantity: number
-        }[]
+        }>
         shippingEstimate: string
         shippingEstimateDate: string | null
         lockTTL: string | null
@@ -114,49 +114,49 @@ interface OrderForm {
         pickupPointId: string | null
         pickupDistance: number
         polygonName: string | null
-      }[]
+      }>
       shipsTo: string[]
       itemId: string
-      deliveryChannels: { id: string }[]
-    }[]
+      deliveryChannels: Array<{ id: string }>
+    }>
     selectedAddresses: CheckoutAddress[]
     availableAddresses: CheckoutAddress[]
-    pickupPoints: {
+    pickupPoints: Array<{
       friendlyName: string
       address: CheckoutAddress
       additionalInfo: string
       id: string
-      businessHours: {
+      businessHours: Array<{
         DayOfWeek: number
         OpeningTime: string
         ClosingTime: string
-      }[]
-    }[]
+      }>
+    }>
   }
   clientProfileData: any | null
   paymentData: {
-    installmentOptions: {
+    installmentOptions: Array<{
       paymentSystem: string
       bin: string | null
       paymentName: string | null
       paymentGroupName: string | null
       value: number
-      installments: {
+      installments: Array<{
         count: number
         hasInterestRate: false
         interestRate: number
         value: number
         total: number
-        sellerMerchantInstallments: {
+        sellerMerchantInstallments: Array<{
           count: number
           hasInterestRate: false
           interestRate: number
           value: number
           total: number
-        }[]
-      }[]
-    }[]
-    paymentSystems: {
+        }>
+      }>
+    }>
+    paymentSystems: Array<{
       id: string
       name: string
       groupName: string
@@ -179,7 +179,7 @@ interface OrderForm {
       requiresAuthentication: boolean
       dueDate: string
       availablePayments: any | null
-    }[]
+    }>
     payments: any[]
     giftCards: any[]
     giftCardMessages: any[]
@@ -187,11 +187,11 @@ interface OrderForm {
     availableTokens: any[]
   }
   marketingData: OrderFormMarketingData | null
-  sellers: {
+  sellers: Array<{
     id: string
     name: string
     logo: string
-  }[]
+  }>
   clientPreferencesData: {
     locale: string
     optinNewsLetter: any | null

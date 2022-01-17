@@ -11,6 +11,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Changing the validate button in TextArea and Upload blocks to only be shown if the user has written something or sent a file, respectively
 
+## [3.5.0] - 2022-01-14
+
+### Added
+
+- Ability to run SonarCloud external PR after checking the code by adding a label to it
+
+### Changed
+
+- Sellers API
+
+### Updated
+
+- Code linting
+
 ## [3.4.2] - 2022-01-11
 
 ### Fixed

@@ -1,7 +1,7 @@
 {
   "vendor": "vtex",
   "name": "quickorder",
-  "version": "3.4.2",
+  "version": "3.5.0",
   "title": "Quickorder",
   "description": "Allow users to add multiple products to the cart at once",
   "defaultLocale": "en-US",
@@ -49,6 +49,16 @@
     },
     {
       "name": "AcessaTodosCarrinhos"
+    },
+    {
+      "name": "view-seller"
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "portal.vtexcommercestable.com.br",
+        "path": "/api/seller-register/pvt/sellers"
+      }
     },
     {
       "name": "outbound-access",

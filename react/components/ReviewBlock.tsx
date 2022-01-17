@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable vtex/prefer-early-return */
-import React, { useState, useEffect } from 'react'
+import React, { useState, FunctionComponent } from 'react'
 import {
   Table,
   Input,
@@ -19,6 +19,7 @@ import getRefIdTranslation from '../queries/refids.gql'
 import OrderFormQuery from '../queries/orderForm.gql'
 
 const remove = <IconDelete />
+let initialLoad = ''
 
 const messages = defineMessages({
   valid: {
@@ -130,7 +131,7 @@ const messages = defineMessages({
 
 let orderFormId = ''
 
-const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
+const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   onReviewItems,
   reviewedItems,
   onRefidLoading,
@@ -225,9 +226,12 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
             })
           : []
 
-      let mappedRefId = {}
-      if (!!refidData && !!refidData.skuFromRefIds.items) {
-        mappedRefId = refidData.skuFromRefIds.items.reduce((acc: any, item: any)=> (acc[item.refid]=item,acc),{});
+      const mappedRefId = {}
+
+      if (refidData?.skuFromRefIds?.items) {
+        refidData.skuFromRefIds.items.forEach((item: any) => {
+          mappedRefId[item.refid] = item
+        })
       }
 
       const errorMsg = (item: any) => {
@@ -255,13 +259,18 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
 
       const items = reviewed.map((item: any) => {
         const sellers = item.sku ? mappedRefId[item.sku]?.sellers : '1'
+
         return {
           ...item,
           sellers: item.sku ? mappedRefId[item.sku]?.sellers : '1',
           seller: sellers?.length ? sellers[0].id : '1',
           vtexSku: item.sku ? mappedRefId[item.sku]?.sku : '1',
-          unitMultiplier: item.sku ? mappedRefId[item.sku]?.unitMultiplier : '1',
-          totalQuantity: (item.sku ? mappedRefId[item.sku]?.unitMultiplier : '1') * item.quantity,
+          unitMultiplier: item.sku
+            ? mappedRefId[item.sku]?.unitMultiplier
+            : '1',
+          totalQuantity:
+            (item.sku ? mappedRefId[item.sku]?.unitMultiplier : '1') *
+            item.quantity,
           error: errorMsg(item),
         }
       })
@@ -331,9 +340,10 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
     }
   }
 
-  useEffect(() => {
+  if (initialLoad !== GetText(reviewItems)) {
     checkValidatedItems()
-  })
+    initialLoad = GetText(reviewItems)
+  }
 
   const removeLine = (i: number) => {
     const items: [any] = reviewItems
@@ -441,28 +451,28 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
       sku: {
         type: 'string',
         title: intl.formatMessage({ id: 'store/quickorder.review.label.sku' }),
-        width: 125
+        width: 125,
       },
       quantity: {
         type: 'string',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.quantity',
         }),
-        width: 75
+        width: 75,
       },
       unitMultiplier: {
         type: 'float',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.multiplier',
         }),
-        width: 100
+        width: 100,
       },
       totalQuantity: {
         type: 'float',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.totalQuantity',
         }),
-        width: 100
+        width: 100,
       },
       seller: {
         type: 'string',
@@ -489,9 +499,7 @@ const ReviewBlock: StorefrontFunctionComponent<WrappedComponentProps & any> = ({
             )
           }
 
-          return rowData.sellers && rowData.sellers.length
-            ? rowData.sellers[0].name
-            : ''
+          return rowData?.sellers?.length ? rowData.sellers[0].name : ''
         },
       },
       error: {
