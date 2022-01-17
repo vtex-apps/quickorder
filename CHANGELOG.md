@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Making the message "Unit Multiplier Of" in autocomplete block as an translatable message.
+
 ## [3.5.0] - 2022-01-14
 
 ### Added
