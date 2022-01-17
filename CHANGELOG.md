@@ -11,9 +11,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Adding an option as a prop to make the columns of the review block hideable
 
+## [3.5.0] - 2022-01-14
+
 ### Added
 
 - Ability to run SonarCloud external PR after checking the code by adding a label to it
+
+### Changed
+
+- Sellers API
+
+### Updated
+
+- Code linting
 
 ## [3.4.2] - 2022-01-11
 

@@ -20,9 +20,9 @@ const extractSlug = (item: SearchAutocompleteUnit) => {
 
 export const resolvers = {
   Items: {
-    slug: (root: SearchAutocompleteUnit) => extractSlug(root),
+    slug: (root: SearchAutocompleteUnit): string => extractSlug(root),
 
-    productId: ({ items }: SearchAutocompleteUnit) =>
+    productId: ({ items }: SearchAutocompleteUnit): any =>
       items ? path([0, 'productId'], items) : null,
   },
 }
