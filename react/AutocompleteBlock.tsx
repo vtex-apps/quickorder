@@ -413,7 +413,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
                       min="1"
                       step={unitMultiplier}
                       onChange={(e: any) => {
-                        if(e.target.value > 0){
+                        if (e.target.value > 0){
                           setState({
                             ...state,
                             quantitySelected: e.target.value,
