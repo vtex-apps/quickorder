@@ -11,6 +11,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fixing the issue that when adding items in the cart, it doesn't go back to the list page in text area and upload blocks
 
+## [3.5.0] - 2022-01-14
+
+### Added
+
+- Ability to run SonarCloud external PR after checking the code by adding a label to it
+
+### Changed
+
+- Sellers API
+
+### Updated
+
+- Code linting
+
+## [3.4.2] - 2022-01-11
+
+### Fixed
+
+- Restricting the Quick Order Upload to accept only .xls and .xlsx files
+
 ## [3.4.1] - 2022-01-07
 
 ## [3.4.0] - 2021-12-29
