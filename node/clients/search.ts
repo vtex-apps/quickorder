@@ -71,7 +71,7 @@ export class Search extends JanusClient {
       const orderForm = await this.getOrderForm(orderFormId)
 
       const { items }: any = await this.simulate(result, orderForm)
-      items.foreach((item: any) => {
+      items.forEach((item: any) => {
         items[item.id] = item
       })
 
