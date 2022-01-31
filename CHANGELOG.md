@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Adding the proper Korean translations to each message in messages folder. (This was translated by an korean customer)
 
+## [3.5.1] - 2022-01-21
+
+### Fixed
+
+- Fixed typo
+
 ## [3.5.0] - 2022-01-14
 
 ### Added
