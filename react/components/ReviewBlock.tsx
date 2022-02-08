@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable vtex/prefer-early-return */
-import React, { useState, FunctionComponent } from 'react'
+import React, { useState, FunctionComponent, useEffect } from 'react'
 import {
   Table,
   Input,
@@ -19,7 +19,6 @@ import getRefIdTranslation from '../queries/refids.gql'
 import OrderFormQuery from '../queries/orderForm.gql'
 
 const remove = <IconDelete />
-let initialLoad = ''
 
 const messages = defineMessages({
   valid: {
@@ -340,10 +339,9 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     }
   }
 
-  if (initialLoad !== GetText(reviewItems)) {
+  useEffect(() => {
     checkValidatedItems()
-    initialLoad = GetText(reviewItems)
-  }
+  })
 
   const removeLine = (i: number) => {
     const items: [any] = reviewItems
@@ -391,6 +389,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         : item
     })
 
+    onReviewItems(items)
     setReviewState({
       ...state,
       reviewItems: items,
@@ -491,9 +490,9 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
                     }
                   })}
                   value={rowData.seller}
-                  onChange={(_: any, v: any) =>
+                  onChange={(_: any, v: any) => {
                     updateLineSeller(rowData.index, v)
-                  }
+                  }}
                 />
               </div>
             )
