@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.6.1] - 2022-02-09
+
 ### Fixed
 
 - Changing the validate button in TextArea and Upload blocks to only be shown if the user has written something or sent a file, respectively
