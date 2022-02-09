@@ -16,10 +16,13 @@ on:
     branches:
     - master
     - main
+    - bugfix/*
     - chore/*
+    - enhancement/*
     - feature/*
     - fix/*
-   
+    - hotfix/*
+    
   # Trigger after label approval
   pull_request_target:
     branches:
