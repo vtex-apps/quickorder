@@ -293,20 +293,17 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     }
   }
 
-  const getRefIds = async (_refids: any, reviewed: any, sellerList: any) => {
+  const getRefIds = async (
+    _refids: any,
+    reviewed: any,
+    refIdSellerMap: any
+  ) => {
     onRefidLoading(true)
-    let refids = {}
-
-    if (_refids.length) {
-      _refids.forEach(refid => {
-        refids[refid] = true
-      })
-      refids = Object.getOwnPropertyNames(refids)
-    }
+    const refids = _refids.length ? Array.from(new Set(_refids)) : []
 
     const query = {
       query: getRefIdTranslation,
-      variables: { refids, orderFormId, sellerList },
+      variables: { refids, orderFormId, refIdSellerMap },
     }
 
     const { data } = await client.query(query)
@@ -316,17 +313,18 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   }
 
   const convertRefIds = (items: any) => {
+    const refIdSellerMap = {}
     const refids = items
       .filter((item: any) => {
         return item.error === null
       })
       .map((item: any) => {
+        refIdSellerMap[item.sku] = '1'
+
         return item.sku
       })
 
-    const sellerList = Array(refids.length).fill('1')
-
-    getRefIds(refids, items, sellerList)
+    getRefIds(refids, items, refIdSellerMap)
   }
 
   const checkValidatedItems = () => {
@@ -380,6 +378,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   }
 
   const updateLineSeller = (index: number, seller: string) => {
+    const refIdSellerMap = {}
     const items = reviewItems.map((item: any) => {
       return item.index === index
         ? {
@@ -390,14 +389,12 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     })
 
     const refids = items.map((item: any) => {
+      refIdSellerMap[item.sku] = item.seller
+
       return item.sku
     })
 
-    const sellerList = Array(refids.length).fill('1')
-
-    sellerList[index] = seller
-
-    getRefIds(refids, items, sellerList)
+    getRefIds(refids, items, refIdSellerMap)
   }
 
   const onBlurField = (line: number) => {
