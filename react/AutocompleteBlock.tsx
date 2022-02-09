@@ -396,7 +396,8 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
                     >
                       <span className="mr4">
                         <Tag type="warning" variation="low">
-                          Unit Multiplier of {unitMultiplier}
+                          <FormattedMessage id="store/quickorder.autocomplete.multiplierOf" />{' '}
+                          {unitMultiplier}
                         </Tag>
                       </span>
                     </div>
