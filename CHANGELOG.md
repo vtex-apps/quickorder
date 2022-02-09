@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixing the issue that when adding items in the cart, it doesn't go back to the list page in text area and upload blocks
+
 ## [3.5.2] - 2022-02-09
 
 ### Added
