@@ -105,6 +105,13 @@ const TextAreaBlock: FunctionComponent<TextAreaBlockInterface &
     showToast({ message, action })
   }
 
+  const backList = () => {
+    setState({
+      ...state,
+      reviewState: false,
+    })
+  }
+
   const callAddToCart = async (items: any) => {
     const currentItemsInCart = orderForm.orderForm.items
     const mutationResult = await addToCart({
@@ -168,6 +175,8 @@ const TextAreaBlock: FunctionComponent<TextAreaBlockInterface &
     if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
       showInstallPrompt()
     }
+
+    backList()
 
     return showInstallPrompt
   }
@@ -259,13 +268,6 @@ const TextAreaBlock: FunctionComponent<TextAreaBlockInterface &
 
   const onRefidLoading = (data: boolean) => {
     setRefIdLoading(data)
-  }
-
-  const backList = () => {
-    setState({
-      ...state,
-      reviewState: false,
-    })
   }
 
   return (

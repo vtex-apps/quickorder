@@ -11,6 +11,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Changing the validate button in TextArea and Upload blocks to only be shown if the user has written something or sent a file, respectively
 
+## [3.6.0] - 2022-02-09
+
+### Added
+
+- Arabic translation
+
+## [3.5.4] - 2022-02-09
+
+### Fixed
+
+- Adding a minimum quantity to one by one quantity input
+
+## [3.5.3] - 2022-02-09
+
+### Fixed
+
+- Fixing the issue that when adding items in the cart, it doesn't go back to the list page in text area and upload blocks
+
 ## [3.5.2] - 2022-02-09
 
 ### Added

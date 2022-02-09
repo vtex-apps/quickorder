@@ -319,6 +319,8 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
       showInstallPrompt()
     }
 
+    backList()
+
     return showInstallPrompt
   }
 
