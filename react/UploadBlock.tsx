@@ -58,6 +58,7 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
     reviewState: false,
     showAddToCart: false,
   })
+
   const [showValidateButton, setShowValidateButton] = useState<boolean>(false)
 
   const [refidLoading, setRefIdLoading] = useState<any>()
@@ -152,8 +153,8 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
 
   const parseText = () => {
     let textAreaValue = ''
-    let productsArray = productsQueue
-    productsArray.forEach(element => {
+
+    productsQueue.forEach(element => {
       textAreaValue += `${element[0]},${element[1]}\n`
     })
 
@@ -424,7 +425,7 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
                 </div>
               </Dropzone>
               <div className={`mt2 flex justify-end ${handles.buttonValidate}`}>
-                {showValidateButton  && (
+                {showValidateButton && (
                   <Button
                     variation="secondary"
                     size="regular"

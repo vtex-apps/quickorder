@@ -300,7 +300,7 @@ const TextAreaBlock: FunctionComponent<TextAreaBlockInterface &
                 }
               />
               <div className={`mt2 flex justify-end ${handles.buttonValidate}`}>
-                {textAreaValue &&(
+                {textAreaValue && (
                   <Button
                     variation="secondary"
                     size="regular"
