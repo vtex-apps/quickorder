@@ -59,7 +59,10 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
     showAddToCart: false,
   })
 
+  const [showValidateButton, setShowValidateButton] = useState<boolean>(false)
+
   const [refidLoading, setRefIdLoading] = useState<any>()
+  const [productsQueue, setproductsQueue] = useState<any>()
   const { reviewItems, reviewState, showAddToCart } = state
 
   const [
@@ -151,7 +154,7 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
   const parseText = () => {
     let textAreaValue = ''
 
-    productsArray.forEach(element => {
+    productsQueue.forEach(element => {
       textAreaValue += `${element[0]},${element[1]}\n`
     })
 
@@ -209,6 +212,9 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
         p[0] = (p[0] || '').toString().trim()
         p[1] = (p[1] || '').toString().trim()
       })
+
+      setShowValidateButton(true)
+      setproductsQueue(productsArray)
     }
 
     reader.onerror = () => {
@@ -222,13 +228,16 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
     doFile(files)
   }
 
-  const handleReset = () => {}
+  const handleReset = () => {
+    setShowValidateButton(false)
+  }
 
   const backList = () => {
     setState({
       ...state,
       reviewState: false,
     })
+    setShowValidateButton(false)
   }
 
   const callAddToCart = async (items: any) => {
@@ -309,6 +318,8 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
     if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
       showInstallPrompt()
     }
+
+    backList()
 
     return showInstallPrompt
   }
@@ -416,15 +427,17 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
                 </div>
               </Dropzone>
               <div className={`mt2 flex justify-end ${handles.buttonValidate}`}>
-                <Button
-                  variation="secondary"
-                  size="regular"
-                  onClick={() => {
-                    parseText()
-                  }}
-                >
-                  <FormattedMessage id="store/quickorder.validate" />
-                </Button>
+                {showValidateButton && (
+                  <Button
+                    variation="secondary"
+                    size="regular"
+                    onClick={() => {
+                      parseText()
+                    }}
+                  >
+                    <FormattedMessage id="store/quickorder.validate" />
+                  </Button>
+                )}
               </div>
             </div>
           </div>
