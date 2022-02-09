@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fixing the issue that when adding items in the cart, it doesn't go back to the list page in text area and upload blocks
 
+## [3.5.2] - 2022-02-09
+
+### Added
+
+- Adding the proper Korean translations to each message in messages folder. (This was translated by an korean customer)
+
 ## [3.5.1] - 2022-01-21
 
 ### Fixed
