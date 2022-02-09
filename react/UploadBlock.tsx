@@ -309,7 +309,7 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
     if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
       showInstallPrompt()
     }
-    
+
     backList()
 
     return showInstallPrompt
