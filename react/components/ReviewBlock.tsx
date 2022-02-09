@@ -257,12 +257,10 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
 
       const items = reviewed.map((item: any) => {
-        const sellers = item.sku ? mappedRefId[item.sku]?.sellers : '1'
-
         return {
           ...item,
           sellers: item.sku ? mappedRefId[item.sku]?.sellers : '1',
-          seller: sellers?.length ? sellers[0].id : '1',
+          seller: item.seller ? item.seller : '1',
           vtexSku: item.sku ? mappedRefId[item.sku]?.sku : '1',
           unitMultiplier: item.sku
             ? mappedRefId[item.sku]?.unitMultiplier
@@ -295,7 +293,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     }
   }
 
-  const getRefIds = async (_refids: any, reviewed: any) => {
+  const getRefIds = async (_refids: any, reviewed: any, sellerList: any) => {
     onRefidLoading(true)
     let refids = {}
 
@@ -308,7 +306,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
     const query = {
       query: getRefIdTranslation,
-      variables: { refids, orderFormId },
+      variables: { refids, orderFormId, sellerList },
     }
 
     const { data } = await client.query(query)
@@ -326,7 +324,9 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         return item.sku
       })
 
-    getRefIds(refids, items)
+    const sellerList = Array(refids.length).fill('1')
+
+    getRefIds(refids, items, sellerList)
   }
 
   const checkValidatedItems = () => {
@@ -389,11 +389,15 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         : item
     })
 
-    onReviewItems(items)
-    setReviewState({
-      ...state,
-      reviewItems: items,
+    const refids = items.map((item: any) => {
+      return item.sku
     })
+
+    const sellerList = Array(refids.length).fill('1')
+
+    sellerList[index] = seller
+
+    getRefIds(refids, items, sellerList)
   }
 
   const onBlurField = (line: number) => {

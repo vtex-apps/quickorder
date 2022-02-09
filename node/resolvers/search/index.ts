@@ -11,7 +11,7 @@ export const fieldResolvers = {
 export const queries = {
   skuFromRefIds: async (
     _: any,
-    args: { refids: string; orderFormId: string },
+    args: { refids: string; orderFormId: string; sellerList: string },
     ctx: Context
   ): Promise<any> => {
     const {
@@ -25,6 +25,7 @@ export const queries = {
     const items = await search.skuFromRefIds({
       refids: args.refids,
       orderFormId: args.orderFormId,
+      sellerList: args.sellerList,
     })
 
     return {

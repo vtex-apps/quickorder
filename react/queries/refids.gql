@@ -1,5 +1,13 @@
-query getSkuFromRefIds($refids: [String], $orderFormId: String) {
-  skuFromRefIds(refids: $refids, orderFormId: $orderFormId) {
+query getSkuFromRefIds(
+  $refids: [String]
+  $orderFormId: String
+  $sellerList: [String]
+) {
+  skuFromRefIds(
+    refids: $refids
+    orderFormId: $orderFormId
+    sellerList: $sellerList
+  ) {
     items {
       sku
       refid
