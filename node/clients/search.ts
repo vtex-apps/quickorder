@@ -3,11 +3,16 @@ import { InstanceOptions, IOContext, JanusClient } from '@vtex/api'
 interface RefIdArgs {
   refids: any
   orderFormId: string
+  refIdSellerMap: RefIdSellerMap
 }
 interface Items {
   id: string
   quantity: number
   seller: string
+}
+
+interface RefIdSellerMap {
+  [key: string]: string
 }
 
 export class Search extends JanusClient {
@@ -33,6 +38,7 @@ export class Search extends JanusClient {
   public skuFromRefIds = async ({
     refids,
     orderFormId,
+    refIdSellerMap,
   }: RefIdArgs): Promise<any> => {
     this.sellersList = await this.sellers()
 
@@ -70,7 +76,11 @@ export class Search extends JanusClient {
 
       const orderForm = await this.getOrderForm(orderFormId)
 
-      const { items }: any = await this.simulate(result, orderForm)
+      const { items }: any = await this.simulate(
+        result,
+        orderForm,
+        refIdSellerMap
+      )
       items.forEach((item: any) => {
         items[item.id] = item
       })
@@ -83,6 +93,7 @@ export class Search extends JanusClient {
         }
       })
     }
+
     return result
   }
 
@@ -95,7 +106,11 @@ export class Search extends JanusClient {
     })
   }
 
-  private simulate = async (refids: [Items], orderForm: any) => {
+  private simulate = async (
+    refids: [Items],
+    orderForm: any,
+    refIdSellerMap: RefIdSellerMap
+  ) => {
     const {
       salesChannel,
       storePreferencesData: { countryCode },
@@ -106,11 +121,10 @@ export class Search extends JanusClient {
         return !!item.sku
       })
       .map((item: any) => {
-        const [seller] = item.sellers
         return {
           id: item.sku,
           quantity: 1,
-          seller: seller?.id,
+          seller: refIdSellerMap[item.refid],
         }
       })
 
