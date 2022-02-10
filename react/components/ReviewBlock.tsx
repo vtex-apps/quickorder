@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable vtex/prefer-early-return */
-import React, { useState, FunctionComponent } from 'react'
+import React, { useState, FunctionComponent, useEffect } from 'react'
 import {
   Table,
   Input,
@@ -19,7 +19,6 @@ import getRefIdTranslation from '../queries/refids.gql'
 import OrderFormQuery from '../queries/orderForm.gql'
 
 const remove = <IconDelete />
-let initialLoad = ''
 
 const messages = defineMessages({
   valid: {
@@ -259,12 +258,10 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
 
       const items = reviewed.map((item: any) => {
-        const sellers = item.sku ? mappedRefId[item.sku]?.sellers : '1'
-
         return {
           ...item,
           sellers: item.sku ? mappedRefId[item.sku]?.sellers : '1',
-          seller: sellers?.length ? sellers[0].id : '1',
+          seller: item.seller ? item.seller : '1',
           vtexSku: item.sku ? mappedRefId[item.sku]?.sku : '1',
           unitMultiplier: item.sku
             ? mappedRefId[item.sku]?.unitMultiplier
@@ -297,20 +294,17 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     }
   }
 
-  const getRefIds = async (_refids: any, reviewed: any) => {
+  const getRefIds = async (
+    _refids: any,
+    reviewed: any,
+    refIdSellerMap: any
+  ) => {
     onRefidLoading(true)
-    let refids = {}
-
-    if (_refids.length) {
-      _refids.forEach(refid => {
-        refids[refid] = true
-      })
-      refids = Object.getOwnPropertyNames(refids)
-    }
+    const refids = _refids.length ? Array.from(new Set(_refids)) : []
 
     const query = {
       query: getRefIdTranslation,
-      variables: { refids, orderFormId },
+      variables: { refids, orderFormId, refIdSellerMap },
     }
 
     const { data } = await client.query(query)
@@ -320,15 +314,18 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   }
 
   const convertRefIds = (items: any) => {
+    const refIdSellerMap = {}
     const refids = items
       .filter((item: any) => {
         return item.error === null
       })
       .map((item: any) => {
+        refIdSellerMap[item.sku] = '1'
+
         return item.sku
       })
 
-    getRefIds(refids, items)
+    getRefIds(refids, items, refIdSellerMap)
   }
 
   const checkValidatedItems = () => {
@@ -341,10 +338,9 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     }
   }
 
-  if (initialLoad !== GetText(reviewItems)) {
+  useEffect(() => {
     checkValidatedItems()
-    initialLoad = GetText(reviewItems)
-  }
+  })
 
   const removeLine = (i: number) => {
     const items: [any] = reviewItems
@@ -383,6 +379,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   }
 
   const updateLineSeller = (index: number, seller: string) => {
+    const refIdSellerMap = {}
     const items = reviewItems.map((item: any) => {
       return item.index === index
         ? {
@@ -392,10 +389,13 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         : item
     })
 
-    setReviewState({
-      ...state,
-      reviewItems: items,
+    const refids = items.map((item: any) => {
+      refIdSellerMap[item.sku] = item.seller
+
+      return item.sku
     })
+
+    getRefIds(refids, items, refIdSellerMap)
   }
 
   const onBlurField = (line: number) => {
@@ -515,9 +515,9 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
                     }
                   })}
                   value={rowData.seller}
-                  onChange={(_: any, v: any) =>
+                  onChange={(_: any, v: any) => {
                     updateLineSeller(rowData.index, v)
-                  }
+                  }}
                 />
               </div>
             )

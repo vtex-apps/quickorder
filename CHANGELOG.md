@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Adding an option as a prop to make the columns of the review block hideable
 
+## [3.7.0] - 2022-02-10
+
+### Fixed
+
+- Fixed a bug where changing seller would not update specific status for that seller
+- Fixed a bug where the copy/paste and upload blocks would not show updated results
+
 ## [3.6.2] - 2022-02-09
 
 ### Added
