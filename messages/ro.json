@@ -31,6 +31,7 @@
   "store/quickorder.autocomplete.addButton": "Adauga",
   "store/quickorder.autocomplete.placeholder": "Căutați un produs...",
   "store/quickorder.autocomplete.selectSku": "Selecteaza un SKU",
+  "store/quickorder.autocomplete.multiplierOf": "Multiplicator unitar al",
   "store/quickorder.available": "Disponibil",
   "store/quickorder.back": "Inapoi",
   "store/quickorder.cannotBeDelivered": "Nu poate fi livrat",

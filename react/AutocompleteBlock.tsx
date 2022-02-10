@@ -396,7 +396,8 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
                     >
                       <span className="mr4">
                         <Tag type="warning" variation="low">
-                          Unit Multiplier of {unitMultiplier}
+                          <FormattedMessage id="store/quickorder.autocomplete.multiplierOf" />{' '}
+                          {unitMultiplier}
                         </Tag>
                       </span>
                     </div>
@@ -410,12 +411,15 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
                       value={quantitySelected}
                       size="small"
                       type="number"
+                      min="1"
                       step={unitMultiplier}
                       onChange={(e: any) => {
-                        setState({
-                          ...state,
-                          quantitySelected: e.target.value,
-                        })
+                        if (e.target.value > 0) {
+                          setState({
+                            ...state,
+                            quantitySelected: e.target.value,
+                          })
+                        }
                       }}
                       onBlur={() => {
                         const roundedValue = roundToNearestMultiple(

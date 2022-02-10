@@ -106,6 +106,13 @@ const TextAreaBlock: FunctionComponent<TextAreaBlockInterface &
     showToast({ message, action })
   }
 
+  const backList = () => {
+    setState({
+      ...state,
+      reviewState: false,
+    })
+  }
+
   const callAddToCart = async (items: any) => {
     const currentItemsInCart = orderForm.orderForm.items
     const mutationResult = await addToCart({
@@ -169,6 +176,8 @@ const TextAreaBlock: FunctionComponent<TextAreaBlockInterface &
     if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
       showInstallPrompt()
     }
+
+    backList()
 
     return showInstallPrompt
   }
@@ -262,13 +271,6 @@ const TextAreaBlock: FunctionComponent<TextAreaBlockInterface &
     setRefIdLoading(data)
   }
 
-  const backList = () => {
-    setState({
-      ...state,
-      reviewState: false,
-    })
-  }
-
   return (
     <div>
       {!componentOnly && (
@@ -301,15 +303,17 @@ const TextAreaBlock: FunctionComponent<TextAreaBlockInterface &
                 }
               />
               <div className={`mt2 flex justify-end ${handles.buttonValidate}`}>
-                <Button
-                  variation="secondary"
-                  size="regular"
-                  onClick={() => {
-                    parseText()
-                  }}
-                >
-                  <FormattedMessage id="store/quickorder.validate" />
-                </Button>
+                {textAreaValue && (
+                  <Button
+                    variation="secondary"
+                    size="regular"
+                    onClick={() => {
+                      parseText()
+                    }}
+                  >
+                    <FormattedMessage id="store/quickorder.validate" />
+                  </Button>
+                )}
               </div>
             </div>
           </div>
