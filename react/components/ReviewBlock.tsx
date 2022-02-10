@@ -415,8 +415,8 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     }
   }
 
-  const createSchema = (hiddenColumns: any) => {
-    if (hiddenColumns.indexOf("line") == -1) {
+  const createSchema = (columnsToBeHidden: any) => {
+    if (columnsToBeHidden.indexOf("line") === -1) {
       tableSchema["properties"]["line"] = {
         type: 'object',
         title: intl.formatMessage({
@@ -430,7 +430,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
     }
 
-    if (hiddenColumns.indexOf("content") == -1) {
+    if (columnsToBeHidden.indexOf("content") === -1) {
       tableSchema["properties"]["content"] = {
         type: 'object',
         title: intl.formatMessage({
@@ -459,7 +459,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
     }
 
-    if (hiddenColumns.indexOf("sku") == -1) {
+    if (columnsToBeHidden.indexOf("sku") === -1) {
       tableSchema["properties"]["sku"] = {
         type: 'string',
         title: intl.formatMessage({ id: 'store/quickorder.review.label.sku' }),
@@ -467,7 +467,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
     }
 
-    if (hiddenColumns.indexOf("quantity") == -1) {
+    if (columnsToBeHidden.indexOf("quantity") === -1) {
       tableSchema["properties"]["quantity"] = {
         type: 'string',
         title: intl.formatMessage({
@@ -477,7 +477,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
     }
 
-    if (hiddenColumns.indexOf("unitMultiplier") == -1) {
+    if (columnsToBeHidden.indexOf("unitMultiplier") === -1) {
       tableSchema["properties"]["unitMultiplier"] = {
         type: 'float',
         title: intl.formatMessage({
@@ -487,7 +487,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
     }
 
-    if (hiddenColumns.indexOf("totalQuantity") == -1) {
+    if (columnsToBeHidden.indexOf("totalQuantity") === -1) {
       tableSchema["properties"]["totalQuantity"] = {
         type: 'float',
         title: intl.formatMessage({
@@ -497,7 +497,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
     }
 
-    if (hiddenColumns.indexOf("seller") == -1) {
+    if (columnsToBeHidden.indexOf("seller") === -1) {
       tableSchema["properties"]["seller"] = {
         type: 'string',
         title: intl.formatMessage({
@@ -528,7 +528,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
     }
 
-    if (hiddenColumns.indexOf("error") == -1) {
+    if (columnsToBeHidden.indexOf("error") === -1) {
       tableSchema["properties"]["error"] = {
         type: 'string',
         title: intl.formatMessage({
@@ -557,7 +557,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
     }
 
-    if (hiddenColumns.indexOf("delete") == -1) {
+    if (columnsToBeHidden.indexOf("delete") === -1) {
       tableSchema["properties"]["delete"] = {
         type: 'object',
         title: ' ',
