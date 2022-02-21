@@ -415,7 +415,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     }
   }
 
-  const createSchema = (columnsToBeHidden: any) => {
+  const createSchema = (columnsToBeHidden: Array<string>) => {
     if (columnsToBeHidden.indexOf("line") === -1) {
       tableSchema["properties"]["line"] = {
         type: 'object',
@@ -580,7 +580,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     }
   }
 
-  createSchema(hiddenColumns ?? [])
+  createSchema(hiddenColumns)
 
   return (
     <div>

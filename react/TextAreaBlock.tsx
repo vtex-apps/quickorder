@@ -323,7 +323,7 @@ const TextAreaBlock: FunctionComponent<TextAreaBlockInterface &
           <div className={`w-100 ph6 ${handles.reviewBlock}`}>
             <ReviewBlock
               reviewedItems={reviewItems}
-              hiddenColumns={hiddenColumns}
+              hiddenColumns={hiddenColumns ?? []}
               onReviewItems={onReviewItems}
               onRefidLoading={onRefidLoading}
             />

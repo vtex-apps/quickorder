@@ -164,7 +164,7 @@ Especially, the `quickorder-upload` and the `quickorder-textarea` block also can
 
 | Prop name      | Type     | Description                                                                                                                                                  | Default value |
 | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
-| `hiddenColumns` | `array of strings (i.e. ["string"])` | Defines which columns of the review block must be hidden, you might hide more than one column separating the values with comma | `[]`   |
+| `hiddenColumns` | `array of strings (i.e. ["sku", "seller", "quantity"])` | Defines which columns of the review block must be hidden, you might hide more than one column separating the values with comma | `[]`   |
 
 For more on each of the components and their respective functionalities, check out the **Modus Operandi** section below.
 
