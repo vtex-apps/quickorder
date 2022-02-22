@@ -11,9 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Adding an option as a prop to make the columns of the review block hideable
 
+## [3.7.1] - 2022-02-22
+
 ### Fixed
 
 - Fixed a bug where the upload block was not updating the order form automatically.
+- Added missing translation keys
 
 ## [3.7.0] - 2022-02-10
 
