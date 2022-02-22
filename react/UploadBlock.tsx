@@ -47,6 +47,7 @@ const messages = defineMessages({
 const UploadBlock: FunctionComponent<UploadBlockInterface &
   WrappedComponentProps> = ({
   text,
+  hiddenColumns,
   description,
   downloadText,
   componentOnly,
@@ -270,14 +271,11 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
               }
             }),
           },
-        }).then((data: any) => {
-          data && setOrderForm(data.addToCart)
+        }).then((mutationRes: any) => {
+          mutationRes.data && setOrderForm(mutationRes.data.addToCart)
 
-          if (
-            data?.addToCart?.messages?.generalMessages &&
-            data.addToCart.messages.generalMessages.length
-          ) {
-            data.addToCart.messages.generalMessages.map((msg: any) => {
+          if (mutationRes?.data.addToCart?.messages?.generalMessages?.length) {
+            mutationRes.addToCart.messages.generalMessages.map((msg: any) => {
               return showToast({
                 message: msg.text,
                 action: undefined,
@@ -447,6 +445,7 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
           <div className={`w-100 ph6 ${handles.reviewBlock}`}>
             <ReviewBlock
               reviewedItems={reviewItems}
+              hiddenColumns={hiddenColumns ?? []}
               onReviewItems={onReviewItems}
               onRefidLoading={onRefidLoading}
             />

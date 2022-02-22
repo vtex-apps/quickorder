@@ -11,6 +11,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fixed a bug where removing all items from review block would send the user to a "Nothing to Show" page.
 
+## [3.8.1] - 2022-02-22
+
+### Fixed
+
+- Fixed the issue that the autocomplete block quantity button was starting with 0 instead of 1.
+
+## [3.8.0] - 2022-02-22
+
+### Added 
+
+- Adding an option as a prop to make the columns of the review block hideable
+
+## [3.7.1] - 2022-02-22
+
+### Fixed
+
+- Fixed a bug where the upload block was not updating the order form automatically.
+- Added missing translation keys
+
 ## [3.7.0] - 2022-02-10
 
 ### Fixed

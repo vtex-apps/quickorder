@@ -132,6 +132,7 @@ let orderFormId = ''
 
 const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   onReviewItems,
+  hiddenColumns,
   reviewedItems,
   onRefidLoading,
   intl,
@@ -409,9 +410,15 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     }
   }
 
-  const tableSchema = {
-    properties: {
-      line: {
+  const tableSchema: {
+    properties: any
+  } = {
+    properties: {},
+  }
+
+  const createSchema = (columnsToBeHidden: string[]) => {
+    if (columnsToBeHidden.indexOf('line') === -1) {
+      tableSchema.properties.line = {
         type: 'object',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.lineNumber',
@@ -421,8 +428,11 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         cellRenderer: ({ rowData }: any) => {
           return <div>{parseInt(rowData.line, 10) + 1}</div>
         },
-      },
-      content: {
+      }
+    }
+
+    if (columnsToBeHidden.indexOf('content') === -1) {
+      tableSchema.properties.content = {
         type: 'object',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.content',
@@ -447,34 +457,49 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
           return <span>{cellData}</span>
         },
-      },
-      sku: {
+      }
+    }
+
+    if (columnsToBeHidden.indexOf('sku') === -1) {
+      tableSchema.properties.sku = {
         type: 'string',
         title: intl.formatMessage({ id: 'store/quickorder.review.label.sku' }),
         width: 125,
-      },
-      quantity: {
+      }
+    }
+
+    if (columnsToBeHidden.indexOf('quantity') === -1) {
+      tableSchema.properties.quantity = {
         type: 'string',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.quantity',
         }),
         width: 75,
-      },
-      unitMultiplier: {
+      }
+    }
+
+    if (columnsToBeHidden.indexOf('unitMultiplier') === -1) {
+      tableSchema.properties.unitMultiplier = {
         type: 'float',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.multiplier',
         }),
         width: 100,
-      },
-      totalQuantity: {
+      }
+    }
+
+    if (columnsToBeHidden.indexOf('totalQuantity') === -1) {
+      tableSchema.properties.totalQuantity = {
         type: 'float',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.totalQuantity',
         }),
         width: 100,
-      },
-      seller: {
+      }
+    }
+
+    if (columnsToBeHidden.indexOf('seller') === -1) {
+      tableSchema.properties.seller = {
         type: 'string',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.seller',
@@ -501,8 +526,11 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
           return rowData?.sellers?.length ? rowData.sellers[0].name : ''
         },
-      },
-      error: {
+      }
+    }
+
+    if (columnsToBeHidden.indexOf('error') === -1) {
+      tableSchema.properties.error = {
         type: 'string',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.status',
@@ -527,8 +555,11 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
           return intl.formatMessage({ id: 'store/quickorder.valid' })
         },
-      },
-      delete: {
+      }
+    }
+
+    if (columnsToBeHidden.indexOf('delete') === -1) {
+      tableSchema.properties.delete = {
         type: 'object',
         title: ' ',
         width: 75,
@@ -546,9 +577,11 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
             </div>
           )
         },
-      },
-    },
+      }
+    }
   }
+
+  createSchema(hiddenColumns)
 
   return (
     <div>
@@ -560,6 +593,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 ReviewBlock.propTypes = {
   onReviewItems: PropTypes.func,
   reviewItems: PropTypes.array,
+  hiddenColumns: PropTypes.array,
   onRefidLoading: PropTypes.func,
 }
 
