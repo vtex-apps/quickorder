@@ -208,22 +208,22 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       const refIdNotFound =
         !!refidData && !!refidData.skuFromRefIds.items
           ? refidData.skuFromRefIds.items.filter((item: any) => {
-            return item.sku === null
-          })
+              return item.sku === null
+            })
           : []
 
       const refIdFound =
         !!refidData && !!refidData.skuFromRefIds.items
           ? refidData.skuFromRefIds.items.filter((item: any) => {
-            return item.sku !== null
-          })
+              return item.sku !== null
+            })
           : []
 
       const refNotAvailable =
         !!refidData && !!refidData.skuFromRefIds.items
           ? refidData.skuFromRefIds.items.filter((item: any) => {
-            return item.availability !== 'available'
-          })
+              return item.availability !== 'available'
+            })
           : []
 
       const mappedRefId = {}
@@ -247,8 +247,8 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         ret = notfound
           ? 'store/quickorder.skuNotFound'
           : found?.availability && found.availability !== 'available'
-            ? `store/quickorder.${found.availability}`
-            : null
+          ? `store/quickorder.${found.availability}`
+          : null
 
         return ret
       }
@@ -366,9 +366,9 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     const items = reviewItems.map((item: any) => {
       return item.index === index
         ? {
-          ...item,
-          content,
-        }
+            ...item,
+            content,
+          }
         : item
     })
 
@@ -383,9 +383,9 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     const items = reviewItems.map((item: any) => {
       return item.index === index
         ? {
-          ...item,
-          seller,
-        }
+            ...item,
+            seller,
+          }
         : item
     })
 
@@ -410,14 +410,15 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     }
   }
 
-  let tableSchema = {
-    properties: {
-    }
+  const tableSchema: {
+    properties: any
+  } = {
+    properties: {},
   }
 
-  const createSchema = (columnsToBeHidden: Array<string>) => {
-    if (columnsToBeHidden.indexOf("line") === -1) {
-      tableSchema["properties"]["line"] = {
+  const createSchema = (columnsToBeHidden: string[]) => {
+    if (columnsToBeHidden.indexOf('line') === -1) {
+      tableSchema.properties.line = {
         type: 'object',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.lineNumber',
@@ -430,8 +431,8 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
     }
 
-    if (columnsToBeHidden.indexOf("content") === -1) {
-      tableSchema["properties"]["content"] = {
+    if (columnsToBeHidden.indexOf('content') === -1) {
+      tableSchema.properties.content = {
         type: 'object',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.content',
@@ -459,46 +460,46 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
     }
 
-    if (columnsToBeHidden.indexOf("sku") === -1) {
-      tableSchema["properties"]["sku"] = {
+    if (columnsToBeHidden.indexOf('sku') === -1) {
+      tableSchema.properties.sku = {
         type: 'string',
         title: intl.formatMessage({ id: 'store/quickorder.review.label.sku' }),
-        width: 125
+        width: 125,
       }
     }
 
-    if (columnsToBeHidden.indexOf("quantity") === -1) {
-      tableSchema["properties"]["quantity"] = {
+    if (columnsToBeHidden.indexOf('quantity') === -1) {
+      tableSchema.properties.quantity = {
         type: 'string',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.quantity',
         }),
-        width: 75
+        width: 75,
       }
     }
 
-    if (columnsToBeHidden.indexOf("unitMultiplier") === -1) {
-      tableSchema["properties"]["unitMultiplier"] = {
+    if (columnsToBeHidden.indexOf('unitMultiplier') === -1) {
+      tableSchema.properties.unitMultiplier = {
         type: 'float',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.multiplier',
         }),
-        width: 100
+        width: 100,
       }
     }
 
-    if (columnsToBeHidden.indexOf("totalQuantity") === -1) {
-      tableSchema["properties"]["totalQuantity"] = {
+    if (columnsToBeHidden.indexOf('totalQuantity') === -1) {
+      tableSchema.properties.totalQuantity = {
         type: 'float',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.totalQuantity',
         }),
-        width: 100
+        width: 100,
       }
     }
 
-    if (columnsToBeHidden.indexOf("seller") === -1) {
-      tableSchema["properties"]["seller"] = {
+    if (columnsToBeHidden.indexOf('seller') === -1) {
+      tableSchema.properties.seller = {
         type: 'string',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.seller',
@@ -528,8 +529,8 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
     }
 
-    if (columnsToBeHidden.indexOf("error") === -1) {
-      tableSchema["properties"]["error"] = {
+    if (columnsToBeHidden.indexOf('error') === -1) {
+      tableSchema.properties.error = {
         type: 'string',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.status',
@@ -557,8 +558,8 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
     }
 
-    if (columnsToBeHidden.indexOf("delete") === -1) {
-      tableSchema["properties"]["delete"] = {
+    if (columnsToBeHidden.indexOf('delete') === -1) {
+      tableSchema.properties.delete = {
         type: 'object',
         title: ' ',
         width: 75,
