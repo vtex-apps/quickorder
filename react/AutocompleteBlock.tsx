@@ -60,7 +60,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   const { showToast } = useContext(ToastContext)
   const [state, setState] = useState<any>({
     selectedItem: null,
-    quantitySelected: 0,
+    quantitySelected: 1,
     unitMultiplier: 1,
   })
 
