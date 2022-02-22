@@ -133,7 +133,7 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
   }
 
   const onReviewItems = (items: any) => {
-    if (items) {
+    if (items?.length) {
       const show =
         items.filter((item: any) => {
           return !item.vtexSku
@@ -146,7 +146,7 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
         showAddToCart: show,
         textAreaValue: GetText(items),
       })
-    }
+    } else backList()
 
     return true
   }

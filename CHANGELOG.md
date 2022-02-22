@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed a bug where removing all items from review block would send the user to a "nothing to show" page.
+
 ## [3.7.0] - 2022-02-10
 
 ### Fixed

@@ -17,7 +17,7 @@ import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
 
 import ReviewBlock from './components/ReviewBlock'
-import { ParseText, GetText } from './utils'
+import { ParseText } from './utils'
 
 const messages = defineMessages({
   success: {
@@ -182,7 +182,7 @@ const TextAreaBlock: FunctionComponent<TextAreaBlockInterface &
   }
 
   const onReviewItems = (items: any) => {
-    if (items) {
+    if (items?.length) {
       const show =
         items.filter((item: any) => {
           return !item.vtexSku
@@ -193,9 +193,8 @@ const TextAreaBlock: FunctionComponent<TextAreaBlockInterface &
         reviewItems: items,
         reviewState: true,
         showAddToCart: show,
-        textAreaValue: GetText(items),
       })
-    }
+    } else backList()
 
     return true
   }
