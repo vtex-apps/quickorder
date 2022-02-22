@@ -271,14 +271,11 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
               }
             }),
           },
-        }).then((data: any) => {
-          data && setOrderForm(data.addToCart)
+        }).then((mutationRes: any) => {
+          mutationRes.data && setOrderForm(mutationRes.data.addToCart)
 
-          if (
-            data?.addToCart?.messages?.generalMessages &&
-            data.addToCart.messages.generalMessages.length
-          ) {
-            data.addToCart.messages.generalMessages.map((msg: any) => {
+          if (mutationRes?.data.addToCart?.messages?.generalMessages?.length) {
+            mutationRes.addToCart.messages.generalMessages.map((msg: any) => {
               return showToast({
                 message: msg.text,
                 action: undefined,
