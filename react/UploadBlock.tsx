@@ -47,6 +47,7 @@ const messages = defineMessages({
 const UploadBlock: FunctionComponent<UploadBlockInterface &
   WrappedComponentProps> = ({
   text,
+  hiddenColumns,
   description,
   downloadText,
   componentOnly,
@@ -444,6 +445,7 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
           <div className={`w-100 ph6 ${handles.reviewBlock}`}>
             <ReviewBlock
               reviewedItems={reviewItems}
+              hiddenColumns={hiddenColumns ?? []}
               onReviewItems={onReviewItems}
               onRefidLoading={onRefidLoading}
             />

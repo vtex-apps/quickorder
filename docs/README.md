@@ -160,6 +160,12 @@ Especially, the `quickorder-upload` block also can use the following prop:
 | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
 | `downloadText` | `string` | Defines a text for the spreadsheet download button. Use this prop to explain users how to properly download the spreadsheet model provided by the component. | `undefined`   |
 
+Especially, the `quickorder-upload` and the `quickorder-textarea` block also can use the following prop:
+
+| Prop name      | Type     | Description                                                                                                                                                  | Default value |
+| -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
+| `hiddenColumns` | `array of strings (i.e. ["sku", "seller", "quantity"])` | Defines which columns of the review block must be hidden, you might hide more than one column separating the values with comma | `[]`   |
+
 For more on each of the components and their respective functionalities, check out the **Modus Operandi** section below.
 
 ## Modus Operandi

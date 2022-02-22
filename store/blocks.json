@@ -34,7 +34,8 @@
     "props": {
       "componentOnly": false,
       "text": "Copy/Paste Skus",
-      "description": "[Sku's Code],[Quantity]"
+      "description": "[Sku's Code],[Quantity]",
+      "hiddenColumns": []
     }
   },
 
@@ -49,7 +50,8 @@
       "componentOnly": false,
       "text": "Upload",
       "description": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order",
-      "downloadText": "Click here to download a spreadsheet model"
+      "downloadText": "Click here to download a spreadsheet model",
+      "hiddenColumns": []
     }
   },
 
