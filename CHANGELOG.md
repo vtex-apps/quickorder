@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixed a bug where the upload block was not updating the order form automatically.
+- Added missing translation keys
 
 ## [3.7.0] - 2022-02-10
 
