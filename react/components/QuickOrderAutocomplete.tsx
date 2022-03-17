@@ -50,7 +50,7 @@ const CustomOption = (props: any) => {
     )
   }
 
-  const buttonClasses = `bn w-100 tl pointer pa4 f6 ${
+  const buttonClasses = `vtex-button bn w-100 tl pointer pa4 f6 ${
     roundedBottom ? 'br2 br--bottom' : ''
   } ${highlightOption || selected ? 'bg-muted-5' : 'bg-base'}`
 
