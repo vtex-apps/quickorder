@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useRef, FunctionComponent } from 'react'
+import type { FunctionComponent } from 'react'
+import React, { useState, useRef } from 'react'
 import { AutocompleteInput } from 'vtex.styleguide'
 import PropTypes from 'prop-types'
-import { WrappedComponentProps, injectIntl, defineMessages } from 'react-intl'
+import type { WrappedComponentProps } from 'react-intl'
+import { injectIntl, defineMessages } from 'react-intl'
 import { useApolloClient } from 'react-apollo'
 import { useCssHandles } from 'vtex.css-handles'
 
@@ -25,9 +27,8 @@ const getImageSrc = (img: string) => {
 const CustomOption = (props: any) => {
   const { roundedBottom, searchTerm, value, selected, onClick } = props
   const [highlightOption, setHighlightOption] = useState(false)
-  const CSS_HANDLES = [
-    'customOptionButton',
-  ] as const
+  const CSS_HANDLES = ['customOptionButton'] as const
+
   const handles = useCssHandles(CSS_HANDLES)
   const renderOptionHighlightedText = () => {
     const highlightableText = typeof value === 'string' ? value : value.label
@@ -54,9 +55,11 @@ const CustomOption = (props: any) => {
     )
   }
 
-  const buttonClasses = `${handles.customOptionButton} bn w-100 tl pointer pa4 f6 ${
-    roundedBottom ? 'br2 br--bottom' : ''
-  } ${highlightOption || selected ? 'bg-muted-5' : 'bg-base'}`
+  const buttonClasses = `${
+    handles.customOptionButton
+  } bn w-100 tl pointer pa4 f6 ${roundedBottom ? 'br2 br--bottom' : ''} ${
+    highlightOption || selected ? 'bg-muted-5' : 'bg-base'
+  }`
 
   const thumb = value.thumb ? value.thumb : ''
 
@@ -84,8 +87,9 @@ const CustomOption = (props: any) => {
 interface QuickOrderAutocompleteInt {
   onSelect: any
 }
-const QuickOrderAutocomplete: FunctionComponent<WrappedComponentProps &
-  QuickOrderAutocompleteInt> = ({ onSelect, intl }: any) => {
+const QuickOrderAutocomplete: FunctionComponent<
+  WrappedComponentProps & QuickOrderAutocompleteInt
+> = ({ onSelect, intl }: any) => {
   const client = useApolloClient()
   const [optionsResult, setOptions] = useState([])
   const [term, setTerm] = useState('')

@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/prop-types */
-import React, { useState, useContext, FunctionComponent } from 'react'
-import {
-  FormattedMessage,
-  WrappedComponentProps,
-  injectIntl,
-  defineMessages,
-} from 'react-intl'
+import type { FunctionComponent } from 'react'
+import React, { useState, useContext } from 'react'
+import type { WrappedComponentProps } from 'react-intl'
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl'
 import { Button, Tag, Input, ToastContext, IconClear } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
-import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
+import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
@@ -136,7 +133,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       variables: {
         items: items.map((item: ItemType) => {
           const [existsInCurrentOrder] = currentItemsInCart.filter(
-            el => el.id === item.id.toString()
+            (el) => el.id === item.id.toString()
           )
 
           if (existsInCurrentOrder) {
@@ -250,7 +247,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
     }
 
     const matchedItem = selectedItem.data.product.items.find(
-      item => item.itemId === value
+      (item) => item.itemId === value
     )
 
     setState({

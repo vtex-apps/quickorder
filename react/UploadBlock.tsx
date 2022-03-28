@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
-import React, { useState, useContext, FunctionComponent } from 'react'
-import {
-  FormattedMessage,
-  injectIntl,
-  WrappedComponentProps,
-  defineMessages,
-} from 'react-intl'
+import type { FunctionComponent } from 'react'
+import React, { useState, useContext } from 'react'
+import type { WrappedComponentProps } from 'react-intl'
+import { FormattedMessage, injectIntl, defineMessages } from 'react-intl'
 import { Button, Dropzone, ToastContext, Spinner } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
-import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
+import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { useCssHandles } from 'vtex.css-handles'
 import { useMutation } from 'react-apollo'
@@ -44,8 +41,9 @@ const messages = defineMessages({
   },
 })
 
-const UploadBlock: FunctionComponent<UploadBlockInterface &
-  WrappedComponentProps> = ({
+const UploadBlock: FunctionComponent<
+  UploadBlockInterface & WrappedComponentProps
+> = ({
   text,
   hiddenColumns,
   description,
@@ -155,7 +153,7 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
   const parseText = () => {
     let textAreaValue = ''
 
-    productsQueue.forEach(element => {
+    productsQueue.forEach((element) => {
       textAreaValue += `${element[0]},${element[1]}\n`
     })
 
@@ -208,8 +206,8 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
 
       result[sheetName].splice(0, 1)
       productsArray = result[sheetName]
-      productsArray = productsArray.filter(item => item.length)
-      productsArray.forEach(p => {
+      productsArray = productsArray.filter((item) => item.length)
+      productsArray.forEach((p) => {
         p[0] = (p[0] || '').toString().trim()
         p[1] = (p[1] || '').toString().trim()
       })
@@ -259,7 +257,7 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
           variables: {
             items: chunk.map((item: ItemType) => {
               const [existsInCurrentOrder] = currentItemsInCart.filter(
-                el => el.id === item.id.toString()
+                (el) => el.id === item.id.toString()
               )
 
               if (existsInCurrentOrder) {
@@ -333,10 +331,10 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
         }
       })
 
-    const merge = internalItems => {
+    const merge = (internalItems) => {
       return internalItems.reduce((acc: any, val) => {
         const { id, quantity }: ItemType = val
-        const ind = acc.findIndex(el => el.id === id)
+        const ind = acc.findIndex((el) => el.id === id)
 
         if (ind !== -1) {
           acc[ind].quantity += quantity
