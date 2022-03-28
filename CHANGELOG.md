@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.8.2] - 2022-02-22
+
+### Added
+
+- Added a custom class for autocomplete button.
+
 ## [3.8.1] - 2022-02-22
 
 ### Fixed
