@@ -4,9 +4,15 @@ import { AutocompleteInput } from 'vtex.styleguide'
 import PropTypes from 'prop-types'
 import { WrappedComponentProps, injectIntl, defineMessages } from 'react-intl'
 import { useApolloClient } from 'react-apollo'
+import { useCssHandles } from 'vtex.css-handles'
 
 import autocomplete from '../queries/autocomplete.gql'
 
+const CSS_HANDLES = [
+  'vtex-button',
+] as const
+
+const handles = useCssHandles(CSS_HANDLES)
 const messages = defineMessages({
   placeholder: {
     id: 'store/quickorder.autocomplete.placeholder',
@@ -50,7 +56,7 @@ const CustomOption = (props: any) => {
     )
   }
 
-  const buttonClasses = `vtex-button bn w-100 tl pointer pa4 f6 ${
+  const buttonClasses = `${handles['vtex-button']} bn w-100 tl pointer pa4 f6 ${
     roundedBottom ? 'br2 br--bottom' : ''
   } ${highlightOption || selected ? 'bg-muted-5' : 'bg-base'}`
 
