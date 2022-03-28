@@ -9,7 +9,7 @@ import { useCssHandles } from 'vtex.css-handles'
 import autocomplete from '../queries/autocomplete.gql'
 
 const CSS_HANDLES = [
-  'vtex-button',
+  'customOptionButton',
 ] as const
 
 const handles = useCssHandles(CSS_HANDLES)
@@ -56,7 +56,7 @@ const CustomOption = (props: any) => {
     )
   }
 
-  const buttonClasses = `${handles['vtex-button']} bn w-100 tl pointer pa4 f6 ${
+  const buttonClasses = `${handles.customOptionButton} bn w-100 tl pointer pa4 f6 ${
     roundedBottom ? 'br2 br--bottom' : ''
   } ${highlightOption || selected ? 'bg-muted-5' : 'bg-base'}`
 
