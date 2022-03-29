@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable vtex/prefer-early-return */
-import React, { useState, FunctionComponent, useEffect } from 'react'
+import type { FunctionComponent } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Table,
   Input,
@@ -10,7 +11,8 @@ import {
   Tooltip,
   Dropdown,
 } from 'vtex.styleguide'
-import { WrappedComponentProps, injectIntl, defineMessages } from 'react-intl'
+import type { WrappedComponentProps } from 'react-intl'
+import { injectIntl, defineMessages } from 'react-intl'
 import PropTypes from 'prop-types'
 import { useApolloClient, useQuery } from 'react-apollo'
 

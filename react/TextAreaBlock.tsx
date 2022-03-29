@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
-import React, { useState, useContext, FunctionComponent } from 'react'
-import {
-  FormattedMessage,
-  defineMessages,
-  WrappedComponentProps,
-  injectIntl,
-} from 'react-intl'
+import type { FunctionComponent } from 'react'
+import React, { useState, useContext } from 'react'
+import type { WrappedComponentProps } from 'react-intl'
+import { FormattedMessage, defineMessages, injectIntl } from 'react-intl'
 import { Button, Textarea, ToastContext, Spinner } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
-import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
+import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { useCssHandles } from 'vtex.css-handles'
 import { useMutation } from 'react-apollo'
@@ -43,15 +40,9 @@ interface ItemType {
   quantity: number
 }
 
-const TextAreaBlock: FunctionComponent<TextAreaBlockInterface &
-  WrappedComponentProps> = ({
-  intl,
-  value,
-  text,
-  hiddenColumns,
-  description,
-  componentOnly,
-}: any) => {
+const TextAreaBlock: FunctionComponent<
+  TextAreaBlockInterface & WrappedComponentProps
+> = ({ intl, value, text, hiddenColumns, description, componentOnly }: any) => {
   const [state, setState] = useState<any>({
     reviewState: false,
     showAddToCart: null,
@@ -119,7 +110,7 @@ const TextAreaBlock: FunctionComponent<TextAreaBlockInterface &
       variables: {
         items: items.map((item: ItemType) => {
           const [existsInCurrentOrder] = currentItemsInCart.filter(
-            el => el.id === item.id.toString()
+            (el) => el.id === item.id.toString()
           )
 
           if (existsInCurrentOrder) {
@@ -247,10 +238,10 @@ const TextAreaBlock: FunctionComponent<TextAreaBlockInterface &
         }
       })
 
-    const merge = internalItems => {
+    const merge = (internalItems) => {
       return internalItems.reduce((acc, val) => {
         const { id, quantity }: ItemType = val
-        const ind = acc.findIndex(el => el.id === id)
+        const ind = acc.findIndex((el) => el.id === id)
 
         if (ind !== -1) {
           acc[ind].quantity += quantity

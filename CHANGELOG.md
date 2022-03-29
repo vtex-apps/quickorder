@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Added a CSS handle for autocomplete button.
+
+### Fixed
+
+- Update tooling
+
 ## [3.8.1] - 2022-02-22
 
 ### Fixed
@@ -15,7 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [3.8.0] - 2022-02-22
 
-### Added 
+### Added
 
 - Adding an option as a prop to make the columns of the review block hideable
 

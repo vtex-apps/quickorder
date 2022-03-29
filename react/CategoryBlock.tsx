@@ -1,13 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-key */
 import PropTypes from 'prop-types'
-import React, { useState, useContext, FunctionComponent } from 'react'
-import {
-  FormattedMessage,
-  WrappedComponentProps,
-  defineMessages,
-  injectIntl,
-} from 'react-intl'
+import type { FunctionComponent } from 'react'
+import React, { useState, useContext } from 'react'
+import type { WrappedComponentProps } from 'react-intl'
+import { FormattedMessage, defineMessages, injectIntl } from 'react-intl'
 import {
   Collapsible,
   Input,
@@ -17,12 +14,12 @@ import {
   Tag,
 } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
-import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
+import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import { useCssHandles } from 'vtex.css-handles'
-import { graphql, useApolloClient, compose, useMutation } from 'react-apollo'
+import { graphql, useApolloClient, useMutation } from 'react-apollo'
 
 import getCategories from './queries/categoriesQuery.gql'
 import SearchByCategory from './queries/productsByCategory.gql'
@@ -574,4 +571,4 @@ interface OrderFormContext {
   setOrderForm: (orderForm: Partial<OrderFormType>) => void
 }
 
-export default injectIntl(compose(graphql(getCategories))(CategoryBlock))
+export default injectIntl(graphql(getCategories)(CategoryBlock))
