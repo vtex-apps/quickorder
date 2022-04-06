@@ -31,7 +31,7 @@
   "store/quickorder.autocomplete.addButton": "إضافة",
   "store/quickorder.autocomplete.placeholder": "البحث عن منتج...",
   "store/quickorder.autocomplete.selectSku": "الرجاء تحديد رمز SKU واحد",
-  "store/quickorder.autocomplete.multiplierOf": "وحدة المضاعف من ",
+  "store/quickorder.autocomplete.multiplierOf": "وحدة مضاعفات",
   "store/quickorder.available": "متاحة",
   "store/quickorder.back": "عودة",
   "store/quickorder.cannotBeDelivered": "لا يمكن تسليمه",
