@@ -1,5 +1,5 @@
 query Autocomplete($maxRows: Int, $inputValue: String) {
-  autocomplete(maxRows: $maxRows, searchTerm: $inputValue)
+  autocompleteSearchSuggestions(fullText: $inputValue)
     @context(provider: "vtex.search-graphql") {
     itemsReturned {
       thumb
