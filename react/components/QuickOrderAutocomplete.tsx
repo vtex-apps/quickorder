@@ -106,7 +106,9 @@ const QuickOrderAutocomplete: FunctionComponent<
       })
 
       setOptions(
-        !!data && !!data.productSuggestions && !!data.productSuggestions.products
+        !!data &&
+          !!data.productSuggestions &&
+          !!data.productSuggestions.products
           ? data.productSuggestions.products
           : []
       )
@@ -121,7 +123,7 @@ const QuickOrderAutocomplete: FunctionComponent<
     value: !term.length
       ? []
       : optionsResult
-        .filter((item: any) => {
+          .filter((item: any) => {
             return !!item.items[0].images[0].imageUrl
           })
           .map((item: any) => {

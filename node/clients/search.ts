@@ -1,4 +1,5 @@
-import { InstanceOptions, IOContext, JanusClient } from '@vtex/api'
+import type { InstanceOptions, IOContext } from '@vtex/api'
+import { JanusClient } from '@vtex/api'
 
 interface RefIdArgs {
   refids: any
@@ -58,7 +59,7 @@ export class Search extends JanusClient {
     if (res.status === 200) {
       const refs = Object.getOwnPropertyNames(res.data)
 
-      refs.forEach((id) => {
+      refs.forEach(id => {
         resultStr[id] = {
           sku: res.data[id],
           refid: id,
@@ -71,6 +72,7 @@ export class Search extends JanusClient {
         const promises = result.map(async (o: any) =>
           this.sellerBySku(o.sku, o.refid)
         )
+
         result = await Promise.all(promises)
       }
 
@@ -81,6 +83,7 @@ export class Search extends JanusClient {
         orderForm,
         refIdSellerMap
       )
+
       items.forEach((item: any) => {
         items[item.id] = item
       })
@@ -116,6 +119,7 @@ export class Search extends JanusClient {
       storePreferencesData: { countryCode },
       shippingData,
     } = orderForm
+
     const items = refids
       .filter((item: any) => {
         return !!item.sku
@@ -146,6 +150,7 @@ export class Search extends JanusClient {
         sellers: null,
       }
     }
+
     const url = `/api/catalog_system/pvt/sku/stockkeepingunitbyid/${skuId}`
     const res = await this.http.getRaw(url, {
       headers: {
@@ -153,6 +158,7 @@ export class Search extends JanusClient {
         Authorization: `bearer ${this.context.authToken}`,
       },
     })
+
     return res.data?.SkuSellers
       ? {
           sku: skuId,

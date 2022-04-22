@@ -39,6 +39,7 @@ export const queries = {
     } = ctx
 
     const items = await search.sellers()
+
     return {
       cacheId: 'sellers',
       items,

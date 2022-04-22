@@ -15,6 +15,7 @@ import { path, split } from 'ramda'
  */
 const extractSlug = (item: SearchAutocompleteUnit) => {
   const href = split('/', item.href)
+
   return href[3]
 }
 
