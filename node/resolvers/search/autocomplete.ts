@@ -16,7 +16,7 @@ import { path, split } from 'ramda'
 const extractSlug = (item: SearchAutocompleteUnit) => {
   const href = split('/', item.href)
 
-  return href[3]
+  return href.length > 3 ? href[3] : ''
 }
 
 export const resolvers = {
