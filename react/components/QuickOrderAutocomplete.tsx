@@ -19,9 +19,10 @@ const messages = defineMessages({
 })
 
 const getImageSrc = (img: string) => {
-  const src: any = img ? img.match(/src=["']([^"']+)/) : []
+  const td = img.split('/')
+  const ids = td[td.indexOf('ids') + 1]
 
-  return !!src && src.length ? src[1] : ''
+  return img.replace(ids, `${ids}-50-50`)
 }
 
 const CustomOption = (props: any) => {
@@ -105,8 +106,10 @@ const QuickOrderAutocomplete: FunctionComponent<
       })
 
       setOptions(
-        !!data && !!data.autocomplete && !!data.autocomplete.itemsReturned
-          ? data.autocomplete.itemsReturned
+        !!data &&
+          !!data.productSuggestions &&
+          !!data.productSuggestions.products
+          ? data.productSuggestions.products
           : []
       )
     }
@@ -121,14 +124,14 @@ const QuickOrderAutocomplete: FunctionComponent<
       ? []
       : optionsResult
           .filter((item: any) => {
-            return !!item.thumb
+            return !!item.items[0].images[0].imageUrl
           })
           .map((item: any) => {
             return {
-              value: item.productId,
-              label: item.name,
-              slug: item.slug,
-              thumb: getImageSrc(item.thumb),
+              value: item.items[0].itemId,
+              label: item.items[0].name,
+              slug: item.linkText,
+              thumb: getImageSrc(item.items[0].images[0].imageUrl),
             }
           }),
     lastSearched: {

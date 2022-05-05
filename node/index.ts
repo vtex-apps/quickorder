@@ -1,6 +1,7 @@
 import './globals'
 
-import { Cached, LRUCache, RecorderState, Service } from '@vtex/api'
+import type { Cached, RecorderState } from '@vtex/api'
+import { LRUCache, Service } from '@vtex/api'
 
 import { Clients } from './clients'
 import { resolvers } from './resolvers'
