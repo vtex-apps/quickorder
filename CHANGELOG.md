@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.8.4] - 2022-05-05
+
 ## Fixed
 
 - Replace the autocomplete search query with the intelligent search autocomplete
