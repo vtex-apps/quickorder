@@ -48,6 +48,7 @@
   "store/quickorder.review.label.seller": "Vanzator",
   "store/quickorder.review.label.sku": "SKU",
   "store/quickorder.review.label.status": "Stare",
+  "store/quickorder.review.label.emptyState": "Nimic de afișat.",
   "store/quickorder.skuNotFound": "SKU negasit",
   "store/quickorder.upload.choose": "alege fisier",
   "store/quickorder.upload.drop": "Incarca aici XLS or",

@@ -587,7 +587,14 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
   return (
     <div>
-      <Table schema={tableSchema} items={reviewItems} fullWidth />
+      <Table
+        schema={tableSchema}
+        items={reviewItems}
+        emptyStateLabel={intl.formatMessage({
+          id: 'store/quickorder.review.label.emptyState',
+        })}
+        fullWidth
+      />
     </div>
   )
 }
