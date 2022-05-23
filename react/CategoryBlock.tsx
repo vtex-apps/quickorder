@@ -384,8 +384,10 @@ const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
                         className={`flex flex-column w-10 ph5-l ph2 p fl ${handles.categoryInputQuantity}`}
                       >
                         <Input
-                          value={quantitySelected[content.itemId] || 0}
+                          value={quantitySelected[content.itemId] ?? 0}
                           size="small"
+                          type="number"
+                          min={0}
                           disabled={loading}
                           onChange={(e: any) => {
                             const newQtd = quantitySelected
