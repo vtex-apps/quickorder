@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix Spanish translations that were previously using English
+- Make empty state message in TextArea block translatable
+- Restrict Category block quantity input to numbers
+
 ## [3.8.4] - 2022-05-05
 
 ## Fixed
