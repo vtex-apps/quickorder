@@ -48,6 +48,7 @@
   "store/quickorder.review.label.seller": "Seller",
   "store/quickorder.review.label.sku": "SKU",
   "store/quickorder.review.label.status": "Status",
+  "store/quickorder.review.label.emptyState": "Nothing to show.",
   "store/quickorder.skuNotFound": "SKU Not Found",
   "store/quickorder.upload.choose": "choose a file",
   "store/quickorder.upload.drop": "Drop here your XLS or",

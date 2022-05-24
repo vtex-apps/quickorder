@@ -48,6 +48,7 @@
   "store/quickorder.review.label.seller": "store/quickorder.review.label.seller",
   "store/quickorder.review.label.sku": "store/quickorder.review.label.sku",
   "store/quickorder.review.label.status": "store/quickorder.review.label.status",
+  "store/quickorder.review.label.emptyState": "store/quickorder.review.label.emptyState",
   "store/quickorder.skuNotFound": "store/quickorder.skuNotFound",
   "store/quickorder.upload.choose": "store/quickorder.upload.choose",
   "store/quickorder.upload.drop": "store/quickorder.upload.drop",

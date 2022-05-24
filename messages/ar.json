@@ -48,6 +48,7 @@
   "store/quickorder.review.label.seller": "البائع",
   "store/quickorder.review.label.sku": "الـ SKU",
   "store/quickorder.review.label.status": "الحالة",
+  "store/quickorder.review.label.emptyState": "لا يوجد شيء لإظهاره",
   "store/quickorder.skuNotFound": "وحدة SKU غير موجودة",
   "store/quickorder.upload.choose": "اختر ملفًا",
   "store/quickorder.upload.drop": "قم بإسقاط ملف XLS هنا أو",
