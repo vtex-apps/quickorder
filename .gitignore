@@ -1,6 +1,8 @@
 ### SublimeText ###
 *.sublime-workspace
 
+node/coverage/*
+
 ### VS Code ###
 *.vscode
 
