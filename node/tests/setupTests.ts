@@ -1,5 +1,11 @@
 import { MetricsAccumulator } from '@vtex/api'
 
+import orderFormMocked from './data/orderFormMocked'
+import simulationMocked from './data/simulationMocked'
+import postStockMocked from './data/postStockMocked'
+import getStockMocked from './data/getStockMocked'
+import getSellersMocked from './data/getSellersMocked'
+
 if (!global.metrics) {
   global.metrics = new MetricsAccumulator()
 }
@@ -14,45 +20,39 @@ jest.mock(
       })),
       JanusClient: jest.fn(() => ({
         http: {
-          getRaw: jest.fn(() => ({
-            status: 200,
-            data: {
-              items: [
-                {
-                  isActive: true,
-                  id: '1',
-                  name: 'Foo bar',
-                },
-              ],
-            },
-          })),
-          get: jest.fn((url: string): any => {
-            if (url.match(/orderForm/)) {
+          getRaw: jest.fn((url): any => {
+            if (url.match(/stockkeep/)) {
               return {
-                salesChannel: '1',
-                storePreferencesData: {
-                  countryCode: 'BR',
-                },
-                shippingData: {},
+                status: 200,
+                data: getStockMocked(),
+              }
+            }
+
+            if (url.match(/sellers/)) {
+              return {
+                status: 200,
+                data: getSellersMocked(),
               }
             }
           }),
-          post: jest.fn(() => ({
-            items: [
-              {
-                sku: '1',
-                id: '1',
-              },
-            ],
-          })),
-          postRaw: jest.fn(() => ({
-            status: 200,
-            data: [
-              {
-                id: '1',
-              },
-            ],
-          })),
+          get: jest.fn((url: string): any => {
+            if (url.match(/orderForm/)) {
+              return orderFormMocked()
+            }
+          }),
+          post: jest.fn((url: string): any => {
+            if (url.match(/simulation/)) {
+              return simulationMocked()
+            }
+          }),
+          postRaw: jest.fn((url: string): any => {
+            if (url.match(/stockkeep/)) {
+              return {
+                status: 200,
+                data: postStockMocked(),
+              }
+            }
+          }),
         },
         context: {
           authToken: 'tokenMocked',
