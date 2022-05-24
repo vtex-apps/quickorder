@@ -4,4 +4,5 @@ module.exports = {
   },
   testRegex: '(.*(test|spec)).ts?$',
   testEnvironment: 'node',
+  setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
 }
