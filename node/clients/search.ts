@@ -13,7 +13,7 @@ interface Items {
 }
 
 interface RefIdSellerMap {
-  [key: string]: string
+  [key: string]: [string]
 }
 
 export class Search extends JanusClient {
@@ -78,21 +78,56 @@ export class Search extends JanusClient {
 
       const orderForm = await this.getOrderForm(orderFormId)
 
+      // update refIdSellerMap to include list of sellers by SKU
+      result.forEach((item: any) => {
+        refIdSellerMap[item.refid] = item.sellers
+          ? item.sellers.map((seller: any) => seller.id)
+          : null
+      })
+
       const { items }: any = await this.simulate(
         result,
         orderForm,
         refIdSellerMap
       )
 
-      items.forEach((item: any) => {
-        items[item.id] = item
-      })
+      const resItems = items.reduce((acc: any, item: any) => {
+        const sellerInfo = {
+          seller: item.seller,
+          availability: item.availability ?? '',
+          unitMultiplier: item.unitMultiplier ?? 1,
+        }
+
+        return {
+          ...acc,
+          [item.id]: {
+            sellers: acc[item.id]?.sellers?.length
+              ? acc[item.id].sellers.concat(sellerInfo)
+              : [sellerInfo],
+          },
+        }
+      }, {})
 
       result = result.map((item: any) => {
         return {
           ...item,
-          unitMultiplier: items[item.sku]?.unitMultiplier ?? 1,
-          availability: items[item.sku]?.availability ?? '',
+          sellers: item.sellers
+            ? item.sellers.map((seller: any) => {
+                const currSeller = resItems[item.sku].sellers.filter(
+                  (s: any) => s.seller === seller.id
+                )
+
+                return {
+                  ...seller,
+                  availability: currSeller.length
+                    ? currSeller[0].availability
+                    : '',
+                  unitMultiplier: currSeller.length
+                    ? currSeller[0].unitMultiplier
+                    : 1,
+                }
+              })
+            : null,
         }
       })
     }
@@ -120,22 +155,26 @@ export class Search extends JanusClient {
       shippingData,
     } = orderForm
 
-    const items = refids
+    const simulateItems: any = []
+
+    refids
       .filter((item: any) => {
         return !!item.sku
       })
-      .map((item: any) => {
-        return {
-          id: item.sku,
-          quantity: 1,
-          seller: refIdSellerMap[item.refid],
-        }
+      .forEach((item: any) => {
+        refIdSellerMap[item.refid].forEach(sellerId => {
+          simulateItems.push({
+            id: item.sku,
+            quantity: 1,
+            seller: sellerId,
+          })
+        })
       })
 
     return this.http.post(
       `/api/checkout/pub/orderForms/simulation?sc=${salesChannel}`,
       {
-        items,
+        items: simulateItems,
         country: countryCode,
         postalCode: shippingData?.address?.postalCode ?? '',
       }

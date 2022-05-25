@@ -206,6 +206,14 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   const validateRefids = (refidData: any, reviewed: any) => {
     let error = false
 
+    // drops sellers without stock from refidData
+    refidData?.skuFromRefIds.items.forEach((item: any) => {
+      if (!item.sellers) return
+      item.sellers = item.sellers.filter(
+        (seller: any) => seller.availability === 'available'
+      )
+    })
+
     if (refidData) {
       const refIdNotFound =
         !!refidData && !!refidData.skuFromRefIds.items
@@ -224,7 +232,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       const refNotAvailable =
         !!refidData && !!refidData.skuFromRefIds.items
           ? refidData.skuFromRefIds.items.filter((item: any) => {
-              return item.availability !== 'available'
+              return !!item.sellers?.length
             })
           : []
 
@@ -246,11 +254,18 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
           return curr.refid === item.sku && curr.sku !== null
         })
 
+        const foundHasStock =
+          found?.sellers?.length &&
+          found.sellers.filter(
+            (seller: any) =>
+              seller.availability && seller.availability === 'available'
+          ).length
+
         ret = notfound
           ? 'store/quickorder.skuNotFound'
-          : found?.availability && found.availability !== 'available'
-          ? `store/quickorder.${found.availability}`
-          : null
+          : foundHasStock
+          ? null
+          : `store/quickorder.withoutStock`
 
         return ret
       }
@@ -260,17 +275,30 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
 
       const items = reviewed.map((item: any) => {
+        const sellerWithStock = item.seller
+          ? item.seller
+          : item.sku && mappedRefId[item.sku]?.sellers?.length
+          ? mappedRefId[item.sku]?.sellers.find(
+              (seller: any) => seller.availability === 'available'
+            )?.id ?? ''
+          : ''
+
+        const sellerUnitMultiplier =
+          item.sku && mappedRefId[item.sku]?.sellers?.length
+            ? mappedRefId[item.sku]?.sellers.find(
+                (seller: any) => seller.id === sellerWithStock
+              )?.unitMultiplier ?? '1'
+            : '1'
+
         return {
           ...item,
-          sellers: item.sku ? mappedRefId[item.sku]?.sellers : '1',
-          seller: item.seller ? item.seller : '1',
+          sellers: item.sku ? mappedRefId[item.sku]?.sellers : [],
+          seller: sellerWithStock,
           vtexSku: item.sku ? mappedRefId[item.sku]?.sku : '1',
-          unitMultiplier: item.sku
-            ? mappedRefId[item.sku]?.unitMultiplier
-            : '1',
-          totalQuantity:
-            (item.sku ? mappedRefId[item.sku]?.unitMultiplier : '1') *
-            item.quantity,
+          unitMultiplier: sellerUnitMultiplier,
+          totalQuantity: sellerUnitMultiplier
+            ? sellerUnitMultiplier * item.quantity
+            : '',
           error: errorMsg(item),
         }
       })
@@ -322,7 +350,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         return item.error === null
       })
       .map((item: any) => {
-        refIdSellerMap[item.sku] = '1'
+        refIdSellerMap[item.sku] = ['1']
 
         return item.sku
       })
@@ -392,7 +420,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     })
 
     const refids = items.map((item: any) => {
-      refIdSellerMap[item.sku] = item.seller
+      refIdSellerMap[item.sku] = [item.seller]
 
       return item.sku
     })
