@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Filter sellers without stock from options in ReviewBlock component
+
+### Changed
+
+- Change `availability` and `unitMultiplier` to seller level information instead of item level
+
 ## [3.8.5] - 2022-05-23
 
 ### Fixed

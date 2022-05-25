@@ -1,7 +1,7 @@
 type SellersType {
-  items: [ItemsSeller]
+  items: [SellerInfo]
 }
-type ItemsSeller {
+type SellerInfo {
   id: String
   name: String
 }
