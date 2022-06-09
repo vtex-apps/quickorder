@@ -11,11 +11,11 @@ query getSkuFromRefIds(
     items {
       sku
       refid
-      availability
-      unitMultiplier
       sellers {
         id
         name
+        availability
+        unitMultiplier
       }
     }
   }
