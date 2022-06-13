@@ -12,7 +12,7 @@ type GraphQLResolver = {
 const vtexContext = () => {
   const { resolvers } = Service.config.graphql as GraphQLResolver
   const { Query } = resolvers
-  const context = ({ tracer: jest.fn() } as unknown) as IOContext
+  const context = ({ tracer: { startSpan: jest.fn() } } as unknown) as IOContext
   const clients = { search: new Search(context) } as Clients
 
   return {
