@@ -1,19 +1,17 @@
 import vtexContext from './vtexContext'
 
 describe('Graphql resolvers', () => {
-  const { Query, clients } = vtexContext()
+  const { context, Query, clients } = vtexContext()
 
   it('[GraphQL] skuFromRefIds', async () => {
     const data = await Query.skuFromRefIds(
       {},
       {
-        refids: true,
+        refids: [],
         orderFormId: '',
         refIdSellerMap: {},
       },
-      {
-        clients,
-      }
+      { ...context, clients }
     )
 
     expect(data).toBeDefined()
@@ -23,13 +21,11 @@ describe('Graphql resolvers', () => {
     const data = await Query.sellers(
       {},
       {
-        refids: true,
+        refids: [],
         orderFormId: '',
         refIdSellerMap: {},
       },
-      {
-        clients,
-      }
+      { ...context, clients }
     )
 
     expect(data).toBeDefined()
