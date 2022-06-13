@@ -10,7 +10,7 @@ const getStockMocked = () => ({
   IsInventoried: true,
   IsGiftCardRecharge: false,
   ImageUrl:
-    'http://ambienteqa.vteximg.com.br/arquivos/ids/168952-55-55/7508800GG.jpg',
+    'https://ambienteqa.vteximg.com.br/arquivos/ids/168952-55-55/7508800GG.jpg',
   DetailUrl: '/tabela-de-basquete/p',
   CSCIdentification: null,
   BrandId: '2000018',
@@ -70,19 +70,19 @@ const getStockMocked = () => ({
   Images: [
     {
       ImageUrl:
-        'http://ambienteqa.vteximg.com.br/arquivos/ids/168952/7508800GG.jpg',
+        'https://ambienteqa.vteximg.com.br/arquivos/ids/168952/7508800GG.jpg',
       ImageName: '',
       FileId: 168952,
     },
     {
       ImageUrl:
-        'http://ambienteqa.vteximg.com.br/arquivos/ids/168953/7508800_1GG.jpg',
+        'https://ambienteqa.vteximg.com.br/arquivos/ids/168953/7508800_1GG.jpg',
       ImageName: '',
       FileId: 168953,
     },
     {
       ImageUrl:
-        'http://ambienteqa.vteximg.com.br/arquivos/ids/168954/7508800_2GG.jpg',
+        'https://ambienteqa.vteximg.com.br/arquivos/ids/168954/7508800_2GG.jpg',
       ImageName: '',
       FileId: 168954,
     },

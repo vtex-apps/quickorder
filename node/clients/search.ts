@@ -113,6 +113,10 @@ export class Search extends JanusClient {
           ...item,
           sellers: item.sellers
             ? item.sellers.map((seller: any) => {
+                if (!resItems[item.sku]) {
+                  return null
+                }
+
                 const currSeller = resItems[item.sku].sellers.filter(
                   (s: any) => s.seller === seller.id
                 )
