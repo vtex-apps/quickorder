@@ -1,4 +1,9 @@
 {
   "extends": "@vtex/tsconfig",
+  "compilerOptions": {
+    "types": ["node", "jest"],
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  },
   "include": ["./typings/*.d.ts", "./**/*.tsx", "./**/*.ts"]
 }
