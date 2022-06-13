@@ -1,7 +1,16 @@
-import vtexContext from './vtexContext'
+import { resolvers } from '../resolvers'
 
 describe('Graphql resolvers', () => {
-  const { context, Query, clients } = vtexContext()
+  const { Query } = resolvers
+
+  const mockContext = {
+    clients: {
+      search: {
+        skuFromRefIds: jest.fn(),
+        sellers: jest.fn(),
+      },
+    },
+  }
 
   it('[GraphQL] skuFromRefIds', async () => {
     const data = await Query.skuFromRefIds(
@@ -11,7 +20,7 @@ describe('Graphql resolvers', () => {
         orderFormId: '',
         refIdSellerMap: {},
       },
-      { ...context, clients }
+      mockContext as any
     )
 
     expect(data).toBeDefined()
@@ -25,7 +34,7 @@ describe('Graphql resolvers', () => {
         orderFormId: '',
         refIdSellerMap: {},
       },
-      { ...context, clients }
+      mockContext as any
     )
 
     expect(data).toBeDefined()
