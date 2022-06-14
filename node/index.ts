@@ -20,7 +20,7 @@ const messagesCache = new LRUCache<string, Cached>({ max: 3000 })
 metrics.trackCache('search', searchCache)
 metrics.trackCache('messages', messagesCache)
 
-export const config = {
+export default new Service<Clients, RecorderState, CustomContext>({
   clients: {
     implementation: Clients,
     options: {
@@ -43,6 +43,4 @@ export const config = {
   graphql: {
     resolvers,
   },
-}
-
-export default new Service<Clients, RecorderState, CustomContext>(config)
+})
