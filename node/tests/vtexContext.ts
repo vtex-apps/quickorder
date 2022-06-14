@@ -1,6 +1,7 @@
 import type { IOContext } from '@vtex/api'
 
 import Service from '../index'
+import type { Clients } from '../clients'
 import { Search } from '../clients/search'
 
 type GraphQLResolver = {
@@ -11,15 +12,13 @@ const vtexContext = () => {
   const { resolvers } = Service.config.graphql as GraphQLResolver
   const { Query } = resolvers
   const context = {} as IOContext
-  const clients = {
-    search: new Search(context),
-  }
+  const clients = { search: new Search(context) } as Clients
 
   return {
     context,
-    clients,
     Query,
     resolvers,
+    clients,
     Service,
   }
 }
