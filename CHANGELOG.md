@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.9.1] - 2022-06-22
+
 ### Fixed
 
 - Fix miniumn quantity selected in autocomplete block to equal unit multiplier
