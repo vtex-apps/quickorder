@@ -116,7 +116,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
     setState({
       ...state,
       selectedItem: null,
-      quantitySelected: 0,
+      quantitySelected: 1,
       unitMultiplier: 1,
     })
   }
@@ -225,6 +225,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
             ? { ...product[0], value: selectedSku, seller, data }
             : null,
         unitMultiplier: multiplier,
+        quantitySelected: multiplier,
       })
     }
 
@@ -254,6 +255,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       ...state,
       selectedItem: newSelected,
       unitMultiplier: matchedItem.unitMultiplier,
+      quantitySelected: matchedItem.unitMultiplier,
     })
   }
 
@@ -408,7 +410,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
                       value={quantitySelected}
                       size="small"
                       type="number"
-                      min="1"
+                      min={unitMultiplier}
                       step={unitMultiplier}
                       onChange={(e: any) => {
                         if (e.target.value > 0) {
