@@ -2,10 +2,21 @@
   "name": "vtex.search-graphql",
   "scripts": {
     "lint": "tsc --noEmit && eslint --ext ts .",
-    "test": "yarn jest"
+    "test": "yarn vtex-test-tools test"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.ts?$": "ts-jest"
+    },
+    "testRegex": "(.*(test|spec)).ts?$",
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setupTests.ts"
+    ]
   },
   "dependencies": {
     "@gocommerce/utils": "^0.7.3",
+    "@vtex/api": "6.45.12",
     "atob": "^2.1.2",
     "axios": "^0.19.0",
     "camelcase": "^5.0.0",
@@ -29,7 +40,6 @@
     "@types/node": "^12.0.0",
     "@types/qs": "^6.5.1",
     "@types/ramda": "^0.26.21",
-    "@vtex/api": "6.45.12",
     "@vtex/test-tools": "^3.4.1",
     "@vtex/tsconfig": "^0.5.0",
     "ts-jest": "^25.1.0",
