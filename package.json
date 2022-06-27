@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "eslint --ext js,jsx,ts,tsx .",
     "format": "prettier --write \"**/*.{ts,js,json}\"",
-    "test": "cd ./react && yarn test",
+    "test": "cd ./node && yarn test",
     "lint:locales": "intl-equalizer",
     "locales:fix": "intl-equalizer --fix",
     "verify": "yarn lint && yarn lint:locales && yarn test"
@@ -37,6 +37,7 @@
     "husky": "4.2.3",
     "lint-staged": "10.1.1",
     "prettier": "2.0.2",
+    "jest": "^27.3.1",
     "typescript": "3.8.3"
   },
   "version": "0.5.7",

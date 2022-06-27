@@ -20,7 +20,7 @@ jobs:
     uses: vtex-apps/usqa/.github/workflows/quality-engineering.yml@main
     with:
       nodeLint: true
-      nodeTest: false
+      nodeTest: true
       nodeSonar: true
       nodeSonarProjectKey: vtex-apps_quickorder
       nodeSonarOrganization: vtex-apps
