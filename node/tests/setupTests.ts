@@ -169,6 +169,14 @@ jest.mock('@vtex/api', () => {
         FulfillmentSellerId: '',
         SellerType: 1,
         IsBetterScope: false,
+        availableSalesChannels: [
+          {
+            id: 2,
+          },
+          {
+            id: 4,
+          },
+        ],
       },
     ],
   })
