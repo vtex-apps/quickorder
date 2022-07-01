@@ -2,7 +2,7 @@
   "name": "vtex.search-graphql",
   "scripts": {
     "lint": "tsc --noEmit && eslint --ext ts .",
-    "test": "yarn vtex-test-tools test"
+    "test": "yarn vtex-test-tools test --coverage"
   },
   "jest": {
     "transform": {
