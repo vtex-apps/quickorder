@@ -35,6 +35,7 @@
   "store/quickorder.available": "Available",
   "store/quickorder.back": "Back",
   "store/quickorder.cannotBeDelivered": "Cannot be delivered",
+  "store/quickorder.cannotGetSkuInfo": "Could not get SKU information",
   "store/quickorder.category.addButton": "Add items to Cart",
   "store/quickorder.category.loading": "Loading...",
   "store/quickorder.category.noneSelection": "Enter some quantity on the items",

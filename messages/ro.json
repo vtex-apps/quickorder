@@ -35,6 +35,7 @@
   "store/quickorder.available": "Disponibil",
   "store/quickorder.back": "Inapoi",
   "store/quickorder.cannotBeDelivered": "Nu poate fi livrat",
+  "store/quickorder.cannotGetSkuInfo": "Nu s-au primit informațiile SKU",
   "store/quickorder.category.addButton": "Adauga articole in carucior",
   "store/quickorder.category.loading": "Se incarca...",
   "store/quickorder.category.noneSelection": "Introduceti cantitati",

@@ -317,6 +317,7 @@ const TextAreaBlock: FunctionComponent<
               hiddenColumns={hiddenColumns ?? []}
               onReviewItems={onReviewItems}
               onRefidLoading={onRefidLoading}
+              backList={backList}
             />
             <div
               className={`mb4 mt4 flex justify-between ${handles.buttonsBlock}`}

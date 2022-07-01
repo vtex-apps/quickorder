@@ -57,6 +57,14 @@ export class Search extends JanusClient {
     const resultStr: any = {}
 
     if (res.status === 200) {
+      const orderForm = await this.getOrderForm(orderFormId)
+      const { salesChannel } = orderForm
+
+      // filter out sellers that aren't available in current sales channel
+      this.sellersList = this.sellersList?.filter(seller => {
+        return seller.availableSalesChannels.includes(Number(salesChannel))
+      })
+
       const refs = Object.getOwnPropertyNames(res.data)
 
       refs.forEach(id => {
@@ -76,8 +84,6 @@ export class Search extends JanusClient {
         result = await Promise.all(promises)
       }
 
-      const orderForm = await this.getOrderForm(orderFormId)
-
       // update refIdSellerMap to include list of sellers by SKU
       result.forEach((item: any) => {
         refIdSellerMap[item.refid] = item.sellers
@@ -90,6 +96,8 @@ export class Search extends JanusClient {
         orderForm,
         refIdSellerMap
       )
+
+      if (!items.length) return items
 
       const resItems = items.reduce((acc: any, item: any) => {
         const sellerInfo = {
@@ -207,7 +215,12 @@ export class Search extends JanusClient {
           sku: skuId,
           refid,
           sellers: res.data.SkuSellers.filter((item: any) => {
-            return item.IsActive === true
+            // check if seller is available in current sales channel
+            const inSellersList = this.sellersList?.find(seller => {
+              return seller.id === item.SellerId
+            })
+
+            return item.IsActive === true && inSellersList
           }).map(({ SellerId }: any) => {
             return {
               id: SellerId,
@@ -235,10 +248,17 @@ export class Search extends JanusClient {
         .filter((item: any) => {
           return item.isActive === true
         })
-        .map(({ id, name }: any) => {
+        .map(({ id, name, availableSalesChannels }: any) => {
+          const availableSalesChannelsIds = availableSalesChannels.map(
+            (sc: { id: number }) => {
+              return sc.id
+            }
+          )
+
           return {
             id,
             name,
+            availableSalesChannels: availableSalesChannelsIds,
           }
         })
     }
