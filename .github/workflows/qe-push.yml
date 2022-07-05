@@ -14,7 +14,7 @@ jobs:
     with:
       nodeLint: true
       nodeTest: true
-      reactTest: true
+      reactTest: false
       nodeSonar: true
       nodeSonarProjectKey: vtex-apps_quickorder
       nodeSonarOrganization: vtex-apps
