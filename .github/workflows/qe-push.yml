@@ -5,22 +5,16 @@ on:
     branches:
       - master
       - main
-      - bugfix/*
-      - chore/*
-      - enhancement/*
-      - feature/*
-      - fix/*
-      - hotfix/*
-      - translation/*
-      - actions/*
+      - feature/sonarcloud-coverag
 
 jobs:
   quality-engineering:
     name: QE
-    uses: vtex-apps/usqa/.github/workflows/quality-engineering.yml@coverage
+    uses: vtex-apps/usqa/.github/workflows/quality-engineering.yml@next-version
     with:
       nodeLint: true
       nodeTest: true
+      reactTest: true
       nodeSonar: true
       nodeSonarProjectKey: vtex-apps_quickorder
       nodeSonarOrganization: vtex-apps
