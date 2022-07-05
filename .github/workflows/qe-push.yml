@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - main
-      - feature/sonarcloud-coverag
+      - feature/sonarcloud-coverage
 
 jobs:
   quality-engineering:
