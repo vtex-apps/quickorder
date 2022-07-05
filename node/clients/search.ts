@@ -210,15 +210,15 @@ export class Search extends JanusClient {
       },
     })
 
+    const sellersIds = new Set(this.sellersList?.map(seller => seller.id))
+
     return res.data?.SkuSellers
       ? {
           sku: skuId,
           refid,
           sellers: res.data.SkuSellers.filter((item: any) => {
-            // check if seller is available in current sales channel
-            const inSellersList = this.sellersList?.find(seller => {
-              return seller.id === item.SellerId
-            })
+            // check if SKU seller is available in sellers list
+            const inSellersList = sellersIds.has(item.SellerId)
 
             return item.IsActive === true && inSellersList
           }).map(({ SellerId }: any) => {
