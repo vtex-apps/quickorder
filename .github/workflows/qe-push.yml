@@ -15,7 +15,7 @@ jobs:
       nodeLint: true
       nodeTest: true
       reactTest: false
-      nodeSonar: true
+      nodeSonar: false
       nodeSonarProjectKey: vtex-apps_quickorder
       nodeSonarOrganization: vtex-apps
       cypress: true
