@@ -1,7 +1,7 @@
 {
   "name": "quickorder",
   "scripts": {
-    "test": "exit 0",
+    "test": "vtex-test-tools test",
     "lint": "tsc --noEmit && eslint --ext ts,tsx ."
   },
   "dependencies": {
