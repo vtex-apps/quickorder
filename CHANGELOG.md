@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.9.3] - 2022-07-05
+
+### Fixed
+
+- Fixed checkout simulation error by filtering out sellers unavailable in orderForm's sales channel
+
+### Added
+
+- Added error message when query for SKU info fails in ReviewBlock
+
 ## [3.9.2] - 2022-06-27
 
 ### Added

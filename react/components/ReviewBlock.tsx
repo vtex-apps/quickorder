@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable vtex/prefer-early-return */
 import type { FunctionComponent } from 'react'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
   Table,
   Input,
@@ -10,6 +10,7 @@ import {
   IconInfo,
   Tooltip,
   Dropdown,
+  ToastContext,
 } from 'vtex.styleguide'
 import type { WrappedComponentProps } from 'react-intl'
 import { injectIntl, defineMessages } from 'react-intl'
@@ -128,6 +129,9 @@ const messages = defineMessages({
   ORD031: {
     id: 'store/quickorder.ORD031',
   },
+  cannotGetSkuInfo: {
+    id: 'store/quickorder.cannotGetSkuInfo',
+  },
 })
 
 let orderFormId = ''
@@ -137,9 +141,11 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   hiddenColumns,
   reviewedItems,
   onRefidLoading,
+  backList,
   intl,
 }: any) => {
   const client = useApolloClient()
+  const { showToast } = useContext(ToastContext)
 
   const { data: orderFormData } = useQuery<{
     orderForm
@@ -337,10 +343,18 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       variables: { refids, orderFormId, refIdSellerMap },
     }
 
-    const { data } = await client.query(query)
+    try {
+      const { data } = await client.query(query)
 
-    validateRefids(data, reviewed)
-    onRefidLoading(false)
+      validateRefids(data, reviewed)
+      onRefidLoading(false)
+    } catch (err) {
+      showToast({
+        message: intl.formatMessage(messages.cannotGetSkuInfo),
+      })
+
+      backList()
+    }
   }
 
   const convertRefIds = (items: any) => {
@@ -370,7 +384,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
   useEffect(() => {
     checkValidatedItems()
-  })
+  }, [reviewItems])
 
   const removeLine = (i: number) => {
     const items: [any] = reviewItems

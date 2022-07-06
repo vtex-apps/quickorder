@@ -35,6 +35,7 @@
   "store/quickorder.available": "متاحة",
   "store/quickorder.back": "عودة",
   "store/quickorder.cannotBeDelivered": "لا يمكن تسليمه",
+  "store/quickorder.cannotGetSkuInfo": "تعذر الحصول على معلومات وحدة SKU",
   "store/quickorder.category.addButton": "إضافة عناصر إلى العربة",
   "store/quickorder.category.loading": "جاري التحميل...",
   "store/quickorder.category.noneSelection": "أدخل بعض الكمية على العناصر",
