@@ -14,12 +14,11 @@ jobs:
     with:
       nodeLint: true
       nodeTest: true
-      reactTest: true
+      reactTest: false
       nodeSonar: true
-      dotnetSonar: true
       nodeSonarProjectKey: vtex-apps_quickorder
       nodeSonarOrganization: vtex-apps
-      cypress: true
+      cypress: false
     secrets:
       githubToken: ${{ secrets.GITHUB_TOKEN }}
       sonarToken: ${{ secrets.SONAR_TOKEN }}
