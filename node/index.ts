@@ -6,19 +6,23 @@ import { LRUCache, Service } from '@vtex/api'
 import { Clients } from './clients'
 import { resolvers } from './resolvers'
 
-const TWO_SECONDS_MS = 2 * 1000
-const THREE_SECONDS_MS = 3 * 1000
-const SIX_SECONDS_MS = 6 * 1000
+let TWO_SECONDS_MS = 2 * 1000
+let THREE_SECONDS_MS = 3 * 1000
+let SIX_SECONDS_MS = 6 * 1000
 
 // Segments are small and immutable.
-// const MAX_SEGMENT_CACHE = 10000
-// const segmentCache = new LRUCache<string, Cached>({ max: MAX_SEGMENT_CACHE })
+const MAX_SEGMENT_CACHE = 10000
+const segmentCache = new LRUCache<string, Cached>({ max: MAX_SEGMENT_CACHE })
 const searchCache = new LRUCache<string, Cached>({ max: 3000 })
 const messagesCache = new LRUCache<string, Cached>({ max: 3000 })
 
-// metrics.trackCache('segment', segmentCache)
+metrics.trackCache('segment', segmentCache)
 metrics.trackCache('search', searchCache)
 metrics.trackCache('messages', messagesCache)
+
+TWO_SECONDS_MS = 3 * 1000
+THREE_SECONDS_MS = 4 * 1000
+SIX_SECONDS_MS = 5 * 1000
 
 export default new Service<Clients, RecorderState, CustomContext>({
   clients: {
