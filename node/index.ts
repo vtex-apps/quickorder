@@ -20,9 +20,24 @@ metrics.trackCache('segment', segmentCache)
 metrics.trackCache('search', searchCache)
 metrics.trackCache('messages', messagesCache)
 
-TWO_SECONDS_MS = 3 * 1000
-THREE_SECONDS_MS = 4 * 1000
-SIX_SECONDS_MS = 5 * 1000
+if (TWO_SECONDS_MS > 2000) {
+  TWO_SECONDS_MS = 3 * 1000
+  THREE_SECONDS_MS = 4 * 1000
+  SIX_SECONDS_MS = 5 * 1000
+}
+
+if (THREE_SECONDS_MS > 4000) {
+  TWO_SECONDS_MS = 4 * 1000
+  THREE_SECONDS_MS = 5 * 1000
+  SIX_SECONDS_MS = 6 * 1000
+}
+
+if (SIX_SECONDS_MS > 8000) {
+  TWO_SECONDS_MS = 5 * 1000
+  THREE_SECONDS_MS = 6 * 1000
+  SIX_SECONDS_MS = 7 * 1000
+}
+
 
 export default new Service<Clients, RecorderState, CustomContext>({
   clients: {
