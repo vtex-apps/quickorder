@@ -253,6 +253,11 @@ jest.mock('@vtex/api', () => {
     IOClients: jest.fn(() => ({
       getOrSet: jest.fn(),
     })),
+    Segment: jest.fn((): any => ({
+      getSegment: jest.fn(() => ({
+        channel: jest.fn(),
+      })),
+    })),
     LRUCache: jest.fn(),
     RecorderState: jest.fn(),
     UserInputError: jest.fn(),
