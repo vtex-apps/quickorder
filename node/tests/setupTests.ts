@@ -255,7 +255,7 @@ jest.mock('@vtex/api', () => {
     })),
     Segment: jest.fn((): any => ({
       getSegment: jest.fn(() => ({
-        channel: jest.fn(),
+        channel: '1',
       })),
     })),
     LRUCache: jest.fn(),
