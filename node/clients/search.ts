@@ -5,6 +5,7 @@ interface RefIdArgs {
   refids: any
   orderFormId: string
   refIdSellerMap: RefIdSellerMap
+  salesChannel: string
 }
 interface Items {
   id: string
@@ -14,6 +15,13 @@ interface Items {
 
 interface RefIdSellerMap {
   [key: string]: [string]
+}
+
+interface SimulateArgs {
+  refids: [Items]
+  orderForm: any
+  refIdSellerMap: RefIdSellerMap
+  salesChannel: string
 }
 
 export class Search extends JanusClient {
@@ -40,6 +48,7 @@ export class Search extends JanusClient {
     refids,
     orderFormId,
     refIdSellerMap,
+    salesChannel,
   }: RefIdArgs): Promise<any> => {
     this.sellersList = await this.sellers()
 
@@ -58,11 +67,11 @@ export class Search extends JanusClient {
 
     if (res.status === 200) {
       const orderForm = await this.getOrderForm(orderFormId)
-      const { salesChannel } = orderForm
+      const sc = salesChannel ?? orderForm.salesChannel
 
       // filter out sellers that aren't available in current sales channel
       this.sellersList = this.sellersList?.filter(seller => {
-        return seller.availableSalesChannels.includes(Number(salesChannel))
+        return seller.availableSalesChannels.includes(Number(sc))
       })
 
       const refs = Object.getOwnPropertyNames(res.data)
@@ -91,11 +100,12 @@ export class Search extends JanusClient {
           : null
       })
 
-      const { items }: any = await this.simulate(
-        result,
+      const { items }: any = await this.simulate({
+        refids: result,
         orderForm,
-        refIdSellerMap
-      )
+        refIdSellerMap,
+        salesChannel: sc,
+      })
 
       if (!items.length) return items
 
@@ -156,13 +166,14 @@ export class Search extends JanusClient {
     })
   }
 
-  private simulate = async (
-    refids: [Items],
-    orderForm: any,
-    refIdSellerMap: RefIdSellerMap
-  ) => {
+  private simulate = async ({
+    refids,
+    orderForm,
+    refIdSellerMap,
+    salesChannel,
+  }: SimulateArgs) => {
     const {
-      salesChannel,
+      salesChannel: orderFormSC,
       storePreferencesData: { countryCode },
       shippingData,
     } = orderForm
@@ -184,7 +195,9 @@ export class Search extends JanusClient {
       })
 
     return this.http.post(
-      `/api/checkout/pub/orderForms/simulation?sc=${salesChannel}`,
+      `/api/checkout/pub/orderForms/simulation?sc=${
+        salesChannel ?? orderFormSC
+      }`,
       {
         items: simulateItems,
         country: countryCode,
