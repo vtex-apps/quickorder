@@ -1,4 +1,5 @@
 import type { IOContext } from '@vtex/api'
+import { Segment } from '@vtex/api'
 
 import Service from '../index'
 import { Search } from '../clients/search'
@@ -13,7 +14,10 @@ const vtexContext = () => {
   const context = {} as IOContext
   const clients = {
     search: new Search(context),
+    segment: new Segment(context),
   }
+
+  const vtex = {} as IOContext
 
   return {
     context,
@@ -21,6 +25,7 @@ const vtexContext = () => {
     Query,
     resolvers,
     Service,
+    vtex,
   }
 }
 
