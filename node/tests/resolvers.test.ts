@@ -1,7 +1,7 @@
 import vtexContext from './vtexContext'
 
 describe('Graphql resolvers', () => {
-  const { Query, clients } = vtexContext()
+  const { Query, clients, vtex } = vtexContext()
 
   it('[GraphQL] skuFromRefIds', async () => {
     const data = await Query.skuFromRefIds(
@@ -13,6 +13,7 @@ describe('Graphql resolvers', () => {
       },
       {
         clients,
+        vtex,
       }
     )
 

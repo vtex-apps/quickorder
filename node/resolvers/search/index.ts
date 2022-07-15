@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { UserInputError } from '@vtex/api'
+import atob from 'atob'
 
 import { resolvers as refidsResolvers } from './refids'
 
@@ -15,7 +16,8 @@ export const queries = {
     ctx: Context
   ): Promise<any> => {
     const {
-      clients: { search },
+      clients: { search, segment },
+      vtex: { segmentToken },
     } = ctx
 
     if (!args.refids) {
@@ -26,6 +28,9 @@ export const queries = {
       refids: args.refids,
       orderFormId: args.orderFormId,
       refIdSellerMap: args.refIdSellerMap,
+      salesChannel: segmentToken
+        ? JSON.parse(atob(segmentToken)).channel
+        : (await segment.getSegment()).channel,
     })
 
     return {

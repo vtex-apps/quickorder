@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Get sales channel from segment instead of orderForm
+
 ## [3.9.3] - 2022-07-05
 
 ### Fixed
