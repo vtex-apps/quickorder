@@ -182,14 +182,16 @@ const getSkuSellerInfo = (simulationResults: any, result: any) => {
           return null
         }
 
-        const currSeller = simulationResults[item.sku].sellers.filter(
+        const currSeller = simulationResults[item.sku].sellers.find(
           (s: any) => s.seller === seller.id
         )
 
+        const { availability = '', unitMultiplier = 1 } = currSeller ?? {}
+
         return {
           ...seller,
-          availability: currSeller.length ? currSeller[0].availability : '',
-          unitMultiplier: currSeller.length ? currSeller[0].unitMultiplier : 1,
+          availability,
+          unitMultiplier,
         }
       })
 
