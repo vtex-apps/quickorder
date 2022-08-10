@@ -8,7 +8,7 @@ export const fieldResolvers = {
   ...refidsResolvers,
 }
 
-const getSellers = async (context: any, salesChannel?: string) => {
+const getSellers = async (context: Context, salesChannel?: string) => {
   const {
     clients: { search },
     vtex: { segment, logger },
@@ -49,7 +49,7 @@ const getSellers = async (context: any, salesChannel?: string) => {
 
 const checkoutSimulation = async (
   { refids, orderForm, refIdSellerMap, salesChannel }: SimulateArgs,
-  context: any
+  context: Context
 ) => {
   const {
     clients: { search },
@@ -102,6 +102,105 @@ const getSellerIdNameMap = (sellersList: any) => {
   sellersList.forEach((seller: any) => sellerMap.set(seller.id, seller.name))
 
   return sellerMap
+}
+
+const getSkuSellers = async (
+  context: Context,
+  result: any,
+  sellersList: any
+) => {
+  const {
+    clients: { search },
+    vtex: { logger },
+  } = context
+
+  const sellerIdNameMap = getSellerIdNameMap(sellersList)
+  const sellersIds = new Set(sellersList?.map((seller: any) => seller.id))
+
+  result = await Promise.all(
+    result.map(async (item: any) => {
+      const { sku, refid } = item
+
+      if (sku === null) {
+        return {
+          sku,
+          refid,
+          sellers: null,
+        }
+      }
+
+      return search
+        .sellerBySku(sku)
+        .then((res: any) => {
+          const validSellers = res.data?.SkuSellers
+            ? res.data.SkuSellers.filter((seller: any) => {
+                // check if seller is active and available in current sales channel
+                return (
+                  seller.IsActive === true && sellersIds.has(seller.SellerId)
+                )
+              }).map(({ SellerId }: any) => {
+                return {
+                  id: SellerId,
+                  name: sellerIdNameMap.get(SellerId),
+                }
+              })
+            : null
+
+          return {
+            sku,
+            refid,
+            sellers: validSellers,
+          }
+        })
+        .catch((error: any) => {
+          logger.error({
+            error,
+            sku,
+            refid,
+            message: 'quickOrder-sellerBySkuError',
+          })
+
+          return {
+            sku,
+            refid,
+            sellers: null,
+          }
+        })
+    })
+  )
+
+  return result
+}
+
+const getSkuSellerInfo = (simulationResults: any, result: any) => {
+  let items: any = []
+
+  if (Object.keys(simulationResults).length !== 0) {
+    items = result.map((item: any) => {
+      const skuInfoBySeller = item.sellers.map((seller: any) => {
+        if (!simulationResults[item.sku]) {
+          return null
+        }
+
+        const currSeller = simulationResults[item.sku].sellers.filter(
+          (s: any) => s.seller === seller.id
+        )
+
+        return {
+          ...seller,
+          availability: currSeller.length ? currSeller[0].availability : '',
+          unitMultiplier: currSeller.length ? currSeller[0].unitMultiplier : 1,
+        }
+      })
+
+      return {
+        ...item,
+        sellers: item.sellers ? skuInfoBySeller : null,
+      }
+    })
+  }
+
+  return items
 }
 
 export const queries = {
@@ -157,61 +256,7 @@ export const queries = {
 
       // gets SKU's sellers
       if (sellersList?.length) {
-        const sellerIdNameMap = getSellerIdNameMap(sellersList)
-        const sellersIds = new Set(sellersList?.map((seller: any) => seller.id))
-
-        result = await Promise.all(
-          result.map(async (item: any) => {
-            const { sku, refid } = item
-
-            if (sku === null) {
-              return {
-                sku,
-                refid,
-                sellers: null,
-              }
-            }
-
-            return search
-              .sellerBySku(sku)
-              .then((res: any) => {
-                const validSellers = res.data?.SkuSellers
-                  ? res.data.SkuSellers.filter((seller: any) => {
-                      // check if seller is active and available in current sales channel
-                      return (
-                        seller.IsActive === true &&
-                        sellersIds.has(seller.SellerId)
-                      )
-                    }).map(({ SellerId }: any) => {
-                      return {
-                        id: SellerId,
-                        name: sellerIdNameMap.get(SellerId),
-                      }
-                    })
-                  : null
-
-                return {
-                  sku,
-                  refid,
-                  sellers: validSellers,
-                }
-              })
-              .catch((error: any) => {
-                logger.error({
-                  error,
-                  sku,
-                  refid,
-                  message: 'quickOrder-sellerBySkuError',
-                })
-
-                return {
-                  sku,
-                  refid,
-                  sellers: null,
-                }
-              })
-          })
-        )
+        result = await getSkuSellers(ctx, result, sellersList)
       }
 
       // update refIdSellerMap to include list of sellers by SKU
@@ -230,35 +275,8 @@ export const queries = {
         },
         ctx
       ).then(simulationResults => {
-        if (Object.keys(simulationResults).length !== 0) {
-          items = result.map((item: any) => {
-            // include SKU's availability and unit multiplier info in given seller
-            const skuInfoBySeller = item.sellers.map((seller: any) => {
-              if (!simulationResults[item.sku]) {
-                return null
-              }
-
-              const currSeller = simulationResults[item.sku].sellers.filter(
-                (s: any) => s.seller === seller.id
-              )
-
-              return {
-                ...seller,
-                availability: currSeller.length
-                  ? currSeller[0].availability
-                  : '',
-                unitMultiplier: currSeller.length
-                  ? currSeller[0].unitMultiplier
-                  : 1,
-              }
-            })
-
-            return {
-              ...item,
-              sellers: item.sellers ? skuInfoBySeller : null,
-            }
-          })
-        }
+        // include SKU's availability and unit multiplier info in given seller
+        items = getSkuSellerInfo(simulationResults, result)
       })
     } catch (error) {
       logger.error({

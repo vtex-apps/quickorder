@@ -85,7 +85,8 @@ export class Search extends JanusClient {
   }
 
   public sellers = async (salesChannel?: string): Promise<any> => {
-    const params = `?${salesChannel ? `sc=${salesChannel}` : ''}`
+    const sc = salesChannel ? `sc=${salesChannel}` : ''
+    const params = `?${sc}`
     const url = `/api/seller-register/pvt/sellers${params}`
 
     return this.http.getRaw(url, {
