@@ -30,6 +30,7 @@ describe('Graphql resolvers', () => {
       },
       {
         clients,
+        vtex,
       }
     )
 

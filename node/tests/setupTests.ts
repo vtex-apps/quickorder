@@ -207,6 +207,11 @@ jest.mock('@vtex/api', () => {
 
   return {
     IOContext: jest.fn(),
+    CustomIOContext: jest.fn((): any => ({
+      segment: jest.fn(() => ({
+        channel: '1',
+      })),
+    })),
     MetricsAccumulator: jest.fn((): any => ({
       trackCache: jest.fn(),
     })),
@@ -252,11 +257,6 @@ jest.mock('@vtex/api', () => {
     })),
     IOClients: jest.fn(() => ({
       getOrSet: jest.fn(),
-    })),
-    Segment: jest.fn((): any => ({
-      getSegment: jest.fn(() => ({
-        channel: '1',
-      })),
     })),
     LRUCache: jest.fn(),
     RecorderState: jest.fn(),

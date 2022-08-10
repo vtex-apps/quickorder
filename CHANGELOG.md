@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Error logging
+- GraphQL directive withSegment
+
+### Changed
+
+- TextArea description from `Sku's Code` to `SKU Reference ID`
+
 ## [3.9.4] - 2022-07-15
 
 ### Fixed

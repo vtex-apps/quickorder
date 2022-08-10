@@ -1,12 +1,107 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { UserInputError } from '@vtex/api'
-import atob from 'atob'
 
 import { resolvers as refidsResolvers } from './refids'
 
 export const fieldResolvers = {
   ...refidsResolvers,
+}
+
+const getSellers = async (context: any, salesChannel?: string) => {
+  const {
+    clients: { search },
+    vtex: { segment, logger },
+  } = context
+
+  let items: any = []
+
+  try {
+    const { data } = await search.sellers(salesChannel ?? segment?.channel)
+
+    items = data.items
+      .filter((item: any) => {
+        return item.isActive === true
+      })
+      .map(({ id, name, availableSalesChannels }: any) => {
+        const availableSalesChannelsIds = availableSalesChannels.map(
+          (sc: { id: number }) => sc.id
+        )
+
+        return {
+          id,
+          name,
+          availableSalesChannels: availableSalesChannelsIds,
+        }
+      })
+  } catch (error) {
+    logger.error({
+      error,
+      message: 'quickOrder-sellersError',
+    })
+  }
+
+  return {
+    cacheId: 'sellers',
+    items,
+  }
+}
+
+const checkoutSimulation = async (
+  { refids, orderForm, refIdSellerMap, salesChannel }: SimulateArgs,
+  context: any
+) => {
+  const {
+    clients: { search },
+    vtex: { logger },
+  } = context
+
+  let resItems: any = {}
+
+  try {
+    const { items: simulatedItems }: any = await search.simulate({
+      refids,
+      orderForm,
+      refIdSellerMap,
+      salesChannel,
+    })
+
+    if (!simulatedItems.length) {
+      return resItems
+    }
+
+    resItems = simulatedItems.reduce((acc: any, item: any) => {
+      const sellerInfo = {
+        seller: item.seller,
+        availability: item.availability ?? '',
+        unitMultiplier: item.unitMultiplier ?? 1,
+      }
+
+      return {
+        ...acc,
+        [item.id]: {
+          sellers: acc[item.id]?.sellers?.length
+            ? acc[item.id].sellers.concat(sellerInfo)
+            : [sellerInfo],
+        },
+      }
+    }, {})
+  } catch (error) {
+    logger.error({
+      error,
+      message: 'quickOrder-simulateError',
+    })
+  }
+
+  return resItems
+}
+
+const getSellerIdNameMap = (sellersList: any) => {
+  const sellerMap = new Map()
+
+  sellersList.forEach((seller: any) => sellerMap.set(seller.id, seller.name))
+
+  return sellerMap
 }
 
 export const queries = {
@@ -16,38 +111,168 @@ export const queries = {
     ctx: Context
   ): Promise<any> => {
     const {
-      clients: { search, segment },
-      vtex: { segmentToken },
+      clients: { search },
+      vtex: { segment, logger },
     } = ctx
 
-    if (!args.refids) {
+    const { refids, orderFormId, refIdSellerMap } = args
+
+    if (!refids) {
       throw new UserInputError('No refids provided')
     }
 
-    const items = await search.skuFromRefIds({
-      refids: args.refids,
-      orderFormId: args.orderFormId,
-      refIdSellerMap: args.refIdSellerMap,
-      salesChannel: segmentToken
-        ? JSON.parse(atob(segmentToken)).channel
-        : (await segment.getSegment()).channel,
-    })
+    let items: any = []
+
+    try {
+      const { data: skuIds } = await search.skuFromRefIds(refids)
+
+      let result: any = []
+      const resultStr: any = {}
+
+      const orderForm = await search
+        .getOrderForm(orderFormId)
+        .catch((error: any) => {
+          logger.error({
+            error,
+            orderFormId,
+            message: 'quickOrder-getOrderFormError',
+          })
+        })
+
+      const currentSC = segment?.channel ?? orderForm.salesChannel
+
+      // filter out sellers that aren't available in current sales channel
+      const { items: sellersList } = await getSellers(ctx, currentSC)
+
+      const refs = Object.getOwnPropertyNames(skuIds)
+
+      refs.forEach(id => {
+        resultStr[id] = {
+          sku: skuIds[id],
+          refid: id,
+          sellers: sellersList,
+        }
+        result.push(resultStr[id])
+      })
+
+      // gets SKU's sellers
+      if (sellersList?.length) {
+        const sellerIdNameMap = getSellerIdNameMap(sellersList)
+        const sellersIds = new Set(sellersList?.map((seller: any) => seller.id))
+
+        result = await Promise.all(
+          result.map(async (item: any) => {
+            const { sku, refid } = item
+
+            if (sku === null) {
+              return {
+                sku,
+                refid,
+                sellers: null,
+              }
+            }
+
+            return search
+              .sellerBySku(sku)
+              .then((res: any) => {
+                const validSellers = res.data?.SkuSellers
+                  ? res.data.SkuSellers.filter((seller: any) => {
+                      // check if seller is active and available in current sales channel
+                      return (
+                        seller.IsActive === true &&
+                        sellersIds.has(seller.SellerId)
+                      )
+                    }).map(({ SellerId }: any) => {
+                      return {
+                        id: SellerId,
+                        name: sellerIdNameMap.get(SellerId),
+                      }
+                    })
+                  : null
+
+                return {
+                  sku,
+                  refid,
+                  sellers: validSellers,
+                }
+              })
+              .catch((error: any) => {
+                logger.error({
+                  error,
+                  sku,
+                  refid,
+                  message: 'quickOrder-sellerBySkuError',
+                })
+
+                return {
+                  sku,
+                  refid,
+                  sellers: null,
+                }
+              })
+          })
+        )
+      }
+
+      // update refIdSellerMap to include list of sellers by SKU
+      result.forEach((item: any) => {
+        refIdSellerMap[item.refid] = item.sellers
+          ? item.sellers.map((seller: any) => seller.id)
+          : null
+      })
+
+      await checkoutSimulation(
+        {
+          refids: result,
+          orderForm,
+          refIdSellerMap,
+          salesChannel: currentSC,
+        },
+        ctx
+      ).then(simulationResults => {
+        if (Object.keys(simulationResults).length !== 0) {
+          items = result.map((item: any) => {
+            // include SKU's availability and unit multiplier info in given seller
+            const skuInfoBySeller = item.sellers.map((seller: any) => {
+              if (!simulationResults[item.sku]) {
+                return null
+              }
+
+              const currSeller = simulationResults[item.sku].sellers.filter(
+                (s: any) => s.seller === seller.id
+              )
+
+              return {
+                ...seller,
+                availability: currSeller.length
+                  ? currSeller[0].availability
+                  : '',
+                unitMultiplier: currSeller.length
+                  ? currSeller[0].unitMultiplier
+                  : 1,
+              }
+            })
+
+            return {
+              ...item,
+              sellers: item.sellers ? skuInfoBySeller : null,
+            }
+          })
+        }
+      })
+    } catch (error) {
+      logger.error({
+        error,
+        message: 'quickOrder-skuFromRefIdsError',
+      })
+    }
 
     return {
-      cacheId: args.refids,
+      cacheId: refids,
       items,
     }
   },
   sellers: async (_: any, __: any, ctx: Context): Promise<any> => {
-    const {
-      clients: { search },
-    } = ctx
-
-    const items = await search.sellers()
-
-    return {
-      cacheId: 'sellers',
-      items,
-    }
+    return getSellers(ctx)
   },
 }
