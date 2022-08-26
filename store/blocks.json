@@ -34,7 +34,7 @@
     "props": {
       "componentOnly": false,
       "text": "Copy/Paste Skus",
-      "description": "[Sku's Code],[Quantity]",
+      "description": "[SKU Reference ID],[Quantity]",
       "hiddenColumns": []
     }
   },

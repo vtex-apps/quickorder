@@ -3,6 +3,7 @@ import type {
   ParamsContext,
   RecorderState,
   ServiceContext,
+  SegmentData,
 } from '@vtex/api'
 import { MetricsAccumulator } from '@vtex/api'
 
@@ -19,7 +20,11 @@ declare global {
   interface CustomContext extends ParamsContext {
     cookie: string
     originalPath: string
-    vtex: IOContext
+    vtex: CustomIOContext
+  }
+
+  interface CustomIOContext extends IOContext {
+    segment?: SegmentData
   }
 
   interface Property {
