@@ -57,7 +57,7 @@
   "store/quickorder.validate": "Validar",
   "store/quickorder.withoutPriceFulfillment": "Producto sin precio",
   "store/quickorder.withoutStock": "Sin stock",
-  "store/quickorder.limited": "Item limited",
+  "store/quickorder.limited": "Restricted Item",
   "store/toaster.cart.duplicated": "Elemento duplicado",
   "store/toaster.cart.error": "Error al agregar productos al carrito",
   "store/toaster.cart.seeCart": "Ver el carrito",
