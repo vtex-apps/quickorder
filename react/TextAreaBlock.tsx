@@ -3,7 +3,7 @@
 import type { FunctionComponent } from 'react'
 import React, { useState, useContext } from 'react'
 import type { WrappedComponentProps } from 'react-intl'
-import { FormattedMessage, defineMessages, injectIntl } from 'react-intl'
+import { FormattedMessage, injectIntl } from 'react-intl'
 import { Button, Textarea, ToastContext, Spinner } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
 import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
@@ -13,27 +13,9 @@ import { useMutation } from 'react-apollo'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
 
+import { categoryMessages as messages } from './utils/messages'
 import ReviewBlock from './components/ReviewBlock'
 import { ParseText, GetText } from './utils'
-
-const messages = defineMessages({
-  success: {
-    id: 'store/toaster.cart.success',
-    defaultMessage: '',
-    label: '',
-  },
-  duplicate: {
-    id: 'store/toaster.cart.duplicated',
-    defaultMessage: '',
-    label: '',
-  },
-  error: { id: 'store/toaster.cart.error', defaultMessage: '', label: '' },
-  seeCart: {
-    id: 'store/toaster.cart.seeCart',
-    defaultMessage: '',
-    label: '',
-  },
-})
 
 interface ItemType {
   id: string

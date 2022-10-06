@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import type { FunctionComponent } from 'react'
 import React, { useState, useContext } from 'react'
 import type { WrappedComponentProps } from 'react-intl'
-import { FormattedMessage, defineMessages, injectIntl } from 'react-intl'
+import { FormattedMessage, injectIntl } from 'react-intl'
 import {
   Collapsible,
   Input,
@@ -21,37 +21,9 @@ import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import { useCssHandles } from 'vtex.css-handles'
 import { graphql, useApolloClient, useMutation } from 'react-apollo'
 
+import { categoryMessages as messages } from './utils/messages'
 import getCategories from './queries/categoriesQuery.gql'
 import SearchByCategory from './queries/productsByCategory.gql'
-
-const messages = defineMessages({
-  success: {
-    id: 'store/toaster.cart.success',
-    defaultMessage: '',
-    label: '',
-  },
-  duplicate: {
-    id: 'store/toaster.cart.duplicated',
-    defaultMessage: '',
-    label: '',
-  },
-  noneSelection: {
-    id: 'store/quickorder.category.noneSelection',
-    defaultMessage: '',
-    label: '',
-  },
-  multiplier: {
-    id: 'store/quickorder.category.multiplier',
-    defaultMessage: '',
-    label: '',
-  },
-  error: { id: 'store/toaster.cart.error', defaultMessage: '', label: '' },
-  seeCart: {
-    id: 'store/toaster.cart.seeCart',
-    defaultMessage: '',
-    label: '',
-  },
-})
 
 const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
   text,

@@ -57,6 +57,7 @@
   "store/quickorder.validate": "تأكيد التحقق",
   "store/quickorder.withoutPriceFulfillment": "المنتج بدون سعر",
   "store/quickorder.withoutStock": "بدون مخزون",
+  "store/quickorder.limited": "Restricted Item",
   "store/toaster.cart.duplicated": "عنصر مكرر",
   "store/toaster.cart.error": "خطأ في إضافة المنتجات إلى عربة التسوق",
   "store/toaster.cart.seeCart": "مشاهدة العربة",
