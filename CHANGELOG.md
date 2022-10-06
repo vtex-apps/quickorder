@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Added collection restriction for both text area and upload area
+- Added message util in react admin
+
 ## [3.10.0] - 2022-08-26
 
 ### Added

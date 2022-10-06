@@ -3,7 +3,7 @@
 import type { FunctionComponent } from 'react'
 import React, { useState, useContext } from 'react'
 import type { WrappedComponentProps } from 'react-intl'
-import { FormattedMessage, injectIntl, defineMessages } from 'react-intl'
+import { FormattedMessage, injectIntl } from 'react-intl'
 import { Button, Tag, Input, ToastContext, IconClear } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
 import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
@@ -14,38 +14,10 @@ import PropTypes from 'prop-types'
 import { useCssHandles } from 'vtex.css-handles'
 import { useApolloClient, useMutation } from 'react-apollo'
 
+import { autocompleteMessages as messages } from './utils/messages'
 import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
 import productQuery from './queries/product.gql'
 import './global.css'
-
-const messages = defineMessages({
-  success: {
-    id: 'store/toaster.cart.success',
-    defaultMessage: '',
-    label: '',
-  },
-  duplicate: {
-    id: 'store/toaster.cart.duplicated',
-    defaultMessage: '',
-    label: '',
-  },
-  selectSku: {
-    id: 'store/quickorder.autocomplete.selectSku',
-    defaultMessage: '',
-    label: '',
-  },
-  multiplier: {
-    id: 'store/quickorder.category.multiplier',
-    defaultMessage: '',
-    label: '',
-  },
-  error: { id: 'store/toaster.cart.error', defaultMessage: '', label: '' },
-  seeCart: {
-    id: 'store/toaster.cart.seeCart',
-    defaultMessage: '',
-    label: '',
-  },
-})
 
 const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   text,
