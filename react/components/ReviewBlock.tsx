@@ -179,7 +179,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
         /* order of precedence for errors
          * 1) Item not found
-         * 2) Item Availability
+         * 2) Item availability
          * 3) Item restriction
          */
         const notfound = refIdNotFound.find((curr: any) => {
@@ -230,7 +230,9 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
           ? item.seller
           : item.sku && mappedRefId[item.sku]?.sellers?.length
           ? mappedRefId[item.sku]?.sellers.find(
-              (seller: any) => seller.availability === 'available'
+              (seller: any) =>
+                seller.availability === 'available' ||
+                seller.availability === 'partiallyAvailable'
             )?.id ?? ''
           : ''
 
@@ -511,11 +513,6 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
           id: 'store/quickorder.review.label.seller',
         }),
         cellRenderer: ({ rowData }: any) => {
-          // select the first seller if no seller selected
-          if (rowData?.sellers?.length && rowData?.seller === '') {
-            updateLineSeller(rowData.index, rowData.sellers[0].id)
-          }
-
           if (rowData?.sellers?.length > 1) {
             return (
               <div>
