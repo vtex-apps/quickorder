@@ -57,12 +57,11 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       data.map(async (item: any) => {
         const res: any = await checkRestriction(item.refid)
 
-        if (
-          res?.data?.productSuggestions?.products[0]?.items[0]?.itemId ===
-          item.sku
-        ) {
-          return item
-        }
+        const foundSku = res?.data?.productSuggestions?.products[0]?.items.find(
+          (suggestedItem) => suggestedItem.itemId === item.sku
+        )
+
+        return foundSku ? item : null
       })
     )
   }
@@ -175,8 +174,14 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         })
       }
 
-      const errorMsg = (item: any) => {
+      const errorMsg = (item: any, sellerWithStock: string) => {
         let ret: any = null
+
+        /* order of precedence for errors
+         * 1) Item not found
+         * 2) Item Availability
+         * 3) Item restriction
+         */
         const notfound = refIdNotFound.find((curr: any) => {
           return curr.refid === item.sku && curr.sku === null
         })
@@ -185,38 +190,35 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
           return curr.refid === item.sku && curr.sku !== null
         })
 
+        let selectedSellerHasPartialStock
         const foundHasStock =
           found?.sellers?.length &&
-          found.sellers.filter(
-            (seller: any) =>
+          found.sellers.filter((seller: any) => {
+            if (seller.id === sellerWithStock) {
+              selectedSellerHasPartialStock =
+                seller.availability === 'partiallyAvailable'
+            }
+
+            return (
               seller.availability &&
               (seller.availability === 'available' ||
                 seller.availability === 'partiallyAvailable')
-          ).length
+            )
+          }).length
+
+        const itemRestricted = sellerWithStock
+          ? null
+          : `store/quickorder.limited`
 
         ret = notfound
           ? 'store/quickorder.skuNotFound'
-          : foundHasStock
-          ? null
-          : `store/quickorder.withoutStock`
+          : (foundHasStock
+              ? selectedSellerHasPartialStock
+                ? 'store/quickorder.partiallyAvailable'
+                : null
+              : `store/quickorder.withoutStock`) ?? itemRestricted
 
         return ret
-      }
-
-      const partiallyAvailableErrorMsg = (currSeller: string, item: any) => {
-        const found = refIdFound.find((curr: any) => {
-          return curr.refid === item.sku && curr.sku !== null
-        })
-
-        const hasPartialStock =
-          found?.sellers?.length &&
-          found.sellers.find(
-            (seller: any) =>
-              seller.id === currSeller &&
-              seller.availability === 'partiallyAvailable'
-          )
-
-        return hasPartialStock ? 'store/quickorder.partiallyAvailable' : null
       }
 
       if (refIdNotFound.length || refNotAvailable.length) {
@@ -256,10 +258,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
             ? sellerUnitMultiplier * item.quantity
             : '',
           availableQuantity: sellerAvailableQuantity ?? item.quantity,
-          error:
-            errorMsg(item) ??
-            partiallyAvailableErrorMsg(sellerWithStock, item) ??
-            (sellerWithStock ? null : `store/quickorder.limited`),
+          error: errorMsg(item, sellerWithStock),
         }
       })
 

@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Run checkout simulation with item quantity input in `TextArea` and `Upload` blocks
+- Check for SKU match in full `items` list from `productSuggestions` query results
 
 ## [3.11.0] - 2022-10-06
 
