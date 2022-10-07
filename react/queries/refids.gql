@@ -2,11 +2,13 @@ query getSkuFromRefIds(
   $refids: [String]
   $orderFormId: String
   $refIdSellerMap: RefIdSellerMap
+  $refIdQuantityMap: RefIdQuantityMap
 ) {
   skuFromRefIds(
     refids: $refids
     orderFormId: $orderFormId
     refIdSellerMap: $refIdSellerMap
+    refIdQuantityMap: $refIdQuantityMap
   ) {
     items {
       sku
@@ -16,6 +18,7 @@ query getSkuFromRefIds(
         name
         availability
         unitMultiplier
+        availableQuantity
       }
     }
   }

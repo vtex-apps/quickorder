@@ -58,6 +58,7 @@
   "store/quickorder.withoutPriceFulfillment": "Product without price",
   "store/quickorder.withoutStock": "Without stock",
   "store/quickorder.limited": "Restricted Item",
+  "store/quickorder.partiallyAvailable": "Max quantity is {quantity}. Only {totalQuantity} total units available.",
   "store/toaster.cart.duplicated": "Item duplicated",
   "store/toaster.cart.error": "Error adding products to the cart",
   "store/toaster.cart.seeCart": "See cart",

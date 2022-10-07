@@ -56,6 +56,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     return Promise.all(
       data.map(async (item: any) => {
         const res: any = await checkRestriction(item.refid)
+
         if (
           res?.data?.productSuggestions?.products[0]?.items[0]?.itemId ===
           item.sku
@@ -87,6 +88,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     'store/quickorder.available': messages.available,
     'store/quickorder.invalidPattern': messages.invalidPattern,
     'store/quickorder.skuNotFound': messages.skuNotFound,
+    'store/quickorder.partiallyAvailable': messages.partiallyAvailable,
     'store/quickorder.withoutStock': messages.withoutStock,
     'store/quickorder.withoutPriceFulfillment':
       messages.withoutPriceFulfillment,
@@ -129,7 +131,9 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     refidData?.skuFromRefIds.items.forEach((item: any) => {
       if (!item.sellers) return
       item.sellers = item.sellers.filter(
-        (seller: any) => seller.availability === 'available'
+        (seller: any) =>
+          seller.availability === 'available' ||
+          seller.availability === 'partiallyAvailable'
       )
     })
 
@@ -165,6 +169,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
             return item != null
           })
         )
+
         restrictedData.forEach((item: any) => {
           mappedRefId[item.refid] = item
         })
@@ -184,7 +189,9 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
           found?.sellers?.length &&
           found.sellers.filter(
             (seller: any) =>
-              seller.availability && seller.availability === 'available'
+              seller.availability &&
+              (seller.availability === 'available' ||
+                seller.availability === 'partiallyAvailable')
           ).length
 
         ret = notfound
@@ -194,6 +201,22 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
           : `store/quickorder.withoutStock`
 
         return ret
+      }
+
+      const partiallyAvailableErrorMsg = (currSeller: string, item: any) => {
+        const found = refIdFound.find((curr: any) => {
+          return curr.refid === item.sku && curr.sku !== null
+        })
+
+        const hasPartialStock =
+          found?.sellers?.length &&
+          found.sellers.find(
+            (seller: any) =>
+              seller.id === currSeller &&
+              seller.availability === 'partiallyAvailable'
+          )
+
+        return hasPartialStock ? 'store/quickorder.partiallyAvailable' : null
       }
 
       if (refIdNotFound.length || refNotAvailable.length) {
@@ -216,6 +239,13 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
               )?.unitMultiplier ?? '1'
             : '1'
 
+        const sellerAvailableQuantity =
+          item.sku && mappedRefId[item.sku]?.sellers?.length
+            ? mappedRefId[item.sku]?.sellers.find(
+                (seller: any) => seller.id === sellerWithStock
+              )?.availableQuantity
+            : null
+
         return {
           ...item,
           sellers: item.sku ? mappedRefId[item.sku]?.sellers : [],
@@ -225,8 +255,10 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
           totalQuantity: sellerUnitMultiplier
             ? sellerUnitMultiplier * item.quantity
             : '',
+          availableQuantity: sellerAvailableQuantity ?? item.quantity,
           error:
             errorMsg(item) ??
+            partiallyAvailableErrorMsg(sellerWithStock, item) ??
             (sellerWithStock ? null : `store/quickorder.limited`),
         }
       })
@@ -262,9 +294,16 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     onRefidLoading(true)
     const refids = _refids.length ? Array.from(new Set(_refids)) : []
 
+    const refIdQuantityMap = reviewed.reduce((prev, item) => {
+      return {
+        ...prev,
+        [item.sku]: item.quantity,
+      }
+    }, {})
+
     const query = {
       query: getRefIdTranslation,
-      variables: { refids, orderFormId, refIdSellerMap },
+      variables: { refids, orderFormId, refIdSellerMap, refIdQuantityMap },
     }
 
     try {
@@ -473,6 +512,11 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
           id: 'store/quickorder.review.label.seller',
         }),
         cellRenderer: ({ rowData }: any) => {
+          // select the first seller if no seller selected
+          if (rowData?.sellers?.length && rowData?.seller === '') {
+            updateLineSeller(rowData.index, rowData.sellers[0].id)
+          }
+
           if (rowData?.sellers?.length > 1) {
             return (
               <div>
@@ -506,9 +550,15 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         width: 75,
         cellRenderer: ({ cellData, rowData }: any) => {
           if (rowData.error) {
-            const text = intl.formatMessage(
-              errorMessage[cellData || 'store/quickorder.valid']
-            )
+            const errMsg = errorMessage[cellData || 'store/quickorder.valid']
+            const text =
+              errMsg === messages.partiallyAvailable
+                ? intl.formatMessage(errMsg, {
+                    quantity: rowData.availableQuantity,
+                    totalQuantity:
+                      rowData.availableQuantity * rowData.unitMultiplier,
+                  })
+                : intl.formatMessage(errMsg)
 
             return (
               <span className="pa3 br2 dib mr5 mv0">
