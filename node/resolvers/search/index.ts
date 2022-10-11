@@ -190,8 +190,12 @@ const getSkuSellerInfo = (simulationResults: any, result: any) => {
           (s: any) => s.seller === seller.id
         )
 
-        const { availability = '', unitMultiplier = 1 } = currSeller ?? {}
-        const isPartiallyAvailable = currSeller.quantity < item.quantity
+        const {
+          availability = '',
+          unitMultiplier = 1,
+          quantity: availableQuantity = undefined,
+        } = currSeller ?? {}
+        const isPartiallyAvailable = availableQuantity < item.quantity
 
         return {
           ...seller,
@@ -199,7 +203,7 @@ const getSkuSellerInfo = (simulationResults: any, result: any) => {
             ? 'partiallyAvailable'
             : availability,
           unitMultiplier,
-          availableQuantity: currSeller.quantity,
+          availableQuantity,
         }
       })
 
