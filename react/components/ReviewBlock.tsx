@@ -210,13 +210,17 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
           ? null
           : `store/quickorder.limited`
 
+        const partialStockError = selectedSellerHasPartialStock
+          ? 'store/quickorder.partiallyAvailable'
+          : null
+
+        const availabilityError = foundHasStock
+          ? partialStockError
+          : `store/quickorder.withoutStock`
+
         ret = notfound
           ? 'store/quickorder.skuNotFound'
-          : (foundHasStock
-              ? selectedSellerHasPartialStock
-                ? 'store/quickorder.partiallyAvailable'
-                : null
-              : `store/quickorder.withoutStock`) ?? itemRestricted
+          : availabilityError ?? itemRestricted
 
         return ret
       }

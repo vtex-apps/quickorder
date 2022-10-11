@@ -9,7 +9,7 @@ query getSkuFromRefIds(
     orderFormId: $orderFormId
     refIdSellerMap: $refIdSellerMap
     refIdQuantityMap: $refIdQuantityMap
-  ) {
+  ) @context(provider: "vtex.quickorder") {
     items {
       sku
       refid
