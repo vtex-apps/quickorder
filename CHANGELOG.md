@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.12.0] - 2022-10-12
+
 ### Added
 
 - Partial availability error message in `ReviewBlock` when full item quantity entered is not available in selected seller
