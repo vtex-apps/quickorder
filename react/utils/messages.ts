@@ -19,6 +19,9 @@ export const reviewMessages = defineMessages({
   skuNotFound: {
     id: `${storePrefix}skuNotFound`,
   },
+  partiallyAvailable: {
+    id: `${storePrefix}partiallyAvailable`,
+  },
   withoutPriceFulfillment: {
     id: `${storePrefix}withoutPriceFulfillment`,
   },

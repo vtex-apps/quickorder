@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Partial availability error message in `ReviewBlock` when full item quantity entered is not available in selected seller
+
+### Changed
+
+- Run checkout simulation with item quantity input in `TextArea` and `Upload` blocks
+- Check for SKU match in full `items` list from `productSuggestions` query results
+
 ## [3.11.0] - 2022-10-06
 
 ### Added

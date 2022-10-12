@@ -10,6 +10,7 @@ describe('Graphql resolvers', () => {
         refids: true,
         orderFormId: '',
         refIdSellerMap: {},
+        refIdQuantityMap: {},
       },
       {
         clients,
