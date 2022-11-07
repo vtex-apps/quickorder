@@ -6045,7 +6045,7 @@ static-extend@^0.1.1:
     define-property "^0.2.5"
     object-copy "^0.1.0"
 
-"stats-lite@github:vtex/node-stats-lite#dist":
+stats-lite@vtex/node-stats-lite#dist:
   version "2.2.0"
   resolved "https://codeload.github.com/vtex/node-stats-lite/tar.gz/1b0d39cc41ef7aaecfd541191f877887a2044797"
   dependencies:
@@ -6614,7 +6614,7 @@ verror@1.10.0:
 
 "vtex.quickorder@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.quickorder@3.12.0/public/@types/vtex.quickorder":
   version "3.12.0"
-  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.quickorder@3.12.0/public/@types/vtex.quickorder#0993957c1e8440d7126b5b6f401d4f5e632569b1"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.quickorder@3.12.0/public/@types/vtex.quickorder#d1bcb2e31c0ba6909fad49dbfc2174b527d27087"
 
 "vtex.render-runtime@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@7.45.0/public/@types/vtex.render-runtime":
   version "7.45.0"
