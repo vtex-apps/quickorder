@@ -117,7 +117,7 @@ const UploadBlock: FunctionComponent<
     if (items) {
       const show =
         items.filter((item: any) => {
-          return !item.vtexSku
+          return item.error
         }).length === 0
 
       setState({

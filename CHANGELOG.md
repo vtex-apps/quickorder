@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Text that contains partial availability error will not show Add To Cart button
+
 ### Changed
 
 - GitHub reusable workflow uptaded to v2
