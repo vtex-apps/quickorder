@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.12.1] - 2022-11-08
+
 ### Fixed
 
 - Text that contains partial availability error will not show Add To Cart button
