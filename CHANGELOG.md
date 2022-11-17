@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [3.12.2] - 2022-11-17
-
 ### Fixed
 
 - Map of null of seller's array of a not found item
