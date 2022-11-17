@@ -126,7 +126,7 @@ const getSkuSellers = async (
         return {
           sku,
           refid,
-          sellers: null,
+          sellers: [],
           quantity,
         }
       }
@@ -181,7 +181,7 @@ const getSkuSellerInfo = (simulationResults: any, result: any) => {
 
   if (Object.keys(simulationResults).length !== 0) {
     items = result.map((item: any) => {
-      const skuInfoBySeller = item.sellers.map((seller: any) => {
+      const skuInfoBySeller = item.sellers?.map((seller: any) => {
         if (!simulationResults[item.sku]) {
           return null
         }
@@ -195,6 +195,7 @@ const getSkuSellerInfo = (simulationResults: any, result: any) => {
           unitMultiplier = 1,
           quantity: availableQuantity = undefined,
         } = currSeller ?? {}
+
         const isPartiallyAvailable = availableQuantity < item.quantity
 
         return {
