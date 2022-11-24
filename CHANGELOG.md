@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [3.12.3] - 2022-11-23
 
+### Added
+
+- Added dispatch workflow for cypress
+
 ### Fixed
 
 - Map of null of seller's array of a not found item
