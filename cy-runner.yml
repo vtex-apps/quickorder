@@ -91,6 +91,7 @@ strategy:
     hardTries: 2
     stopOnFail: false
     parallel: true
+    specs:
       - cypress-shared/integration/quick-order/1.4-one_by_one.spec.js
       - cypress-shared/integration/quick-order/1.5-categories.spec.js
  
