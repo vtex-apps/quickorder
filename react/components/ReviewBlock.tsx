@@ -131,8 +131,8 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       if (!item.sellers) return
       item.sellers = item.sellers.filter(
         (seller: any) =>
-          seller.availability === 'available' ||
-          seller.availability === 'partiallyAvailable'
+          seller?.availability === 'available' ||
+          seller?.availability === 'partiallyAvailable'
       )
     })
 

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix ReviewBlock filter to handle null item inside sellers' array
+
 ## [3.12.3] - 2022-11-23
 
 ### Added
