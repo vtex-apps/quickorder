@@ -235,7 +235,8 @@ const UploadBlock: FunctionComponent<
       if (chunk.length) {
         const currentItemsInCart = orderForm.orderForm.items
 
-        const mutationChunk = addToCart({
+        // eslint-disable-next-line no-await-in-loop
+        const mutationChunk = await addToCart({
           variables: {
             items: chunk.map((item: ItemType) => {
               const [existsInCurrentOrder] = currentItemsInCart.filter(

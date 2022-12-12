@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Change add to cart process to synchronous to avoid loss of data in some cases
+
 ## [3.12.3] - 2022-11-23
 
 ### Added
