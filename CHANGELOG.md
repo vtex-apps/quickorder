@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.12.4] - 2022-12-13
+
 ### Changed
 - Fixed XLSX package version
 ## [3.12.3] - 2022-11-23
