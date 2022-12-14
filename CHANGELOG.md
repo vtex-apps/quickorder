@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- [ENGINEERS-875] & [ENGINEERS-876] - Added more cypress tests
+
+### Added
+
 - Added cypress tests
 
 ### Added
