@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+-  Added verify the excel file testcase in cypress
+
 ## [3.12.4] - 2022-12-13
 
 ### Changed
