@@ -4,19 +4,12 @@ import React, { useState, useRef } from 'react'
 import { AutocompleteInput } from 'vtex.styleguide'
 import PropTypes from 'prop-types'
 import type { WrappedComponentProps } from 'react-intl'
-import { injectIntl, defineMessages } from 'react-intl'
+import { injectIntl } from 'react-intl'
 import { useApolloClient } from 'react-apollo'
 import { useCssHandles } from 'vtex.css-handles'
 
+import { autocompleteMessages as messages } from '../utils/messages'
 import autocomplete from '../queries/autocomplete.gql'
-
-const messages = defineMessages({
-  placeholder: {
-    id: 'store/quickorder.autocomplete.placeholder',
-    defaultMessage: '',
-    label: '',
-  },
-})
 
 const getImageSrc = (img: string) => {
   const td = img.split('/')

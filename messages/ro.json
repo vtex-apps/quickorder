@@ -57,6 +57,8 @@
   "store/quickorder.validate": "Validare",
   "store/quickorder.withoutPriceFulfillment": "Produs fără preț",
   "store/quickorder.withoutStock": "Fără stoc",
+  "store/quickorder.limited": "Restricted Item",
+  "store/quickorder.partiallyAvailable": "Cantitatea maximă este {quantity}. Sunt disponibile doar {totalQuantity} unități în total.",
   "store/toaster.cart.duplicated": "Articol duplicat",
   "store/toaster.cart.error": "Eroare la adaugarea produselor in cos",
   "store/toaster.cart.seeCart": "Vezi cos",

@@ -75,6 +75,7 @@ const checkoutSimulation = async (
         seller: item.seller,
         availability: item.availability ?? '',
         unitMultiplier: item.unitMultiplier ?? 1,
+        quantity: item.quantity,
       }
 
       return {
@@ -119,13 +120,14 @@ const getSkuSellers = async (
 
   result = await Promise.all(
     result.map(async (item: any) => {
-      const { sku, refid } = item
+      const { sku, refid, quantity } = item
 
       if (sku === null) {
         return {
           sku,
           refid,
-          sellers: null,
+          sellers: [],
+          quantity,
         }
       }
 
@@ -150,6 +152,7 @@ const getSkuSellers = async (
             sku,
             refid,
             sellers: validSellers,
+            quantity,
           }
         })
         .catch((error: any) => {
@@ -164,6 +167,7 @@ const getSkuSellers = async (
             sku,
             refid,
             sellers: null,
+            quantity,
           }
         })
     })
@@ -177,7 +181,7 @@ const getSkuSellerInfo = (simulationResults: any, result: any) => {
 
   if (Object.keys(simulationResults).length !== 0) {
     items = result.map((item: any) => {
-      const skuInfoBySeller = item.sellers.map((seller: any) => {
+      const skuInfoBySeller = item.sellers?.map((seller: any) => {
         if (!simulationResults[item.sku]) {
           return null
         }
@@ -186,12 +190,21 @@ const getSkuSellerInfo = (simulationResults: any, result: any) => {
           (s: any) => s.seller === seller.id
         )
 
-        const { availability = '', unitMultiplier = 1 } = currSeller ?? {}
+        const {
+          availability = '',
+          unitMultiplier = 1,
+          quantity: availableQuantity = undefined,
+        } = currSeller ?? {}
+
+        const isPartiallyAvailable = availableQuantity < item.quantity
 
         return {
           ...seller,
-          availability,
+          availability: isPartiallyAvailable
+            ? 'partiallyAvailable'
+            : availability,
           unitMultiplier,
+          availableQuantity,
         }
       })
 
@@ -208,7 +221,12 @@ const getSkuSellerInfo = (simulationResults: any, result: any) => {
 export const queries = {
   skuFromRefIds: async (
     _: any,
-    args: { refids: string; orderFormId: string; refIdSellerMap: any },
+    args: {
+      refids: string
+      orderFormId: string
+      refIdSellerMap: any
+      refIdQuantityMap: any
+    },
     ctx: Context
   ): Promise<any> => {
     const {
@@ -216,7 +234,7 @@ export const queries = {
       vtex: { segment, logger },
     } = ctx
 
-    const { refids, orderFormId, refIdSellerMap } = args
+    const { refids, orderFormId, refIdSellerMap, refIdQuantityMap } = args
 
     if (!refids) {
       throw new UserInputError('No refids provided')
@@ -252,7 +270,9 @@ export const queries = {
           sku: skuIds[id],
           refid: id,
           sellers: sellersList,
+          quantity: refIdQuantityMap?.[id] ?? 1,
         }
+
         result.push(resultStr[id])
       })
 

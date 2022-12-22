@@ -14,6 +14,61 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Indonesian translation.
+## [3.12.4] - 2022-12-13
+
+### Changed
+- Fixed XLSX package version
+## [3.12.3] - 2022-11-23
+
+### Added
+
+- [ENGINEERS-875] & [ENGINEERS-876] - Added more cypress tests
+
+### Added
+
+- Added cypress tests
+
+### Added
+
+- Added dispatch workflow for cypress
+
+### Fixed
+
+- Map of null of seller's array of a not found item
+
+## [3.12.2] - 2022-11-23
+
+### Fixed
+
+- Yarn packages versions mismatch
+
+## [3.12.1] - 2022-11-08
+
+### Fixed
+
+- Text that contains partial availability error will not show Add To Cart button
+
+### Changed
+
+- GitHub reusable workflow uptaded to v2
+
+## [3.12.0] - 2022-10-12
+
+### Added
+
+- Partial availability error message in `ReviewBlock` when full item quantity entered is not available in selected seller
+
+### Changed
+
+- Run checkout simulation with item quantity input in `TextArea` and `Upload` blocks
+- Check for SKU match in full `items` list from `productSuggestions` query results
+
+## [3.11.0] - 2022-10-06
+
+### Added
+
+- Added collection restriction for both text area and upload area
+- Added message util in react admi
 
 ## [3.10.0] - 2022-08-26
 

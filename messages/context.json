@@ -57,6 +57,8 @@
   "store/quickorder.validate": "store/quickorder.validate",
   "store/quickorder.withoutPriceFulfillment": "store/quickorder.withoutPriceFulfillment",
   "store/quickorder.withoutStock": "store/quickorder.withoutStock",
+  "store/quickorder.limited": "store/quickorder.limited",
+  "store/quickorder.partiallyAvailable": "store/quickorder.partiallyAvailable",
   "store/toaster.cart.duplicated": "store/toaster.cart.duplicated",
   "store/toaster.cart.error": "store/toaster.cart.error",
   "store/toaster.cart.seeCart": "store/toaster.cart.seeCart",

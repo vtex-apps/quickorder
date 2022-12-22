@@ -12,4 +12,5 @@ type ItemsSeller {
   name: String
   availability: String
   unitMultiplier: Float
+  availableQuantity: Int
 }

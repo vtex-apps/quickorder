@@ -55,7 +55,7 @@ export class Search extends JanusClient {
         refIdSellerMap[item.refid].forEach(sellerId => {
           simulateItems.push({
             id: item.sku,
-            quantity: 1,
+            quantity: item.quantity,
             seller: sellerId,
           })
         })

@@ -201,6 +201,8 @@ jest.mock('@vtex/api', () => {
       {
         sku: 'SKU-MOCKED-1',
         id: '100',
+        quantity: 12,
+        seller: '1',
       },
     ],
   })

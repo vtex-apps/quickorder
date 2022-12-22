@@ -57,6 +57,8 @@
   "store/quickorder.validate": "다음",
   "store/quickorder.withoutPriceFulfillment": "가격정보가 없습니다",
   "store/quickorder.withoutStock": "재고 부족",
+  "store/quickorder.limited": "Restricted Item",
+  "store/quickorder.partiallyAvailable": "최대 수량은 {quantity}입니다. {totalQuantity} 총 단위만 사용할 수 있습니다.",
   "store/toaster.cart.duplicated": "중복된 항목이 있습니다",
   "store/toaster.cart.error": "장바구니에 담기가 실패하였습니다",
   "store/toaster.cart.seeCart": "장바구니",
