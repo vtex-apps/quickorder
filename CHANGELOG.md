@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Arabic translation.
+
+### Added
+
+- Indonesian translation.
 ## [3.12.4] - 2022-12-13
 
 ### Changed
@@ -61,7 +68,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Added collection restriction for both text area and upload area
-- Added message util in react admin
+- Added message util in react admi
 
 ## [3.10.0] - 2022-08-26
 
