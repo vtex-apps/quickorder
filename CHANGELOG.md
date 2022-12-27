@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- [ENGINEERS-989] - Added verify the excel file testcase in cypress
+
 ## [3.12.5] - 2022-12-23
 
 ### Fixed
@@ -16,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Indonesian translation.
+
 ## [3.12.4] - 2022-12-13
 
 ### Changed
