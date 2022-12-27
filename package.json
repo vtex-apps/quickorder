@@ -37,7 +37,6 @@
     "husky": "4.2.3",
     "jest": "^27.3.1",
     "lint-staged": "10.1.1",
-    "node-xlsx": "^0.21.0",
     "prettier": "2.0.2",
     "typescript": "3.8.3"
   },

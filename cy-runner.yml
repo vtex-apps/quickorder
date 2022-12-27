@@ -62,18 +62,19 @@ workspace:
     specs:
       - cypress-shared/integration/quick-order/wipe.spec.js
   teardown:
-    enabled: false
+    enabled: true
 
 strategy:
   # The strategies must be in order, with dependent tests last
-  graphql:
+  graphqlAndSetup:
     enabled: true
     sendDashboard: true
     hardTries: 1
-    stopOnFail: false
-    parallel: false
+    stopOnFail: true
+    parallel: true
     specs:
       - cypress-shared/integration/quick-order/1.1-graphql.spec.js
+      - cypress-shared/integration/quick-order/post-setup.spec.js
   skuCodeQuantityAndUploadCSVTestCase:
     enabled: true
     sendDashboard: true
