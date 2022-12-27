@@ -66,7 +66,7 @@ workspace:
 
 strategy:
   # The strategies must be in order, with dependent tests last
-  graphqlAndSetup:
+  graphql:
     enabled: true
     sendDashboard: true
     hardTries: 1
@@ -74,7 +74,6 @@ strategy:
     parallel: true
     specs:
       - cypress-shared/integration/quick-order/1.1-graphql.spec.js
-      - cypress-shared/integration/quick-order/post-setup.spec.js
   skuCodeQuantityAndUploadCSVTestCase:
     enabled: true
     sendDashboard: true
