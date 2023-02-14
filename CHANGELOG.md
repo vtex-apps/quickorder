@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.12.6] - 2023-02-14
+
 ### Fixed
 
 - Bug fixed on UI adding to cart flow 
