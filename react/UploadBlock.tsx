@@ -4,7 +4,7 @@ import type { FunctionComponent } from 'react'
 import React, { useState, useContext } from 'react'
 import type { WrappedComponentProps } from 'react-intl'
 import { FormattedMessage, injectIntl } from 'react-intl'
-import { Button, Dropzone, ToastContext, Spinner } from 'vtex.styleguide'
+import { Button, Dropzone, ToastContext } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
 import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
@@ -227,7 +227,6 @@ const UploadBlock: FunctionComponent<
     const loopCount = Math.floor(items.length / splitBy) + 1
 
     const promises: any = []
-    // let orderFormData = []
 
     for (let i = 0; i < loopCount; i++) {
       const chunk = tempItems.splice(0, splitBy)
@@ -442,12 +441,11 @@ const UploadBlock: FunctionComponent<
               >
                 <FormattedMessage id="store/quickorder.back" />
               </Button>
-              {refidLoading && <Spinner />}
               {showAddToCart && (
                 <Button
                   variation="primary"
                   size="small"
-                  isLoading={mutationLoading}
+                  isLoading={mutationLoading || refidLoading}
                   onClick={() => {
                     addToCartUpload()
                   }}

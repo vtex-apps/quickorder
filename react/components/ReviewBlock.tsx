@@ -314,13 +314,12 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     try {
       const { data } = await client.query(query)
 
-      validateRefids(data, reviewed)
+      await validateRefids(data, reviewed)
       onRefidLoading(false)
     } catch (err) {
       showToast({
         message: intl.formatMessage(messages.cannotGetSkuInfo),
       })
-
       backList()
     }
   }

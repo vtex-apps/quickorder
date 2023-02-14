@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Bug fixed on UI adding to cart flow 
+
+
 ### Added
 
 - [ENGINEERS-989] - Added verify the excel file testcase in cypress

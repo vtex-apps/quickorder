@@ -57,6 +57,8 @@
   "store/quickorder.validate": "Validasi",
   "store/quickorder.withoutPriceFulfillment": "Produk tanpa harga",
   "store/quickorder.withoutStock": "Tanpa stok",
+  "store/quickorder.limited": "Restricted Item",
+  "store/quickorder.partiallyAvailable": "Max quantity is {quantity}. Only {totalQuantity} total units available.",
   "store/toaster.cart.duplicated": "Item diduplikat",
   "store/toaster.cart.error": "Terjadi kesalahan saat menambahkan produk ke troli",
   "store/toaster.cart.seeCart": "Lihat troli",
