@@ -1,5 +1,5 @@
 query SearchByCategory($selectedFacets: [SelectedFacetInput]) {
-  productSearch(selectedFacets: $selectedFacets)
+  productSearch(selectedFacets: $selectedFacets, from: 0, to: 90)
     @context(provider: "vtex.search-graphql") {
     products {
       items {
