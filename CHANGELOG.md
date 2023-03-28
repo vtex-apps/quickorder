@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- Define product result limit for category component
+
 ## [3.12.6] - 2023-02-14
 
 ### Fixed
