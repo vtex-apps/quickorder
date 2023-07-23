@@ -385,7 +385,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
                       min={unitMultiplier}
                       step={unitMultiplier}
                       onChange={(e: any) => {
-                        if (e.target.value > 0) {
+                        if (e.target.value >= 0) {
                           setState({
                             ...state,
                             quantitySelected: e.target.value,
@@ -412,6 +412,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
                       variation="primary"
                       size="small"
                       isLoading={loading}
+                      disabled={state.quantitySelected === '' || state.quantitySelected < unitMultiplier}
                       onClick={() => {
                         callAddUnitToCart()
                       }}
