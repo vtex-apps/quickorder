@@ -7,17 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Removed
+
+- Removed validation that hid the add to cart button when there was an invalid SKU
+
 ## [3.12.7] - 2023-03-28
 
 ### Added
+
 - Define product result limit for category component
 
 ## [3.12.6] - 2023-02-14
 
 ### Fixed
 
-- Bug fixed on UI adding to cart flow 
-
+- Bug fixed on UI adding to cart flow
 
 ### Added
 
@@ -36,7 +40,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [3.12.4] - 2022-12-13
 
 ### Changed
+
 - Fixed XLSX package version
+
 ## [3.12.3] - 2022-11-23
 
 ### Added

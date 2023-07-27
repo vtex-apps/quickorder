@@ -115,16 +115,11 @@ const UploadBlock: FunctionComponent<
 
   const onReviewItems = (items: any) => {
     if (items) {
-      const show =
-        items.filter((item: any) => {
-          return item.error
-        }).length === 0
-
-      setState({
+        setState({
         ...state,
         reviewItems: items,
         reviewState: true,
-        showAddToCart: show,
+        showAddToCart: true,
         textAreaValue: GetText(items),
       })
     }
