@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Removed
+### Added
 
-- Removed validation that hid the add to cart button when there was an invalid SKU
+- Added prop alwaysShowAddToCart to hide or show the add to cart button when there was an invalid SKU
 
 ## [3.12.7] - 2023-03-28
 
