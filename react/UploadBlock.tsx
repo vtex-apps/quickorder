@@ -116,10 +116,7 @@ const UploadBlock: FunctionComponent<
 
   const onReviewItems = (items: any) => {
     if (items) {
-        const show =
-          items.filter((item: any) => {
-            return item.error
-          }).length === 0
+      const show = !items.some((item: any) => item.error);
 
         setState({
         ...state,
