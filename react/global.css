@@ -1,5 +1,10 @@
-.vtex-quickorder-2-x-inputQuantity > label > div > input {
+.vtex-quickorder-2-x-inputQuantity>label>div>input {
   padding-left: 0;
   padding-right: 0;
   text-align: center;
+}
+
+.addAllButton {
+  background-color: red;
+  font-size: 40px;
 }

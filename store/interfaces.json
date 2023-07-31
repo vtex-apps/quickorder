@@ -11,5 +11,8 @@
   "quickorder-textarea": {
     "component": "TextAreaBlock"
   },
-  "store.quickorder": {}
+  "store.quickorder": {},
+  "quickorder-addAllButton": {
+    "component": "AddAllToCart"
+  }
 }

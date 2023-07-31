@@ -2,17 +2,20 @@
   "store.quickorder": {
     "blocks": [
       "flex-layout.row#title",
-      "flex-layout.row#textarea",
-      "flex-layout.row#upload",
-      "flex-layout.row#autocomplete",
-      "flex-layout.row#categories"
+      "flex-layout.row#subtitle",
+      "flex-layout.row#pads",
+      "flex-layout.row#bottom"
     ]
   },
   "flex-layout.row#title": {
-    "children": ["flex-layout.col#title"]
+    "children": [
+      "flex-layout.col#title"
+    ]
   },
   "flex-layout.col#title": {
-    "children": ["rich-text#title"],
+    "children": [
+      "rich-text#title"
+    ],
     "props": {
       "blockClass": "titleQuickorder",
       "preventVerticalStretch": true
@@ -23,63 +26,338 @@
       "text": "## Quick Order"
     }
   },
-
+  "flex-layout.row#subtitle": {
+    "children": [
+      "flex-layout.col#subtitle",
+      "flex-layout.col#clearList",
+      "flex-layout.col#addAllToList",
+      "flex-layout.col#addAllToCart"
+    ]
+  },
+  "flex-layout.col#subtitle": {
+    "children": [
+      "rich-text#subtitle"
+    ],
+    "props": {
+      "blockClass": "titleQuickorder",
+      "preventVerticalStretch": true
+    }
+  },
+  "rich-text#subtitle": {
+    "props": {
+      "text": "Quickly place an order using either the Quick Order Pad or Copy & Paste Pad.",
+      "font": "t-small"
+    }
+  },
+  "flex-layout.col#clearList": {
+    "children": [
+      "flex-layout.row#clearList"
+    ],
+    "props": {
+      "width": "20%",
+      "horizontalAlign": "right"
+    }
+  },
+  "flex-layout.row#clearList": {
+    "children": [
+      "rich-text#clearList"
+    ]
+  },
+  "rich-text#clearList": {
+    "props": {
+      "text": "clear quick order list -> create component"
+    }
+  },
+  "flex-layout.col#addAllToList": {
+    "children": [
+      "flex-layout.row#addAllToList"
+    ],
+    "props": {
+      "width": "15%",
+      "horizontalAlign": "center"
+    }
+  },
+  "flex-layout.row#addAllToList": {
+    "children": [
+      "rich-text#addAllToList"
+    ]
+  },
+  "rich-text#addAllToList": {
+    "props": {
+      "text": "ADD ALL TO LIST"
+    }
+  },
+  "flex-layout.col#addAllToCart": {
+    "children": [
+      "flex-layout.row#addAllToCart"
+    ],
+    "props": {
+      "width": "15%",
+      "horizontalAlign": "center"
+    }
+  },
+  "flex-layout.row#addAllToCart": {
+    "children": [
+      "quickorder-addAllButton"
+    ]
+  },
+  "flex-layout.row#pads": {
+    "children": [
+      "flex-layout.col#orderPad",
+      "flex-layout.col#pastePad"
+    ]
+  },
+  "flex-layout.col#orderPad": {
+    "children": [
+      "flex-layout.row#tableHeader"
+    ],
+    "props": {
+      "width": "77%"
+    }
+  },
+  "flex-layout.row#tableHeader": {
+    "children": [
+      "flex-layout.col#column1",
+      "flex-layout.col#column2",
+      "flex-layout.col#column3",
+      "flex-layout.col#column4",
+      "flex-layout.col#margin"
+    ]
+  },
+  "flex-layout.col#column1": {
+    "children": [
+      "rich-text#column1"
+    ],
+    "props": {
+      "width": "20%",
+      "borderColor": "black",
+      "border": [
+        "top",
+        "bottom"
+      ]
+    }
+  },
+  "rich-text#column1": {
+    "props": {
+      "text": "PART NUMBER/KEYWORD",
+      "font": "t-small"
+    }
+  },
+  "flex-layout.col#column2": {
+    "children": [
+      "rich-text#column2"
+    ],
+    "props": {
+      "width": "15%",
+      "borderColor": "black",
+      "border": [
+        "top",
+        "bottom"
+      ]
+    }
+  },
+  "rich-text#column2": {
+    "props": {
+      "text": "QUANTITY",
+      "font": "t-small"
+    }
+  },
+  "flex-layout.col#column3": {
+    "children": [
+      "rich-text#column3"
+    ],
+    "props": {
+      "width": "45%",
+      "borderColor": "black",
+      "border": [
+        "top",
+        "bottom"
+      ]
+    }
+  },
+  "rich-text#column3": {
+    "props": {
+      "text": "PRODUCT",
+      "font": "t-small"
+    }
+  },
+  "flex-layout.col#column4": {
+    "children": [
+      "rich-text#column4"
+    ],
+    "props": {
+      "width": "15%",
+      "borderColor": "black",
+      "border": [
+        "top",
+        "bottom"
+      ]
+    }
+  },
+  "rich-text#column4": {
+    "props": {
+      "text": "PRICE",
+      "font": "t-small"
+    }
+  },
+  "flex-layout.col#margin": {
+    "props": {
+      "width": "5%"
+    }
+  },
+  "flex-layout.col#pastePad": {
+    "children": [
+      "flex-layout.row#copyPastePad",
+      "flex-layout.row#text1PastePad",
+      "flex-layout.row#text2PastePad",
+      "flex-layout.row#text3PastePad",
+      "flex-layout.row#textarea"
+    ],
+    "props": {
+      "width": "23%",
+      "borderColor": "black",
+      "blockClass": "pasteContainer",
+      "border": "all",
+      "paddingLeft": 5
+    }
+  },
+  "flex-layout.row#copyPastePad": {
+    "children": [
+      "rich-text#copyPastePad"
+    ]
+  },
+  "rich-text#copyPastePad": {
+    "props": {
+      "text": "Copy & Paste Pad",
+      "font": "t-small"
+    }
+  },
+  "flex-layout.row#text1PastePad": {
+    "children": [
+      "rich-text#text1PastePad"
+    ]
+  },
+  "rich-text#text1PastePad": {
+    "props": {
+      "text": "Simply copy and paste part numbers from your file into the field below using the following format:",
+      "font": "t-small"
+    }
+  },
+  "flex-layout.row#text2PastePad": {
+    "children": [
+      "rich-text#text2PastePad"
+    ]
+  },
+  "rich-text#text2PastePad": {
+    "props": {
+      "text": "Part number [TAB or COMMA] Quantity",
+      "font": "t-small"
+    }
+  },
+  "flex-layout.row#text3PastePad": {
+    "children": [
+      "rich-text#text3PastePad"
+    ]
+  },
+  "rich-text#text3PastePad": {
+    "props": {
+      "text": "Select the type of part number",
+      "font": "t-small"
+    }
+  },
   "flex-layout.row#textarea": {
-    "children": ["flex-layout.col#textarea"]
+    "children": [
+      "flex-layout.col#textarea"
+    ]
   },
   "flex-layout.col#textarea": {
-    "children": ["quickorder-textarea"]
+    "children": [
+      "quickorder-textarea"
+    ]
   },
   "quickorder-textarea": {
     "props": {
       "componentOnly": false,
-      "text": "Copy/Paste Skus",
-      "description": "[SKU Reference ID],[Quantity]",
       "hiddenColumns": []
     }
   },
-
-  "flex-layout.row#upload": {
-    "children": ["flex-layout.col#upload"]
-  },
-  "flex-layout.col#upload": {
-    "children": ["quickorder-upload"]
-  },
-  "quickorder-upload": {
+  "flex-layout.row#bottom": {
+    "children": [
+      "flex-layout.col#bottomColumn1",
+      "flex-layout.col#bottomColumn2",
+      "flex-layout.col#bottomColumn3",
+      "flex-layout.col#bottomColumn4",
+      "flex-layout.col#margin"
+    ],
     "props": {
-      "componentOnly": false,
-      "text": "Upload",
-      "description": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order",
-      "downloadText": "Click here to download a spreadsheet model",
-      "hiddenColumns": []
+      "marginBottom": 5
     }
   },
-
-  "flex-layout.row#autocomplete": {
-    "children": ["flex-layout.col#autocomplete"]
-  },
-  "flex-layout.col#autocomplete": {
-    "children": ["quickorder-autocomplete"]
-  },
-  "quickorder-autocomplete": {
+  "flex-layout.col#bottomColumn1": {
+    "children": [
+      "flex-layout.row#addMore"
+    ],
     "props": {
-      "componentOnly": false,
-      "text": "One by One",
-      "description": "Type the product name, select, enter quantity, add to the cart"
+      "width": "23%",
+      "horizontalAlign": "left",
+      "borderColor": "black",
+      "border": [
+        "top"
+      ]
     }
   },
-
-  "flex-layout.row#categories": {
-    "children": ["flex-layout.col#categories"]
+  "flex-layout.row#addMore": {
+    "children": [
+      "rich-text#addMore"
+    ]
   },
-  "flex-layout.col#categories": {
-    "children": ["quickorder-categories"]
-  },
-  "quickorder-categories": {
+  "rich-text#addMore": {
     "props": {
-      "componentOnly": false,
-      "text": "Categories",
-      "description": "Add products directly from their categories"
+      "text": "+ ADD MORE LINES",
+      "font": "t-small",
+      "borderColor": "black",
+      "border": [
+        "top"
+      ]
+    }
+  },
+  "flex-layout.col#bottomColumn2": {
+    "children": [
+      "flex-layout.row#clearList"
+    ],
+    "props": {
+      "width": "20%",
+      "horizontalAlign": "center",
+      "borderColor": "black",
+      "border": [
+        "top"
+      ]
+    }
+  },
+  "flex-layout.col#bottomColumn3": {
+    "children": [
+      "flex-layout.row#addAllToList"
+    ],
+    "props": {
+      "width": "15%",
+      "horizontalAlign": "center",
+      "borderColor": "black",
+      "border": [
+        "top"
+      ]
+    }
+  },
+  "flex-layout.col#bottomColumn4": {
+    "children": [
+      "flex-layout.row#addAllToCart"
+    ],
+    "props": {
+      "width": "15%",
+      "horizontalAlign": "center",
+      "borderColor": "black",
+      "border": [
+        "top"
+      ]
     }
   }
 }
