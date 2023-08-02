@@ -14,5 +14,14 @@
   "store.quickorder": {},
   "quickorder-addAllButton": {
     "component": "AddAllToCart"
+  },
+  "quickorder-clearAllLink": {
+    "component": "ClearAllLink"
+  },
+  "quickorder-AddAllToListButton": {
+    "component": "AddAllToListButton"
+  },
+  "quickorder-AddMoreLinesButton": {
+    "component": "AddMoreLinesButton"
   }
 }
