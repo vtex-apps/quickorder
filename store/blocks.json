@@ -60,7 +60,7 @@
   },
   "flex-layout.row#clearList": {
     "children": [
-      "rich-text#clearList"
+      "quickorder-clearAllLink"
     ]
   },
   "rich-text#clearList": {
@@ -79,7 +79,7 @@
   },
   "flex-layout.row#addAllToList": {
     "children": [
-      "rich-text#addAllToList"
+      "quickorder-AddAllToListButton"
     ]
   },
   "rich-text#addAllToList": {
@@ -308,7 +308,7 @@
   },
   "flex-layout.row#addMore": {
     "children": [
-      "rich-text#addMore"
+      "quickorder-AddMoreLinesButton"
     ]
   },
   "rich-text#addMore": {
