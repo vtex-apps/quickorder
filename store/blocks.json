@@ -93,9 +93,7 @@
     ],
     "props": {
       "width": "20%",
-      "horizontalAlign": "center",
-      "border": "all",
-      "borderColor": "black"
+      "horizontalAlign": "center"
     }
   },
   "flex-layout.row#addAllToCart": {
@@ -103,8 +101,6 @@
       "quickorder-addAllButton"
     ],
     "props": {
-      "borderColor": "black",
-      "border": "all",
       "fullWidth": true
     }
   },
@@ -306,11 +302,7 @@
     ],
     "props": {
       "width": "23%",
-      "horizontalAlign": "left",
-      "borderColor": "black",
-      "border": [
-        "top"
-      ]
+      "horizontalAlign": "left"
     }
   },
   "flex-layout.row#addMore": {
@@ -321,11 +313,7 @@
   "rich-text#addMore": {
     "props": {
       "text": "+ ADD MORE LINES",
-      "font": "t-small",
-      "borderColor": "black",
-      "border": [
-        "top"
-      ]
+      "font": "t-small"
     }
   },
   "flex-layout.col#bottomColumn2": {
@@ -334,11 +322,7 @@
     ],
     "props": {
       "width": "20%",
-      "horizontalAlign": "center",
-      "borderColor": "black",
-      "border": [
-        "top"
-      ]
+      "horizontalAlign": "center"
     }
   },
   "flex-layout.col#bottomColumn3": {
@@ -347,11 +331,7 @@
     ],
     "props": {
       "width": "15%",
-      "horizontalAlign": "center",
-      "borderColor": "black",
-      "border": [
-        "top"
-      ]
+      "horizontalAlign": "center"
     }
   },
   "flex-layout.col#bottomColumn4": {
@@ -360,11 +340,7 @@
     ],
     "props": {
       "width": "15%",
-      "horizontalAlign": "center",
-      "borderColor": "black",
-      "border": [
-        "top"
-      ]
+      "horizontalAlign": "center"
     }
   }
 }
