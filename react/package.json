@@ -5,6 +5,7 @@
     "lint": "tsc --noEmit && eslint --ext ts,tsx ."
   },
   "dependencies": {
+    "@vtex/admin-ui": "^0.135.0",
     "@vtex/css-handles": "^1.0.0",
     "classnames": "^2.2.6",
     "debounce": "^1.2.0",

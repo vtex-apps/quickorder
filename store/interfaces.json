@@ -23,5 +23,8 @@
   },
   "quickorder-AddMoreLinesButton": {
     "component": "AddMoreLinesButton"
+  },
+  "quickorder-quickOrderPad": {
+      "component": "QuickOrderPad"
   }
 }

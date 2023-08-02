@@ -4,7 +4,7 @@
   text-align: center;
 }
 
-.addAllButton {
-  background-color: red;
-  font-size: 40px;
+.vtex-quickorder-3-x-addAllToCartContainer>button {
+  width: 100%;
+  background-color: powderblue;
 }

@@ -73,7 +73,7 @@
       "flex-layout.row#addAllToList"
     ],
     "props": {
-      "width": "15%",
+      "width": "20%",
       "horizontalAlign": "center"
     }
   },
@@ -89,17 +89,24 @@
   },
   "flex-layout.col#addAllToCart": {
     "children": [
-      "flex-layout.row#addAllToCart"
+      "quickorder-addAllButton"
     ],
     "props": {
-      "width": "15%",
-      "horizontalAlign": "center"
+      "width": "20%",
+      "horizontalAlign": "center",
+      "border": "all",
+      "borderColor": "black"
     }
   },
   "flex-layout.row#addAllToCart": {
     "children": [
       "quickorder-addAllButton"
-    ]
+    ],
+    "props": {
+      "borderColor": "black",
+      "border": "all",
+      "fullWidth": true
+    }
   },
   "flex-layout.row#pads": {
     "children": [
@@ -109,7 +116,7 @@
   },
   "flex-layout.col#orderPad": {
     "children": [
-      "flex-layout.row#tableHeader"
+      "quickorder-quickOrderPad"
     ],
     "props": {
       "width": "77%"
