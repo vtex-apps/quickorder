@@ -1,8 +1,10 @@
 import React from 'react';
-//import { useState, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Table, NumericStepper } from 'vtex.styleguide';
 import AutocompleteBlock from './AutocompleteBlock';
 import { useCssHandles } from 'vtex.css-handles'
+
+
 
 const QuickOrderPad = () => {
   const CSS_HANDLES = [
@@ -11,6 +13,15 @@ const QuickOrderPad = () => {
     'productLabel',
     'productTitle',
   ] as const
+
+  const [autocompleteState, setSelectedItem] = useState<any | null>(null);
+  const handleSelectedItemChange = (newSelectedItem) => {
+    setSelectedItem(newSelectedItem);
+  };
+
+  useEffect(() => {
+    console.log('autocompleteState changed:', autocompleteState);
+  }, [autocompleteState]);
 
   const handles = useCssHandles(CSS_HANDLES)
   //const { state, setState } = useContext(StateContext);
@@ -26,7 +37,10 @@ const QuickOrderPad = () => {
         cellRenderer: () => {
           return (
             <div>
-              <AutocompleteBlock componentOnly='false'></AutocompleteBlock>
+              <AutocompleteBlock
+                onSelectedItemChange={handleSelectedItemChange}
+                componentOnly='false'>
+              </AutocompleteBlock>
             </div>
           )
         },
@@ -52,20 +66,22 @@ const QuickOrderPad = () => {
           return (
             <div className="w-two-thirds-l w-100-ns fl-l">
               <div className={`flex flex-column w-10 fl ${handles.productThumb}`}>
-                <img src="https://usesi.vtexassets.com/arquivos/ids/158831-50-50/image-be47931b95944a1f8185c94c7d0374ef.jpg?v=1777300663" width="50" height="50" alt="" />
+                {autocompleteState?.thumb && (
+                  <img src={autocompleteState?.thumb} width="50" height="50" alt="" />
+                )}
               </div>
               <div className={`flex flex-column w-90 fl ${handles.productLabel}`}>
                 <span className={`${handles.productTitle}`}>
-                  Product Name Test long Product Name
+                  {autocompleteState?.label ?? '12123'}
                 </span>
               </div>
-            </div >
+            </div>
           )
 
         }
       },
       price: {
-        title: 'Price'
+        title: 'Price',
       }
     },
   };

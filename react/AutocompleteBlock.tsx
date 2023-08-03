@@ -24,6 +24,7 @@ import './global.css'
 //const StateContext = React.createContext({ state });
 
 const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
+  onSelectedItemChange,
   text,
   description,
   componentOnly,
@@ -204,7 +205,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
         quantitySelected: multiplier,
       })
     }
-
+    onSelectedItemChange(product[0]);
     return true
   }
 
@@ -233,6 +234,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       unitMultiplier: matchedItem.unitMultiplier,
       quantitySelected: matchedItem.unitMultiplier,
     })
+
   }
 
   const thumb = (url: string) => {
