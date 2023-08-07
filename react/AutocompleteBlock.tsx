@@ -19,7 +19,12 @@ import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
 import productQuery from './queries/product.gql'
 import './global.css'
 
+
+
+//const StateContext = React.createContext({ state });
+
 const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
+  onSelectedItemChange,
   text,
   description,
   componentOnly,
@@ -75,9 +80,9 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
       action = success
         ? {
-            label: translateMessage(messages.seeCart),
-            href: '/checkout/#/cart',
-          }
+          label: translateMessage(messages.seeCart),
+          href: '/checkout/#/cart',
+        }
         : undefined
     }
 
@@ -180,8 +185,8 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
       const seller = selectedSku
         ? data.product.items[0].sellers.find((item: any) => {
-            return item.sellerDefault === true
-          }).sellerId
+          return item.sellerDefault === true
+        }).sellerId
         : null
 
       let multiplier = 1
@@ -200,7 +205,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
         quantitySelected: multiplier,
       })
     }
-
+    onSelectedItemChange(product[0]);
     return true
   }
 
@@ -229,6 +234,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       unitMultiplier: matchedItem.unitMultiplier,
       quantitySelected: matchedItem.unitMultiplier,
     })
+
   }
 
   const thumb = (url: string) => {
@@ -291,6 +297,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
   return (
     <div>
+      {/*<StateContext.Provider value={{ state, setState }}>*/}
       {!componentOnly && (
         <div className={`${handles.textContainer} w-third-l w-100-ns fl-l`}>
           <h2
@@ -306,12 +313,11 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
         </div>
       )}
       <div
-        className={`${handles.componentContainer} ${
-          !componentOnly ? 'w-two-thirds-l w-100-ns fr-l' : ''
-        }`}
+        className={`${handles.componentContainer} ${!componentOnly ? 'w-two-thirds-l w-100-ns fr-l' : ''
+          }`}
       >
         <div className="w-100 mb5">
-          <div className="bg-base t-body c-on-base pa7 br3 b--muted-4">
+          <div className="bg-base t-body c-on-base pa0 br3 b--muted-4">
             {!selectedItem && <QuickOrderAutocomplete onSelect={onSelect} />}
             {!!selectedItem && (
               <div>
@@ -443,7 +449,9 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
           </div>
         </div>
       </div>
+      {/*</StateContext.Provider>*/}
     </div>
+
   )
 }
 
@@ -465,4 +473,5 @@ interface MessageDescriptor {
   defaultMessage?: string
 }
 
+//export const useStateContext = () => useContext(StateContext);
 export default injectIntl(AutocompleteBlock)

@@ -4,7 +4,33 @@
   text-align: center;
 }
 
-.addAllButton {
-  background-color: red;
-  font-size: 40px;
+.vtex-quickorder-3-x-tableActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.vtex-quickorder-3-x-tableWrapper {
+  height: 500px;
+  overflow: scroll;
+}
+
+.vtex-quickorder-3-x-headerActions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.vtex-quickorder-3-x-clearOrderList button {
+  padding: 0;
+  width: auto;
+}
+
+.vtex-quickorder-3-x-clearOrderList button .vtex-button__label {
+  padding: 0;
+}
+
+.vtex-quickorder-3-x-clearOrderList button:hover {
+  background-color: transparent;
+  opacity: 0.7;
 }
