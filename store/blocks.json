@@ -2,9 +2,7 @@
   "store.quickorder": {
     "blocks": [
       "flex-layout.row#title",
-      "flex-layout.row#subtitle",
-      "flex-layout.row#pads",
-      "flex-layout.row#bottom"
+      "flex-layout.row#pads"
     ]
   },
   "flex-layout.row#title": {

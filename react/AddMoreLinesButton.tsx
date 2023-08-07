@@ -1,14 +1,16 @@
 import React from 'react';
-import { Button } from 'vtex.styleguide'
-// import styles from './global.css'
+import { Button } from 'vtex.styleguide';
 
+interface Props {
+  addRow: () => void;
+}
 
-const AddMoreLinesButton = () => {
-    return (
-        <div>
-            <Button>+ Add More Lines</Button>
-        </div>
-    );
+const AddMoreLinesButton: React.FC<Props> = ({ addRow }) => {
+  return (
+    <div>
+      <Button onClick={addRow}>+ Add More Lines</Button>
+    </div>
+  );
 };
 
 export default AddMoreLinesButton;

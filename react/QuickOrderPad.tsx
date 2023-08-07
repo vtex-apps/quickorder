@@ -1,103 +1,139 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, NumericStepper } from 'vtex.styleguide';
 import AutocompleteBlock from './AutocompleteBlock';
-import { useCssHandles } from 'vtex.css-handles'
+import { useCssHandles } from 'vtex.css-handles';
+import AddMoreLinesButton from './AddMoreLinesButton';
+import AddAllToListButton from './AddAllToListButton';
+import ClearAllLink from './ClearAllLink';
+import AddAllToCart from './AddAllToCart';
+import './global.css'
 
+interface Item {
+  id?: {
+    thumb?: string;
+    label?: string;
+  };
+}
 
-
-const QuickOrderPad = () => {
+const QuickOrderPad: React.FC = () => {
   const CSS_HANDLES = [
     'centerDiv',
     'productThumb',
     'productLabel',
     'productTitle',
-  ] as const
+    'tableActions',
+    'tableWrapper',
+    'headerActions'
+  ] as const;
 
-  const [autocompleteState, setSelectedItem] = useState<any | null>(null);
-  const handleSelectedItemChange = (newSelectedItem) => {
-    setSelectedItem(newSelectedItem);
-  };
+  const handles = useCssHandles(CSS_HANDLES);
+
+  const [quantity, setQuantity] = useState<{ [key: number]: number }>({});
+
+  const [items, setItems] = useState<Item[]>([
+    {}
+  ]);
 
   useEffect(() => {
-    console.log('autocompleteState changed:', autocompleteState);
-  }, [autocompleteState]);
+    setQuantity({ 0: 0 });
+  }, []);
 
-  const handles = useCssHandles(CSS_HANDLES)
-  //const { state, setState } = useContext(StateContext);
+  const addRow = () => {
+    setItems([...items, {}]);
+  };
 
-  const tableData = [
-    { id: 1, quantity: 3, product: "Sample Product", price: "45" }
-  ];
+  const removeItems = () => {
+    setItems([]);
+  };
+
+  const handleQuantityChange = (rowIndex: number, value: number) => {
+    setQuantity({ ...quantity, [rowIndex]: value });
+  };
+
+  const handleIdChange = (rowIndex: number, newSelectedItem: any) => {
+    const newItems = [...items];
+    newItems[rowIndex] = { ...newItems[rowIndex], id: newSelectedItem };
+    setItems(newItems);
+  };
+
+  const createCellRenderer = (cellRenderer: Function) => ({ rowIndex }: { rowIndex: number }) =>
+    cellRenderer({ rowIndex });
 
   const schema = {
     properties: {
       id: {
         title: 'Part Number/Keyword',
-        cellRenderer: () => {
-          return (
-            <div>
-              <AutocompleteBlock
-                onSelectedItemChange={handleSelectedItemChange}
-                componentOnly='false'>
-              </AutocompleteBlock>
-            </div>
-          )
-        },
+        cellRenderer: createCellRenderer(({ rowIndex }: { rowIndex: number }) => (
+          <div>
+            <AutocompleteBlock
+              onSelectedItemChange={(newSelectedItem: any) => handleIdChange(rowIndex, newSelectedItem)}
+              componentOnly={false}
+            />
+          </div>
+        )),
       },
       quantity: {
         title: 'Quantity',
-        cellRenderer: () => {
-          return (
-            < div className={handles.centerDiv} >
+        cellRenderer: createCellRenderer(({ rowIndex }: { rowIndex: number }) => (
+          <div className={handles.centerDiv}>
+            <div>
               <NumericStepper
                 size="small"
-                values={1}
-              //value={state.value}
-              //onChange={(event: any) => setState(event.value)}
+                minValue={0}
+                maxValue={10}
+                defaultValue={quantity[rowIndex] || 1}
+                onChange={(event) => handleQuantityChange(rowIndex, event.value)}
               />
-            </div >
-          )
-        },
+            </div>
+          </div>
+        )),
       },
       product: {
         title: 'Product',
-        cellRenderer: () => {
+        cellRenderer: createCellRenderer(({ rowIndex }: { rowIndex: number }) => {
+          const selectedItem = items[rowIndex];
+
           return (
             <div className="w-two-thirds-l w-100-ns fl-l">
               <div className={`flex flex-column w-10 fl ${handles.productThumb}`}>
-                {autocompleteState?.thumb && (
-                  <img src={autocompleteState?.thumb} width="50" height="50" alt="" />
+                {selectedItem?.id?.thumb && (
+                  <img src={selectedItem?.id.thumb} width="50" height="50" alt="" />
                 )}
               </div>
               <div className={`flex flex-column w-90 fl ${handles.productLabel}`}>
                 <span className={`${handles.productTitle}`}>
-                  {autocompleteState?.label ?? '12123'}
+                  {selectedItem?.id?.label && selectedItem?.id?.label}
                 </span>
               </div>
             </div>
-          )
-
-        }
+          );
+        }),
       },
       price: {
         title: 'Price',
-      }
+      },
     },
   };
 
   return (
-    <div>
-      <Table
-        fullWidth
-        items={tableData}
-        schema={schema}
-        density="low"
-      />
-    </div>
+    <>
+      <div className={`${handles.headerActions}`}>
+        <span>Quickly place an order using either the Quick Order Pad or Copy & Paste Pad.</span>
+        <ClearAllLink removeItems={removeItems} />
+        <AddAllToListButton />
+        <AddAllToCart />
+      </div>
+      <div className={`${handles.tableWrapper}`}>
+        <Table fullWidth items={items} schema={schema} density="low" />
+      </div>
+      <div className={`${handles.tableActions}`}>
+        <AddMoreLinesButton addRow={addRow} />
+        <ClearAllLink removeItems={removeItems} />
+        <AddAllToListButton />
+        <AddAllToCart />
+      </div>
+    </>
   );
 };
 
 export default QuickOrderPad;
-
-
