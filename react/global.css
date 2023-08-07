@@ -23,6 +23,11 @@
 
 .vtex-quickorder-3-x-clearOrderList button {
   padding: 0;
+  width: auto;
+}
+
+.vtex-quickorder-3-x-clearOrderList button .vtex-button__label {
+  padding: 0;
 }
 
 .vtex-quickorder-3-x-clearOrderList button:hover {
