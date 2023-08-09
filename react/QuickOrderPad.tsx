@@ -23,7 +23,13 @@ const QuickOrderPad = () => {
   const handles = useCssHandles(CSS_HANDLES)
 
   const [autocompleteState, setSelectedItem] = useState<any | null>(null);
-  const handleSelectedItemChange = (newSelectedItem) => {
+  const handleSelectedItemChange = (rowIndex, newSelectedItem) => {
+    const tableInfo = [...tableData]; // Create a copy of the original array
+    const { rowData } = rowIndex;
+    const rowId = rowData.id - 1;
+
+    tableInfo[rowId].thumb = newSelectedItem.thumb;
+    tableInfo[rowId].label = newSelectedItem.label;
     setSelectedItem(newSelectedItem);
   };
 
@@ -33,7 +39,7 @@ const QuickOrderPad = () => {
 
 
   const [tableData, setTableData] = useState([
-    { id: 1, quantity: 3, product: "Sample Product", price: "" }
+    { id: 1, quantity: 1, thumb: '', price: '', label: '' }
   ])
 
   const handleQuantityChange = (rowIndex, newValue) => {
@@ -50,7 +56,7 @@ const QuickOrderPad = () => {
   const addRow = () => {
     const highestId = tableData.length > 0 ? tableData[tableData.length - 1].id || 0 : 0;
     const newId = highestId + 1;
-    const newItem = { id: newId, quantity: 0, product: '', price: '' };
+    const newItem = { id: newId, quantity: 0, thumb: '', price: '', label: '' };
 
     setTableData([...tableData, newItem]);
   };
@@ -63,11 +69,11 @@ const QuickOrderPad = () => {
     properties: {
       id: {
         title: 'Part Number/Keyword',
-        cellRenderer: () => {
+        cellRenderer: (rowIndex) => {
           return (
             <div>
               <AutocompleteBlock
-                onSelectedItemChange={handleSelectedItemChange}
+                onSelectedItemChange={(event: any) => handleSelectedItemChange(rowIndex, event)}
                 componentOnly='false'>
               </AutocompleteBlock>
             </div>
@@ -90,17 +96,17 @@ const QuickOrderPad = () => {
       },
       product: {
         title: 'Product',
-        cellRenderer: () => {
+        cellRenderer: (rowIndex) => {
           return (
             <div className="w-two-thirds-l w-100-ns fl-l">
               <div className={`flex flex-column w-10 fl ${handles.productThumb}`}>
-                {autocompleteState?.thumb && (
-                  <img src={autocompleteState?.thumb} width="50" height="50" alt="" />
+                {tableData[rowIndex.rowData.id - 1]?.thumb && (
+                  <img src={tableData[rowIndex.rowData.id - 1]?.thumb} width="50" height="50" alt="" />
                 )}
               </div>
               <div className={`flex flex-column w-90 fl ${handles.productLabel}`}>
                 <span className={`${handles.productTitle}`}>
-                  {autocompleteState?.label ?? ''}
+                  {tableData[rowIndex.rowData.id - 1]?.label ?? ''}
                 </span>
               </div>
             </div>
