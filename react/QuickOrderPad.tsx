@@ -8,14 +8,8 @@ import ClearAllLink from './ClearAllLink';
 import AddAllToCart from './AddAllToCart';
 import './global.css'
 
-interface Item {
-  id?: {
-    thumb?: string;
-    label?: string;
-  };
-}
 
-const QuickOrderPad: React.FC = () => {
+const QuickOrderPad = () => {
   const CSS_HANDLES = [
     'centerDiv',
     'productThumb',
@@ -26,92 +20,103 @@ const QuickOrderPad: React.FC = () => {
     'headerActions'
   ] as const;
 
-  const handles = useCssHandles(CSS_HANDLES);
+  const handles = useCssHandles(CSS_HANDLES)
 
-  const [quantity, setQuantity] = useState<{ [key: number]: number }>({});
+  const [autocompleteState, setSelectedItem] = useState<any | null>(null);
+  const handleSelectedItemChange = (rowIndex, newSelectedItem) => {
+    const tableInfo = [...tableData]; // Create a copy of the original array
+    const { rowData } = rowIndex;
+    const rowId = rowData.id - 1;
 
-  const [items, setItems] = useState<Item[]>([
-    {}
-  ]);
+    tableInfo[rowId].thumb = newSelectedItem.thumb;
+    tableInfo[rowId].label = newSelectedItem.label;
+    setSelectedItem(newSelectedItem);
+  };
 
   useEffect(() => {
-    setQuantity({ 0: 0 });
-  }, []);
+    console.log('autocompleteState changed:', autocompleteState);
+  }, [autocompleteState]);
+
+
+  const [tableData, setTableData] = useState([
+    { id: 1, quantity: 1, thumb: '', price: '', label: '' }
+  ])
+
+  const handleQuantityChange = (rowIndex, newValue) => {
+    const updatedTableData = [...tableData]; // Create a copy of the original array
+    const { rowData } = rowIndex;
+    const rowId = rowData.id - 1;
+
+    updatedTableData[rowId].quantity = newValue;
+
+    console.log(updatedTableData);
+    setTableData(updatedTableData);
+  };
 
   const addRow = () => {
-    setItems([...items, {}]);
+    const highestId = tableData.length > 0 ? tableData[tableData.length - 1].id || 0 : 0;
+    const newId = highestId + 1;
+    const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '' };
+
+    setTableData([...tableData, newItem]);
   };
 
   const removeItems = () => {
-    setItems([]);
+    setTableData([]);
   };
-
-  const handleQuantityChange = (rowIndex: number, value: number) => {
-    setQuantity({ ...quantity, [rowIndex]: value });
-  };
-
-  const handleIdChange = (rowIndex: number, newSelectedItem: any) => {
-    const newItems = [...items];
-    newItems[rowIndex] = { ...newItems[rowIndex], id: newSelectedItem };
-    setItems(newItems);
-  };
-
-  const createCellRenderer = (cellRenderer: Function) => ({ rowIndex }: { rowIndex: number }) =>
-    cellRenderer({ rowIndex });
 
   const schema = {
     properties: {
       id: {
         title: 'Part Number/Keyword',
-        cellRenderer: createCellRenderer(({ rowIndex }: { rowIndex: number }) => (
-          <div>
-            <AutocompleteBlock
-              onSelectedItemChange={(newSelectedItem: any) => handleIdChange(rowIndex, newSelectedItem)}
-              componentOnly={false}
-            />
-          </div>
-        )),
+        cellRenderer: (rowIndex) => {
+          return (
+            <div>
+              <AutocompleteBlock
+                onSelectedItemChange={(event: any) => handleSelectedItemChange(rowIndex, event)}
+                componentOnly='false'>
+              </AutocompleteBlock>
+            </div>
+          )
+        },
       },
       quantity: {
         title: 'Quantity',
-        cellRenderer: createCellRenderer(({ rowIndex }: { rowIndex: number }) => (
-          <div className={handles.centerDiv}>
-            <div>
+        cellRenderer: (rowIndex) => {
+          return (
+            < div className={handles.centerDiv} >
               <NumericStepper
                 size="small"
-                minValue={0}
-                maxValue={10}
-                defaultValue={quantity[rowIndex] || 1}
-                onChange={(event) => handleQuantityChange(rowIndex, event.value)}
+                value={tableData[rowIndex.rowData.id - 1].quantity}
+                onChange={(event: any) => handleQuantityChange(rowIndex, event.value)}
               />
-            </div>
-          </div>
-        )),
+            </div >
+          )
+        },
       },
       product: {
         title: 'Product',
-        cellRenderer: createCellRenderer(({ rowIndex }: { rowIndex: number }) => {
-          const selectedItem = items[rowIndex];
-
+        cellRenderer: (rowIndex) => {
           return (
             <div className="w-two-thirds-l w-100-ns fl-l">
               <div className={`flex flex-column w-10 fl ${handles.productThumb}`}>
-                {selectedItem?.id?.thumb && (
-                  <img src={selectedItem?.id.thumb} width="50" height="50" alt="" />
+                {tableData[rowIndex.rowData.id - 1]?.thumb && (
+                  <img src={tableData[rowIndex.rowData.id - 1]?.thumb} width="50" height="50" alt="" />
                 )}
               </div>
               <div className={`flex flex-column w-90 fl ${handles.productLabel}`}>
                 <span className={`${handles.productTitle}`}>
-                  {selectedItem?.id?.label && selectedItem?.id?.label}
+                  {tableData[rowIndex.rowData.id - 1]?.label ?? ''}
                 </span>
               </div>
             </div>
-          );
-        }),
+          )
+
+        }
       },
       price: {
         title: 'Price',
-      },
+      }
     },
   };
 
@@ -123,9 +128,12 @@ const QuickOrderPad: React.FC = () => {
         <AddAllToListButton />
         <AddAllToCart />
       </div>
-      <div className={`${handles.tableWrapper}`}>
-        <Table fullWidth items={items} schema={schema} density="low" />
-      </div>
+      <Table
+        fullWidth
+        items={tableData}
+        schema={schema}
+        density="low"
+      />
       <div className={`${handles.tableActions}`}>
         <AddMoreLinesButton addRow={addRow} />
         <ClearAllLink removeItems={removeItems} />
