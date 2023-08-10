@@ -56,7 +56,7 @@ const QuickOrderPad = () => {
   const addRow = () => {
     const highestId = tableData.length > 0 ? tableData[tableData.length - 1].id || 0 : 0;
     const newId = highestId + 1;
-    const newItem = { id: newId, quantity: 0, thumb: '', price: '', label: '' };
+    const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '' };
 
     setTableData([...tableData, newItem]);
   };
