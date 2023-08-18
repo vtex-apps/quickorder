@@ -8,8 +8,8 @@
   "quickorder-autocomplete": {
     "component": "AutocompleteBlock"
   },
-  "quickorder-textarea": {
-    "component": "TextAreaBlock"
+  "quickorder-copyPastePad": {
+    "component": "CopyPastePad"
   },
   "store.quickorder": {},
   "quickorder-addAllButton": {
@@ -25,6 +25,6 @@
     "component": "AddMoreLinesButton"
   },
   "quickorder-quickOrderPad": {
-      "component": "QuickOrderPad"
+    "component": "QuickOrderPad"
   }
 }
