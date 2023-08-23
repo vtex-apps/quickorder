@@ -32,7 +32,7 @@ const UploadBlock: FunctionComponent<
   downloadText,
   componentOnly,
   intl,
-  alwaysShowAddToCart
+  alwaysShowAddToCart,
 }: any) => {
   let productsArray: any = []
   const [state, setState] = useState<any>({
@@ -116,9 +116,9 @@ const UploadBlock: FunctionComponent<
 
   const onReviewItems = (items: any) => {
     if (items) {
-      const show = !items.some((item: any) => item.error);
+      const show = !items.some((item: any) => item.error)
 
-        setState({
+      setState({
         ...state,
         reviewItems: items,
         reviewState: true,
@@ -476,8 +476,7 @@ interface UploadBlockInterface {
   description?: string
   componentOnly?: boolean
   downloadText?: string
-  alwaysShowAddToCart?:boolean
+  alwaysShowAddToCart?: boolean
 }
-
 
 export default injectIntl(UploadBlock)
