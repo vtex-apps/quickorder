@@ -32,7 +32,7 @@ const UploadBlock: FunctionComponent<
   downloadText,
   componentOnly,
   intl,
-  alwaysShowAddToCart,
+  alwaysShowAddToCart = true,
 }: any) => {
   let productsArray: any = []
   const [state, setState] = useState<any>({
