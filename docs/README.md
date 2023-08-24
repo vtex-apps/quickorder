@@ -115,7 +115,8 @@ To use these blocks, follow the instructions below.
          "componentOnly": false,
          "text": "Upload",
          "description": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order",
-         "downloadText": "Click here to download a spreadsheet model"
+         "downloadText": "Click here to download a spreadsheet model",
+         "alwaysShowAddToCart:": true
        }
      },
 
@@ -164,6 +165,7 @@ Especially, the `quickorder-upload` block also can use the following prop:
 | Prop name      | Type     | Description                                                                                                                                                  | Default value |
 | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
 | `downloadText` | `string` | Defines a text for the spreadsheet download button. Use this prop to explain users how to properly download the spreadsheet model provided by the component. | `undefined`   |
+| `alwaysShowAddToCart` | `boolean` | Property that defines if the add to cart button will appear even if it has some invalid Sku. | `undefined`   |
 
 In addition, the `quickorder-upload` and the `quickorder-textarea` block can use the following prop:
 
