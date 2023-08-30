@@ -162,10 +162,10 @@ All blocks exported by the `quickorder` app share the same props:
 
 Especially, the `quickorder-upload` block also can use the following prop:
 
-| Prop name      | Type     | Description                                                                                                                                                  | Default value |
-| -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
+| Prop name      | Type     | Description                                                                                                                                                 | Default value |
+| -------------- | -------- |-------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
 | `downloadText` | `string` | Defines a text for the spreadsheet download button. Use this prop to explain users how to properly download the spreadsheet model provided by the component. | `undefined`   |
-| `alwaysShowAddToCart` | `boolean` | Property that defines if the add to cart button will appear even if it has some invalid Sku. | `undefined`   |
+| `alwaysShowAddToCart` | `boolean` | Property that defines if the add to cart button will appear even if it has some invalid Sku. | `true`   |
 
 In addition, the `quickorder-upload` and the `quickorder-textarea` block can use the following prop:
 
