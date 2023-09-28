@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/restrict-plus-operands */
 import type { FunctionComponent } from 'react'
 import React, { useState, useContext } from 'react'
-import type { WrappedComponentProps } from 'react-intl'
+import type { WrappedComponentProps, MessageDescriptor } from 'react-intl'
 import { FormattedMessage, injectIntl } from 'react-intl'
-import { Button, Textarea, ToastContext, Spinner } from 'vtex.styleguide'
+import {
+  Button,
+  Textarea,
+  RadioGroup,
+  ToastContext,
+  Spinner,
+} from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
 import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
@@ -22,19 +27,24 @@ interface ItemType {
   quantity: number
 }
 
-const TextAreaBlock: FunctionComponent<
-  TextAreaBlockInterface & WrappedComponentProps
-> = ({ intl, value, text, hiddenColumns, description, componentOnly }: any) => {
+const CopyPastePad: FunctionComponent<WrappedComponentProps> = ({ intl }) => {
   const [state, setState] = useState<any>({
     reviewState: false,
     showAddToCart: null,
-    textAreaValue: value || '',
+    textAreaValue: '',
+    partType: 'manufacturer',
     reviewItems: [],
   })
 
   const [refidLoading, setRefIdLoading] = useState<any>()
 
-  const { textAreaValue, reviewItems, reviewState, showAddToCart } = state
+  const {
+    textAreaValue,
+    partType,
+    reviewItems,
+    reviewState,
+    showAddToCart,
+  } = state
 
   const [
     addToCart,
@@ -92,7 +102,7 @@ const TextAreaBlock: FunctionComponent<
       variables: {
         items: items.map((item: ItemType) => {
           const [existsInCurrentOrder] = currentItemsInCart.filter(
-            (el) => el.id === item.id.toString()
+            (el: any) => el.id === item.id.toString()
           )
 
           if (existsInCurrentOrder) {
@@ -135,13 +145,15 @@ const TextAreaBlock: FunctionComponent<
       mutationResult.data?.addToCart?.messages?.generalMessages &&
       mutationResult.data.addToCart.messages.generalMessages.length
     ) {
-      mutationResult.data.addToCart.messages.generalMessages.map((msg: any) => {
-        return showToast({
-          message: msg.text,
-          action: undefined,
-          duration: 30000,
-        })
-      })
+      mutationResult.data.addToCart.messages.generalMessages.forEach(
+        (msg: any) => {
+          return showToast({
+            message: msg.text,
+            action: undefined,
+            duration: 30000,
+          })
+        }
+      )
     } else {
       toastMessage({ success: true, isNewItem: true })
     }
@@ -190,6 +202,13 @@ const TextAreaBlock: FunctionComponent<
     onReviewItems(items)
   }
 
+  const setPartType = (newPartType: string) => {
+    setState({
+      ...state,
+      partType: newPartType,
+    })
+  }
+
   const setTextareaValue = ($textAreaValue: string) => {
     setState({
       ...state,
@@ -220,8 +239,8 @@ const TextAreaBlock: FunctionComponent<
         }
       })
 
-    const merge = (internalItems) => {
-      return internalItems.reduce((acc, val) => {
+    const merge = (internalItems: ItemType[]) => {
+      return internalItems.reduce((acc: ItemType[], val) => {
         const { id, quantity }: ItemType = val
         const ind = acc.findIndex((el) => el.id === id)
 
@@ -245,99 +264,102 @@ const TextAreaBlock: FunctionComponent<
   }
 
   return (
-    <div>
-      {!componentOnly && (
-        <div className={`${handles.textContainer} w-20-l w-100-ns fl-l`}>
-          <h2
-            className={`t-heading-3 mb3 ml5 ml3-ns mt4 ${handles.textContainerTitle}`}
-          >
-            {text}
-          </h2>
+    <div
+      className={`${handles.componentContainer}
+          w-80-l w-100-ns fr-l pb6
+        `}
+    >
+      <h2>Copy & Paste Pad</h2>
+      <p>
+        Simply copy and paste part numbers from your file into the field below
+        using the following format:
+      </p>
+      <p>Part number [TAB or COMMA] Quantity</p>
+
+      <RadioGroup
+        hideBorder
+        label="Select the type of part number:"
+        name="partType"
+        options={[
+          { value: 'manufacturer', label: 'Manufacturer' },
+          { value: 'upc', label: 'UPC' },
+          { value: 'sku', label: 'SKU' },
+        ]}
+        value={partType}
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+          setPartType(e.currentTarget.value)
+        }
+      />
+      <section className="mt5">
+        <Textarea
+          value={textAreaValue}
+          placeholder={
+            'Examples:' +
+            '\n' +
+            'T5832-W, 3' +
+            '\n' +
+            '80401-NW, 3' +
+            '\n' +
+            '1451-2W, 5' +
+            '\n' +
+            '88001, 5'
+          }
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+            setTextareaValue(e.target.value)
+          }
+        />
+      </section>
+      <section className={`mt2 ${handles.buttonValidate}`}>
+        <Button
+          variation="primary"
+          size="regular"
+          disabled={!textAreaValue}
+          onClick={() => {
+            parseText()
+          }}
+        >
+          Submit
+        </Button>
+      </section>
+
+      {reviewState && (
+        <div className={`w-100 ph6 ${handles.reviewBlock}`}>
+          <ReviewBlock
+            reviewedItems={reviewItems}
+            onReviewItems={onReviewItems}
+            onRefidLoading={onRefidLoading}
+            backList={backList}
+          />
           <div
-            className={`t-body lh-copy c-muted-1 mb7 ml3 false ${handles.textContainerDescription}`}
+            className={`mb4 mt4 flex justify-between ${handles.buttonsBlock}`}
           >
-            {description}
+            <Button
+              variation="tertiary"
+              size="small"
+              onClick={() => {
+                backList()
+              }}
+            >
+              <FormattedMessage id="store/quickorder.back" />
+            </Button>
+            {refidLoading && <Spinner />}
+            {showAddToCart && (
+              <Button
+                variation="primary"
+                size="small"
+                isLoading={mutationLoading}
+                onClick={() => {
+                  addToCartCopyNPaste()
+                }}
+              >
+                <FormattedMessage id="store/quickorder.addToCart" />
+              </Button>
+            )}
           </div>
         </div>
       )}
-
-      <div
-        className={`${handles.componentContainer} ${
-          !componentOnly ? 'w-80-l w-100-ns fr-l pb6' : ''
-        }`}
-      >
-        {!reviewState && (
-          <div className="w-100 mb5">
-            <div className="bg-base t-body c-on-base ph6 br3 b--muted-4">
-              <Textarea
-                value={textAreaValue}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                  setTextareaValue(e.target.value)
-                }
-              />
-              <div className={`mt2 flex justify-end ${handles.buttonValidate}`}>
-                {textAreaValue && (
-                  <Button
-                    variation="secondary"
-                    size="regular"
-                    onClick={() => {
-                      parseText()
-                    }}
-                  >
-                    <FormattedMessage id="store/quickorder.validate" />
-                  </Button>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {reviewState && (
-          <div className={`w-100 ph6 ${handles.reviewBlock}`}>
-            <ReviewBlock
-              reviewedItems={reviewItems}
-              hiddenColumns={hiddenColumns ?? []}
-              onReviewItems={onReviewItems}
-              onRefidLoading={onRefidLoading}
-              backList={backList}
-            />
-            <div
-              className={`mb4 mt4 flex justify-between ${handles.buttonsBlock}`}
-            >
-              <Button
-                variation="tertiary"
-                size="small"
-                onClick={() => {
-                  backList()
-                }}
-              >
-                <FormattedMessage id="store/quickorder.back" />
-              </Button>
-              {refidLoading && <Spinner />}
-              {showAddToCart && (
-                <Button
-                  variation="primary"
-                  size="small"
-                  isLoading={mutationLoading}
-                  onClick={() => {
-                    addToCartCopyNPaste()
-                  }}
-                >
-                  <FormattedMessage id="store/quickorder.addToCart" />
-                </Button>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
     </div>
   )
-}
-
-interface MessageDescriptor {
-  id: string
-  description?: string | any
-  defaultMessage?: string
 }
 
 interface OrderFormContext {
@@ -346,12 +368,4 @@ interface OrderFormContext {
   setOrderForm: (orderForm: Partial<OrderFormType>) => void
 }
 
-interface TextAreaBlockInterface {
-  value: string
-  onRefidLoading: any
-  text?: string
-  description?: string
-  componentOnly?: boolean
-}
-
-export default injectIntl(TextAreaBlock)
+export default injectIntl(CopyPastePad)

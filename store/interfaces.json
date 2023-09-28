@@ -8,8 +8,23 @@
   "quickorder-autocomplete": {
     "component": "AutocompleteBlock"
   },
-  "quickorder-textarea": {
-    "component": "TextAreaBlock"
+  "quickorder-copyPastePad": {
+    "component": "CopyPastePad"
   },
-  "store.quickorder": {}
+  "store.quickorder": {},
+  "quickorder-addAllButton": {
+    "component": "AddAllToCart"
+  },
+  "quickorder-clearAllLink": {
+    "component": "ClearAllLink"
+  },
+  "quickorder-AddAllToListButton": {
+    "component": "AddAllToListButton"
+  },
+  "quickorder-AddMoreLinesButton": {
+    "component": "AddMoreLinesButton"
+  },
+  "quickorder-quickOrderPad": {
+    "component": "QuickOrderPad"
+  }
 }
