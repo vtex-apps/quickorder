@@ -1,3 +1,4 @@
+import type { MessageDescriptor } from 'react-intl'
 import { defineMessages } from 'react-intl'
 
 const storePrefix = 'store/quickorder.'
@@ -118,7 +119,7 @@ export const reviewMessages = defineMessages({
   cannotGetSkuInfo: {
     id: `${storePrefix}cannotGetSkuInfo`,
   },
-})
+}) as Record<string, MessageDescriptor>
 
 export const categoryMessages = defineMessages({
   success: {
@@ -139,7 +140,7 @@ export const categoryMessages = defineMessages({
   seeCart: {
     id: `${toasterPrefix}seeCart`,
   },
-})
+}) as Record<string, MessageDescriptor>
 
 export const autocompleteMessages = defineMessages({
   placeholder: {
@@ -163,4 +164,4 @@ export const autocompleteMessages = defineMessages({
   seeCart: {
     id: `${toasterPrefix}seeCart`,
   },
-})
+}) as Record<string, MessageDescriptor>

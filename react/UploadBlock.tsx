@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 import type { FunctionComponent } from 'react'
 import React, { useState, useContext } from 'react'
-import type { WrappedComponentProps } from 'react-intl'
+import type { WrappedComponentProps, MessageDescriptor } from 'react-intl'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import { Button, Dropzone, ToastContext } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
@@ -135,7 +135,7 @@ const UploadBlock: FunctionComponent<
   const parseText = () => {
     let textAreaValue = ''
 
-    productsQueue.forEach((element) => {
+    productsQueue.forEach((element: any[]) => {
       textAreaValue += `${element[0]},${element[1]}\n`
     })
 
@@ -188,8 +188,10 @@ const UploadBlock: FunctionComponent<
 
       result[sheetName].splice(0, 1)
       productsArray = result[sheetName]
-      productsArray = productsArray.filter((item) => item.length)
-      productsArray.forEach((p) => {
+      productsArray = productsArray.filter(
+        (item: string | any[]) => item.length
+      )
+      productsArray.forEach((p: any[]) => {
         p[0] = (p[0] || '').toString().trim()
         p[1] = (p[1] || '').toString().trim()
       })
@@ -238,7 +240,7 @@ const UploadBlock: FunctionComponent<
           variables: {
             items: chunk.map((item: ItemType) => {
               const [existsInCurrentOrder] = currentItemsInCart.filter(
-                (el) => el.id === item.id.toString()
+                (el: { id: string }) => el.id === item.id.toString()
               )
 
               if (existsInCurrentOrder) {
@@ -312,10 +314,10 @@ const UploadBlock: FunctionComponent<
         }
       })
 
-    const merge = (internalItems) => {
-      return internalItems.reduce((acc: any, val) => {
+    const merge = (internalItems: any[]) => {
+      return internalItems.reduce((acc: any, val: ItemType) => {
         const { id, quantity }: ItemType = val
-        const ind = acc.findIndex((el) => el.id === id)
+        const ind = acc.findIndex((el: { id: string }) => el.id === id)
 
         if (ind !== -1) {
           acc[ind].quantity += quantity
@@ -459,12 +461,6 @@ const UploadBlock: FunctionComponent<
       </div>
     </div>
   )
-}
-
-interface MessageDescriptor {
-  id: string
-  description?: string | any
-  defaultMessage?: string
 }
 
 interface OrderFormContext {

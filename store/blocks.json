@@ -1,19 +1,12 @@
 {
   "store.quickorder": {
-    "blocks": [
-      "flex-layout.row#title",
-      "flex-layout.row#pads"
-    ]
+    "blocks": ["flex-layout.row#title", "flex-layout.row#pads"]
   },
   "flex-layout.row#title": {
-    "children": [
-      "flex-layout.col#title"
-    ]
+    "children": ["flex-layout.col#title"]
   },
   "flex-layout.col#title": {
-    "children": [
-      "rich-text#title"
-    ],
+    "children": ["rich-text#title"],
     "props": {
       "blockClass": "titleQuickorder",
       "preventVerticalStretch": true
@@ -33,9 +26,7 @@
     ]
   },
   "flex-layout.col#subtitle": {
-    "children": [
-      "rich-text#subtitle"
-    ],
+    "children": ["rich-text#subtitle"],
     "props": {
       "blockClass": "titleQuickorder",
       "preventVerticalStretch": true
@@ -48,18 +39,14 @@
     }
   },
   "flex-layout.col#clearList": {
-    "children": [
-      "flex-layout.row#clearList"
-    ],
+    "children": ["flex-layout.row#clearList"],
     "props": {
       "width": "20%",
       "horizontalAlign": "right"
     }
   },
   "flex-layout.row#clearList": {
-    "children": [
-      "quickorder-clearAllLink"
-    ]
+    "children": ["quickorder-clearAllLink"]
   },
   "rich-text#clearList": {
     "props": {
@@ -67,18 +54,14 @@
     }
   },
   "flex-layout.col#addAllToList": {
-    "children": [
-      "flex-layout.row#addAllToList"
-    ],
+    "children": ["flex-layout.row#addAllToList"],
     "props": {
       "width": "20%",
       "horizontalAlign": "center"
     }
   },
   "flex-layout.row#addAllToList": {
-    "children": [
-      "quickorder-AddAllToListButton"
-    ]
+    "children": ["quickorder-AddAllToListButton"]
   },
   "rich-text#addAllToList": {
     "props": {
@@ -86,34 +69,25 @@
     }
   },
   "flex-layout.col#addAllToCart": {
-    "children": [
-      "quickorder-addAllButton"
-    ],
+    "children": ["quickorder-addAllButton"],
     "props": {
       "width": "20%",
       "horizontalAlign": "center"
     }
   },
   "flex-layout.row#addAllToCart": {
-    "children": [
-      "quickorder-addAllButton"
-    ],
+    "children": ["quickorder-addAllButton"],
     "props": {
       "fullWidth": true
     }
   },
   "flex-layout.row#pads": {
-    "children": [
-      "flex-layout.col#orderPad",
-      "flex-layout.col#pastePad"
-    ]
+    "children": ["flex-layout.col#orderPad", "flex-layout.col#pastePad"]
   },
   "flex-layout.col#orderPad": {
-    "children": [
-      "quickorder-quickOrderPad"
-    ],
+    "children": ["quickorder-quickOrderPad"],
     "props": {
-      "width": "77%"
+      "width": "76%"
     }
   },
   "flex-layout.row#tableHeader": {
@@ -126,16 +100,11 @@
     ]
   },
   "flex-layout.col#column1": {
-    "children": [
-      "rich-text#column1"
-    ],
+    "children": ["rich-text#column1"],
     "props": {
       "width": "20%",
       "borderColor": "black",
-      "border": [
-        "top",
-        "bottom"
-      ]
+      "border": ["top", "bottom"]
     }
   },
   "rich-text#column1": {
@@ -145,16 +114,11 @@
     }
   },
   "flex-layout.col#column2": {
-    "children": [
-      "rich-text#column2"
-    ],
+    "children": ["rich-text#column2"],
     "props": {
       "width": "15%",
       "borderColor": "black",
-      "border": [
-        "top",
-        "bottom"
-      ]
+      "border": ["top", "bottom"]
     }
   },
   "rich-text#column2": {
@@ -164,16 +128,11 @@
     }
   },
   "flex-layout.col#column3": {
-    "children": [
-      "rich-text#column3"
-    ],
+    "children": ["rich-text#column3"],
     "props": {
       "width": "45%",
       "borderColor": "black",
-      "border": [
-        "top",
-        "bottom"
-      ]
+      "border": ["top", "bottom"]
     }
   },
   "rich-text#column3": {
@@ -183,16 +142,11 @@
     }
   },
   "flex-layout.col#column4": {
-    "children": [
-      "rich-text#column4"
-    ],
+    "children": ["rich-text#column4"],
     "props": {
       "width": "15%",
       "borderColor": "black",
-      "border": [
-        "top",
-        "bottom"
-      ]
+      "border": ["top", "bottom"]
     }
   },
   "rich-text#column4": {
@@ -207,81 +161,21 @@
     }
   },
   "flex-layout.col#pastePad": {
-    "children": [
-      "flex-layout.row#copyPastePad",
-      "flex-layout.row#text1PastePad",
-      "flex-layout.row#text2PastePad",
-      "flex-layout.row#text3PastePad",
-      "flex-layout.row#textarea"
-    ],
+    "children": ["flex-layout.row#copyPastePad"],
     "props": {
       "width": "23%",
       "borderColor": "black",
       "blockClass": "pasteContainer",
       "border": "all",
-      "paddingLeft": 5
+      "marginLeft": 5,
+      "paddingLeft": 5,
+      "paddingRight": 5
     }
   },
   "flex-layout.row#copyPastePad": {
-    "children": [
-      "rich-text#copyPastePad"
-    ]
+    "children": ["quickorder-copyPastePad"]
   },
-  "rich-text#copyPastePad": {
-    "props": {
-      "text": "Copy & Paste Pad",
-      "font": "t-small"
-    }
-  },
-  "flex-layout.row#text1PastePad": {
-    "children": [
-      "rich-text#text1PastePad"
-    ]
-  },
-  "rich-text#text1PastePad": {
-    "props": {
-      "text": "Simply copy and paste part numbers from your file into the field below using the following format:",
-      "font": "t-small"
-    }
-  },
-  "flex-layout.row#text2PastePad": {
-    "children": [
-      "rich-text#text2PastePad"
-    ]
-  },
-  "rich-text#text2PastePad": {
-    "props": {
-      "text": "Part number [TAB or COMMA] Quantity",
-      "font": "t-small"
-    }
-  },
-  "flex-layout.row#text3PastePad": {
-    "children": [
-      "rich-text#text3PastePad"
-    ]
-  },
-  "rich-text#text3PastePad": {
-    "props": {
-      "text": "Select the type of part number",
-      "font": "t-small"
-    }
-  },
-  "flex-layout.row#textarea": {
-    "children": [
-      "flex-layout.col#textarea"
-    ]
-  },
-  "flex-layout.col#textarea": {
-    "children": [
-      "quickorder-textarea"
-    ]
-  },
-  "quickorder-textarea": {
-    "props": {
-      "componentOnly": false,
-      "hiddenColumns": []
-    }
-  },
+
   "flex-layout.row#bottom": {
     "children": [
       "flex-layout.col#bottomColumn1",
@@ -295,18 +189,14 @@
     }
   },
   "flex-layout.col#bottomColumn1": {
-    "children": [
-      "flex-layout.row#addMore"
-    ],
+    "children": ["flex-layout.row#addMore"],
     "props": {
       "width": "23%",
       "horizontalAlign": "left"
     }
   },
   "flex-layout.row#addMore": {
-    "children": [
-      "quickorder-AddMoreLinesButton"
-    ]
+    "children": ["quickorder-AddMoreLinesButton"]
   },
   "rich-text#addMore": {
     "props": {
@@ -315,27 +205,21 @@
     }
   },
   "flex-layout.col#bottomColumn2": {
-    "children": [
-      "flex-layout.row#clearList"
-    ],
+    "children": ["flex-layout.row#clearList"],
     "props": {
       "width": "20%",
       "horizontalAlign": "center"
     }
   },
   "flex-layout.col#bottomColumn3": {
-    "children": [
-      "flex-layout.row#addAllToList"
-    ],
+    "children": ["flex-layout.row#addAllToList"],
     "props": {
       "width": "15%",
       "horizontalAlign": "center"
     }
   },
   "flex-layout.col#bottomColumn4": {
-    "children": [
-      "flex-layout.row#addAllToCart"
-    ],
+    "children": ["flex-layout.row#addAllToCart"],
     "props": {
       "width": "15%",
       "horizontalAlign": "center"

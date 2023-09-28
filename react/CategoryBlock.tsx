@@ -122,8 +122,8 @@ const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
 
       if (mutationResult.errors?.length) {
-        for (let i = 0; i < mutationResult.errors.length; i++) {
-          console.error(mutationResult.errors[i].message)
+        for (const element of mutationResult.errors) {
+          console.error(element.message)
         }
       }
 
@@ -154,13 +154,15 @@ const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
       mutationResult.data?.addToCart?.messages?.generalMessages &&
       mutationResult.data.addToCart.messages.generalMessages.length
     ) {
-      mutationResult.data.addToCart.messages.generalMessages.map((msg: any) => {
-        return showToast({
-          message: msg.text,
-          action: undefined,
-          duration: 30000,
-        })
-      })
+      mutationResult.data.addToCart.messages.generalMessages.forEach(
+        (msg: any) => {
+          return showToast({
+            message: msg.text,
+            action: undefined,
+            duration: 30000,
+          })
+        }
+      )
     } else {
       toastMessage({ success: true, isNewItem: true })
       const quantitiesCopy = quantitySelected

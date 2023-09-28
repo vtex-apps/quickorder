@@ -1,14 +1,10 @@
-import React from 'react';
-import { useCssHandles } from 'vtex.css-handles';
-import { Button } from 'vtex.styleguide';
+import React from 'react'
+import { useCssHandles } from 'vtex.css-handles'
+import { Button } from 'vtex.styleguide'
 import './global.css'
 
-
 const AddAllToCart = () => {
-  const CSS_HANDLES = [
-    'addAllToCartContainer',
-    'addAllToCartButton'
-  ] as const
+  const CSS_HANDLES = ['addAllToCartContainer', 'addAllToCartButton'] as const
 
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -16,7 +12,7 @@ const AddAllToCart = () => {
     <div className={handles.addAllToCartContainer}>
       <Button variation="primary"> ADD ALL TO CART</Button>
     </div>
-  );
-};
+  )
+}
 
-export default AddAllToCart;
+export default AddAllToCart

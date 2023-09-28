@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import type { FunctionComponent } from 'react'
 import React, { useState, useContext } from 'react'
-import type { WrappedComponentProps } from 'react-intl'
+import type { WrappedComponentProps, MessageDescriptor } from 'react-intl'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import { Button, Tag, Input, ToastContext, IconClear } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
@@ -19,9 +19,7 @@ import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
 import productQuery from './queries/product.gql'
 import './global.css'
 
-
-
-//const StateContext = React.createContext({ state });
+// const StateContext = React.createContext({ state });
 
 const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   onSelectedItemChange,
@@ -80,9 +78,9 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
       action = success
         ? {
-          label: translateMessage(messages.seeCart),
-          href: '/checkout/#/cart',
-        }
+            label: translateMessage(messages.seeCart),
+            href: '/checkout/#/cart',
+          }
         : undefined
     }
 
@@ -110,7 +108,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       variables: {
         items: items.map((item: ItemType) => {
           const [existsInCurrentOrder] = currentItemsInCart.filter(
-            (el) => el.id === item.id.toString()
+            (el: { id: string }) => el.id === item.id.toString()
           )
 
           if (existsInCurrentOrder) {
@@ -153,13 +151,15 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       mutationResult.data?.addToCart?.messages?.generalMessages &&
       mutationResult.data.addToCart.messages.generalMessages.length
     ) {
-      mutationResult.data.addToCart.messages.generalMessages.map((msg: any) => {
-        return showToast({
-          message: msg.text,
-          action: undefined,
-          duration: 30000,
-        })
-      })
+      mutationResult.data.addToCart.messages.generalMessages.forEach(
+        (msg: any) => {
+          return showToast({
+            message: msg.text,
+            action: undefined,
+            duration: 30000,
+          })
+        }
+      )
     } else {
       toastMessage({ success: true, isNewItem: true })
       clear()
@@ -185,8 +185,8 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
       const seller = selectedSku
         ? data.product.items[0].sellers.find((item: any) => {
-          return item.sellerDefault === true
-        }).sellerId
+            return item.sellerDefault === true
+          }).sellerId
         : null
 
       let multiplier = 1
@@ -197,15 +197,16 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
       setState({
         ...state,
-        selectedItem:
-          !!product && product.length
-            ? { ...product[0], value: selectedSku, seller, data }
-            : null,
+        selectedItem: product?.length
+          ? { ...product[0], value: selectedSku, seller, data }
+          : null,
         unitMultiplier: multiplier,
         quantitySelected: multiplier,
       })
     }
-    onSelectedItemChange(product[0]);
+
+    onSelectedItemChange(product[0])
+
     return true
   }
 
@@ -225,7 +226,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
     }
 
     const matchedItem = selectedItem.data.product.items.find(
-      (item) => item.itemId === value
+      (item: { itemId: string }) => item.itemId === value
     )
 
     setState({
@@ -234,7 +235,6 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       unitMultiplier: matchedItem.unitMultiplier,
       quantitySelected: matchedItem.unitMultiplier,
     })
-
   }
 
   const thumb = (url: string) => {
@@ -297,7 +297,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
   return (
     <div>
-      {/*<StateContext.Provider value={{ state, setState }}>*/}
+      {/* <StateContext.Provider value={{ state, setState }}> */}
       {!componentOnly && (
         <div className={`${handles.textContainer} w-third-l w-100-ns fl-l`}>
           <h2
@@ -313,8 +313,9 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
         </div>
       )}
       <div
-        className={`${handles.componentContainer} ${!componentOnly ? 'w-two-thirds-l w-100-ns fr-l' : ''
-          }`}
+        className={`${handles.componentContainer} ${
+          !componentOnly ? 'w-two-thirds-l w-100-ns fr-l' : ''
+        }`}
       >
         <div className="w-100 mb5">
           <div className="bg-base t-body c-on-base pa0 br3 b--muted-4">
@@ -449,9 +450,8 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
           </div>
         </div>
       </div>
-      {/*</StateContext.Provider>*/}
+      {/* </StateContext.Provider> */}
     </div>
-
   )
 }
 
@@ -467,11 +467,4 @@ interface OrderFormContext {
   setOrderForm: (orderForm: Partial<OrderFormType>) => void
 }
 
-interface MessageDescriptor {
-  id: string
-  description?: string | any
-  defaultMessage?: string
-}
-
-//export const useStateContext = () => useContext(StateContext);
 export default injectIntl(AutocompleteBlock)

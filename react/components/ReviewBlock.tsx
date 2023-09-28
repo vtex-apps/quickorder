@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable vtex/prefer-early-return */
 import type { FunctionComponent } from 'react'
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useCallback } from 'react'
 import {
   Table,
   Input,
@@ -12,7 +12,7 @@ import {
   Dropdown,
   ToastContext,
 } from 'vtex.styleguide'
-import type { WrappedComponentProps } from 'react-intl'
+import type { MessageDescriptor, WrappedComponentProps } from 'react-intl'
 import { injectIntl } from 'react-intl'
 import PropTypes from 'prop-types'
 import { useApolloClient, useQuery } from 'react-apollo'
@@ -39,32 +39,39 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   const { showToast } = useContext(ToastContext)
 
   const { data: orderFormData } = useQuery<{
-    orderForm
+    orderForm: { orderFormId: string }
   }>(OrderFormQuery, {
     ssr: false,
     skip: !!orderFormId,
   })
 
-  const checkRestriction = async (sku: any) => {
-    return client.query({
-      query: autocomplete,
-      variables: { inputValue: sku },
-    })
-  }
-
-  const setRestriction = async (data: any) => {
-    return Promise.all(
-      data.map(async (item: any) => {
-        const res: any = await checkRestriction(item.refid)
-
-        const foundSku = res?.data?.productSuggestions?.products[0]?.items.find(
-          (suggestedItem) => suggestedItem.itemId === item.sku
-        )
-
-        return foundSku ? item : null
+  const checkRestriction = useCallback(
+    async (sku: any) => {
+      return client.query({
+        query: autocomplete,
+        variables: { inputValue: sku },
       })
-    )
-  }
+    },
+    [client]
+  )
+
+  const setRestriction = useCallback(
+    async (data: any) => {
+      return Promise.all(
+        data.map(async (item: any) => {
+          const res: any = await checkRestriction(item.refid)
+
+          const foundSku = res?.data?.productSuggestions?.products[0]?.items.find(
+            (suggestedItem: { itemId: any }) =>
+              suggestedItem.itemId === item.sku
+          )
+
+          return foundSku ? item : null
+        })
+      )
+    },
+    [checkRestriction]
+  )
 
   const [state, setReviewState] = useState<any>({
     reviewItems:
@@ -121,225 +128,230 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     'store/quickorder.ORD029': messages.ORD029,
     'store/quickorder.ORD030': messages.ORD030,
     'store/quickorder.ORD031': messages.ORD031,
-  }
+  } as Record<string, MessageDescriptor>
 
-  const validateRefids = async (refidData: any, reviewed: any) => {
-    let error = false
+  const validateRefids = useCallback(
+    async (refidData: any, reviewed: any) => {
+      let error = false
 
-    // drops sellers without stock from refidData
-    refidData?.skuFromRefIds.items.forEach((item: any) => {
-      if (!item.sellers) return
-      item.sellers = item.sellers.filter(
-        (seller: any) =>
-          seller.availability === 'available' ||
-          seller.availability === 'partiallyAvailable'
-      )
-    })
+      // drops sellers without stock from refidData
+      refidData?.skuFromRefIds.items.forEach((item: any) => {
+        if (!item.sellers) return
+        item.sellers = item.sellers.filter(
+          (seller: any) =>
+            seller.availability === 'available' ||
+            seller.availability === 'partiallyAvailable'
+        )
+      })
 
-    if (refidData) {
-      const refIdNotFound =
-        !!refidData && !!refidData.skuFromRefIds.items
+      if (refidData) {
+        const refIdNotFound = refidData?.skuFromRefIds?.items?.length
           ? refidData.skuFromRefIds.items.filter((item: any) => {
               return item.sku === null
             })
           : []
 
-      const refIdFound =
-        !!refidData && !!refidData.skuFromRefIds.items
+        const refIdFound = refidData?.skuFromRefIds?.items?.length
           ? refidData.skuFromRefIds.items.filter((item: any) => {
               return item.sku !== null
             })
           : []
 
-      const refNotAvailable =
-        !!refidData && !!refidData.skuFromRefIds.items
+        const refNotAvailable = refidData?.skuFromRefIds?.items?.length
           ? refidData.skuFromRefIds.items.filter((item: any) => {
               return !!item.sellers?.length
             })
           : []
 
-      const mappedRefId = {}
+        const mappedRefId = {} as Record<string, Record<string, any>>
 
-      if (refidData?.skuFromRefIds?.items) {
-        const restrictedData = await setRestriction(
-          refidData.skuFromRefIds.items
-        ).then((data) =>
-          data.filter((item: any) => {
-            return item != null
+        if (refidData?.skuFromRefIds?.items) {
+          const restrictedData = await setRestriction(
+            refidData.skuFromRefIds.items
+          ).then((data) =>
+            data.filter((item: any) => {
+              return item != null
+            })
+          )
+
+          restrictedData.forEach((item: any) => {
+            mappedRefId[item.refid] = item
           })
-        )
+        }
 
-        restrictedData.forEach((item: any) => {
-          mappedRefId[item.refid] = item
-        })
-      }
+        const errorMsg = (item: any, sellerWithStock: string) => {
+          let ret: any = null
 
-      const errorMsg = (item: any, sellerWithStock: string) => {
-        let ret: any = null
+          /* order of precedence for errors
+           * 1) Item not found
+           * 2) Item availability
+           * 3) Item restriction
+           */
+          const notfound = refIdNotFound.find((curr: any) => {
+            return curr.refid === item.sku && curr.sku === null
+          })
 
-        /* order of precedence for errors
-         * 1) Item not found
-         * 2) Item availability
-         * 3) Item restriction
-         */
-        const notfound = refIdNotFound.find((curr: any) => {
-          return curr.refid === item.sku && curr.sku === null
-        })
+          const found = refIdFound.find((curr: any) => {
+            return curr.refid === item.sku && curr.sku !== null
+          })
 
-        const found = refIdFound.find((curr: any) => {
-          return curr.refid === item.sku && curr.sku !== null
-        })
+          let selectedSellerHasPartialStock
+          const foundHasStock =
+            found?.sellers?.length &&
+            found.sellers.filter((seller: any) => {
+              if (seller.id === sellerWithStock) {
+                selectedSellerHasPartialStock =
+                  seller.availability === 'partiallyAvailable'
+              }
 
-        let selectedSellerHasPartialStock
-        const foundHasStock =
-          found?.sellers?.length &&
-          found.sellers.filter((seller: any) => {
-            if (seller.id === sellerWithStock) {
-              selectedSellerHasPartialStock =
-                seller.availability === 'partiallyAvailable'
-            }
+              return (
+                seller.availability &&
+                (seller.availability === 'available' ||
+                  seller.availability === 'partiallyAvailable')
+              )
+            }).length
 
-            return (
-              seller.availability &&
-              (seller.availability === 'available' ||
-                seller.availability === 'partiallyAvailable')
-            )
-          }).length
+          const itemRestricted = sellerWithStock
+            ? null
+            : `store/quickorder.limited`
 
-        const itemRestricted = sellerWithStock
-          ? null
-          : `store/quickorder.limited`
-
-        const partialStockError = selectedSellerHasPartialStock
-          ? 'store/quickorder.partiallyAvailable'
-          : null
-
-        const availabilityError = foundHasStock
-          ? partialStockError
-          : `store/quickorder.withoutStock`
-
-        ret = notfound
-          ? 'store/quickorder.skuNotFound'
-          : availabilityError ?? itemRestricted
-
-        return ret
-      }
-
-      if (refIdNotFound.length || refNotAvailable.length) {
-        error = true
-      }
-
-      const items = reviewed.map((item: any) => {
-        const sellerWithStock = item.seller
-          ? item.seller
-          : item.sku && mappedRefId[item.sku]?.sellers?.length
-          ? mappedRefId[item.sku]?.sellers.find(
-              (seller: any) =>
-                seller.availability === 'available' ||
-                seller.availability === 'partiallyAvailable'
-            )?.id ?? ''
-          : ''
-
-        const sellerUnitMultiplier =
-          item.sku && mappedRefId[item.sku]?.sellers?.length
-            ? mappedRefId[item.sku]?.sellers.find(
-                (seller: any) => seller.id === sellerWithStock
-              )?.unitMultiplier ?? '1'
-            : '1'
-
-        const sellerAvailableQuantity =
-          item.sku && mappedRefId[item.sku]?.sellers?.length
-            ? mappedRefId[item.sku]?.sellers.find(
-                (seller: any) => seller.id === sellerWithStock
-              )?.availableQuantity
+          const partialStockError = selectedSellerHasPartialStock
+            ? 'store/quickorder.partiallyAvailable'
             : null
 
-        return {
-          ...item,
-          sellers: item.sku ? mappedRefId[item.sku]?.sellers : [],
-          seller: sellerWithStock,
-          vtexSku: item.sku ? mappedRefId[item.sku]?.sku : '1',
-          unitMultiplier: sellerUnitMultiplier,
-          totalQuantity: sellerUnitMultiplier
-            ? sellerUnitMultiplier * item.quantity
-            : '',
-          availableQuantity: sellerAvailableQuantity ?? item.quantity,
-          error: errorMsg(item, sellerWithStock),
+          const availabilityError = foundHasStock
+            ? partialStockError
+            : `store/quickorder.withoutStock`
+
+          ret = notfound
+            ? 'store/quickorder.skuNotFound'
+            : availabilityError ?? itemRestricted
+
+          return ret
         }
-      })
 
-      const merge = (original: any) => {
-        const item = items.find((curr: any) => {
-          return original.sku === curr.sku
+        if (refIdNotFound.length || refNotAvailable.length) {
+          error = true
+        }
+
+        const items = reviewed.map((item: any) => {
+          const sellerWithStock = item.seller
+            ? item.seller
+            : item.sku && mappedRefId[item.sku]?.sellers?.length
+            ? mappedRefId[item.sku]?.sellers.find(
+                (seller: any) =>
+                  seller.availability === 'available' ||
+                  seller.availability === 'partiallyAvailable'
+              )?.id ?? ''
+            : ''
+
+          const sellerUnitMultiplier =
+            item.sku && mappedRefId[item.sku]?.sellers?.length
+              ? mappedRefId[item.sku]?.sellers.find(
+                  (seller: any) => seller.id === sellerWithStock
+                )?.unitMultiplier ?? '1'
+              : '1'
+
+          const sellerAvailableQuantity =
+            item.sku && mappedRefId[item.sku]?.sellers?.length
+              ? mappedRefId[item.sku]?.sellers.find(
+                  (seller: any) => seller.id === sellerWithStock
+                )?.availableQuantity
+              : null
+
+          return {
+            ...item,
+            sellers: item.sku ? mappedRefId[item.sku]?.sellers : [],
+            seller: sellerWithStock,
+            vtexSku: item.sku ? mappedRefId[item.sku]?.sku : '1',
+            unitMultiplier: sellerUnitMultiplier,
+            totalQuantity: sellerUnitMultiplier
+              ? sellerUnitMultiplier * item.quantity
+              : '',
+            availableQuantity: sellerAvailableQuantity ?? item.quantity,
+            error: errorMsg(item, sellerWithStock),
+          }
         })
 
-        return item || original
-      }
+        const merge = (original: any) => {
+          const item = items.find((curr: any) => {
+            return original.sku === curr.sku
+          })
 
-      const updated = reviewItems.map((item: any) => {
-        return merge(item)
-      })
+          return item || original
+        }
 
-      onReviewItems(updated)
-      if (JSON.stringify(reviewItems) !== JSON.stringify(updated)) {
-        setReviewState({
-          ...state,
-          reviewItems: updated,
-          hasError: error,
+        const updated = reviewItems.map((item: any) => {
+          return merge(item)
         })
+
+        onReviewItems(updated)
+        if (JSON.stringify(reviewItems) !== JSON.stringify(updated)) {
+          setReviewState({
+            ...state,
+            reviewItems: updated,
+            hasError: error,
+          })
+        }
       }
-    }
-  }
+    },
+    [onReviewItems, reviewItems, setRestriction, state]
+  )
 
-  const getRefIds = async (
-    _refids: any,
-    reviewed: any,
-    refIdSellerMap: any
-  ) => {
-    onRefidLoading(true)
-    const refids = _refids.length ? Array.from(new Set(_refids)) : []
+  const getRefIds = useCallback(
+    async (_refids: any, reviewed: any, refIdSellerMap: any) => {
+      onRefidLoading(true)
+      const refids = _refids.length ? Array.from(new Set(_refids)) : []
 
-    const refIdQuantityMap = reviewed.reduce((prev, item) => {
-      return {
-        ...prev,
-        [item.sku]: item.quantity,
+      const refIdQuantityMap = reviewed.reduce(
+        (prev: any, item: { sku: any; quantity: any }) => {
+          return {
+            ...prev,
+            [item.sku]: item.quantity,
+          }
+        },
+        {}
+      )
+
+      const query = {
+        query: getRefIdTranslation,
+        variables: { refids, orderFormId, refIdSellerMap, refIdQuantityMap },
       }
-    }, {})
 
-    const query = {
-      query: getRefIdTranslation,
-      variables: { refids, orderFormId, refIdSellerMap, refIdQuantityMap },
-    }
+      try {
+        const { data } = await client.query(query)
 
-    try {
-      const { data } = await client.query(query)
+        await validateRefids(data, reviewed)
+        onRefidLoading(false)
+      } catch (err) {
+        showToast({
+          message: intl.formatMessage(messages.cannotGetSkuInfo),
+        })
+        backList()
+      }
+    },
+    [backList, client, intl, onRefidLoading, showToast, validateRefids]
+  )
 
-      await validateRefids(data, reviewed)
-      onRefidLoading(false)
-    } catch (err) {
-      showToast({
-        message: intl.formatMessage(messages.cannotGetSkuInfo),
-      })
-      backList()
-    }
-  }
+  const convertRefIds = useCallback(
+    (items: any) => {
+      const refIdSellerMap = {} as Record<string, unknown>
+      const refids = items
+        .filter((item: any) => {
+          return item.error === null
+        })
+        .map((item: any) => {
+          refIdSellerMap[item.sku] = ['1']
 
-  const convertRefIds = (items: any) => {
-    const refIdSellerMap = {}
-    const refids = items
-      .filter((item: any) => {
-        return item.error === null
-      })
-      .map((item: any) => {
-        refIdSellerMap[item.sku] = ['1']
+          return item.sku
+        })
 
-        return item.sku
-      })
+      getRefIds(refids, items, refIdSellerMap)
+    },
+    [getRefIds]
+  )
 
-    getRefIds(refids, items, refIdSellerMap)
-  }
-
-  const checkValidatedItems = () => {
+  const checkValidatedItems = useCallback(() => {
     const items: [any] = reviewItems.filter((item: any) => {
       return item.sku !== null && item.error === null && !item.vtexSku
     })
@@ -347,11 +359,11 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     if (items.length) {
       convertRefIds(items)
     }
-  }
+  }, [convertRefIds, reviewItems])
 
   useEffect(() => {
     checkValidatedItems()
-  }, [reviewItems])
+  }, [checkValidatedItems, reviewItems])
 
   const removeLine = (i: number) => {
     const items: [any] = reviewItems
@@ -390,7 +402,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   }
 
   const updateLineSeller = (index: number, seller: string) => {
-    const refIdSellerMap = {}
+    const refIdSellerMap = {} as Record<string, unknown>
     const items = reviewItems.map((item: any) => {
       return item.index === index
         ? {
@@ -547,7 +559,13 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
           id: 'store/quickorder.review.label.status',
         }),
         width: 75,
-        cellRenderer: ({ cellData, rowData }: any) => {
+        cellRenderer: ({
+          cellData,
+          rowData,
+        }: {
+          cellData: string
+          rowData: any
+        }) => {
           if (rowData.error) {
             const errMsg = errorMessage[cellData || 'store/quickorder.valid']
             const text =
