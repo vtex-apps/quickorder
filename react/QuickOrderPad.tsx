@@ -22,11 +22,11 @@ const QuickOrderPad = () => {
 
   const handles = useCssHandles(CSS_HANDLES)
 
-  const [autocompleteState, setSelectedItem] = useState<any | null>(null)
+  const [selectedItem, setSelectedItem] = useState<any | null>(null)
 
   useEffect(() => {
-    console.info('autocompleteState changed:', autocompleteState)
-  }, [autocompleteState])
+    console.info('autocompleteState changed:', selectedItem)
+  }, [selectedItem])
 
   const [tableData, setTableData] = useState([
     { id: 1, quantity: 1, thumb: '', price: '', label: '' },
@@ -151,7 +151,7 @@ const QuickOrderPad = () => {
         <AddAllToListButton />
         <AddAllToCart />
       </div>
-      <Table fullWidth items={tableData} schema={schema} density="low" />
+      <Table dynamicRowHeight="true" fullWidth items={tableData} schema={schema} density="low" />
       <div className={`${handles.tableActions}`}>
         <AddMoreLinesButton addRow={addRow} />
         <ClearAllLink removeItems={removeItems} />
