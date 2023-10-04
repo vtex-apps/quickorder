@@ -18,6 +18,7 @@ const QuickOrderPad = () => {
     'tableActions',
     'tableWrapper',
     'headerActions',
+    'productContainer',
   ] as const
 
   const handles = useCssHandles(CSS_HANDLES)
@@ -34,12 +35,13 @@ const QuickOrderPad = () => {
 
   const handleSelectedItemChange = (
     rowIndex: { rowData: any },
-    newSelectedItem: { thumb: string; label: string }
+    newSelectedItem: { thumb: string; label: string, price: number }
   ) => {
     const tableInfo = [...tableData] // Create a copy of the original array
     const { rowData } = rowIndex
     const rowId = rowData.id - 1
 
+    debugger
     tableInfo[rowId].thumb = newSelectedItem.thumb
     tableInfo[rowId].label = newSelectedItem.label
     setSelectedItem(newSelectedItem)
@@ -110,9 +112,9 @@ const QuickOrderPad = () => {
         title: 'Product',
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           return (
-            <div className="w-two-thirds-l w-100-ns fl-l">
+            <div className={`${handles.productContainer} w-two-thirds-l w-100-ns fl-l`}>
               <div
-                className={`flex flex-column w-10 fl ${handles.productThumb}`}
+                className={`flex fl ${handles.productThumb}`}
               >
                 {tableData[rowIndex.rowData.id - 1]?.thumb && (
                   <img
@@ -124,7 +126,7 @@ const QuickOrderPad = () => {
                 )}
               </div>
               <div
-                className={`flex flex-column w-90 fl ${handles.productLabel}`}
+                className={`flex  fl ${handles.productLabel}`}
               >
                 <span className={`${handles.productTitle}`}>
                   {tableData[rowIndex.rowData.id - 1]?.label ?? ''}
@@ -142,11 +144,11 @@ const QuickOrderPad = () => {
 
   return (
     <>
+      <span>
+        Quickly place an order using either the Quick Order Pad or Copy &
+        Paste Pad.
+      </span>
       <div className={`${handles.headerActions}`}>
-        <span>
-          Quickly place an order using either the Quick Order Pad or Copy &
-          Paste Pad.
-        </span>
         <ClearAllLink removeItems={removeItems} />
         <AddAllToListButton />
         <AddAllToCart />

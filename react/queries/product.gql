@@ -9,6 +9,9 @@ query Product($slug: String) {
         sellerId
         sellerName
         sellerDefault
+        commertialOffer {
+          Price
+        }
       }
       referenceId {
         Key

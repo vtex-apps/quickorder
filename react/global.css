@@ -17,8 +17,17 @@
 }
 
 .vtex-quickorder-3-x-headerActions {
+  bottom: 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  position: absolute;
+  right: 45px;
+  top: -50px;
+}
+
+.vtex-quickorder-3-x-clearOrderList,
+.vtex-quickorder-3-x-addAllToLisT {
+  margin-right: 40px;
 }
 
 .vtex-quickorder-3-x-clearOrderList button {
@@ -33,4 +42,46 @@
 .vtex-quickorder-3-x-clearOrderList button:hover {
   background-color: transparent;
   opacity: 0.7;
+}
+
+.vtex-quickorder-3-x-productContainer {
+  display: flex;
+  width: 100%;
+}
+
+.vtex-quickorder-3-x-productThumb img {
+  height: 100%;
+}
+
+.ReactVirtualized__Grid__innerScrollContainer div {
+  text-wrap: unset;
+  overflow: unset;
+  margin: 0;
+}
+
+.ReactVirtualized__Grid__innerScrollContainer  .vtex-quickorder-3-x-productThumb {
+  margin-right: 5px;
+}
+
+.ReactVirtualized__Grid,
+.ReactVirtualized__Grid__innerScrollContainer {
+  overflow: unset !important;
+  z-index: 99999;
+}
+
+.vtex-button__label {
+  font-size: 14px;
+}
+
+.vtex-quickorder-3-x-productTitle {
+  color: #349beb;
+}
+
+.vtex-store-components-3-x-container {
+  position: relative;
+}
+
+.vtex-quickorder-3-x-customOptionButton {
+  overflow: hidden;
+  border: 0.2px solid #b0b0b0;
 }
