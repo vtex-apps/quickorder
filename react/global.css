@@ -59,7 +59,7 @@
   margin: 0;
 }
 
-.ReactVirtualized__Grid__innerScrollContainer  .vtex-quickorder-3-x-productThumb {
+.ReactVirtualized__Grid__innerScrollContainer .vtex-quickorder-3-x-productThumb {
   margin-right: 5px;
 }
 
@@ -84,4 +84,20 @@
 .vtex-quickorder-3-x-customOptionButton {
   overflow: hidden;
   border: 0.2px solid #b0b0b0;
+}
+
+.vtex-quickorder-3-x-priceContainer {
+  align-items: center;
+  display: flex;
+  white-space: unset;
+}
+
+.vtex-quickorder-3-x-productPrice {
+  color: #2557a1;
+  font-weight: 600;
+}
+
+.vtex-quickorder-3-x-priceContainer span {
+  color: gray;
+  font-size: 14px;
 }

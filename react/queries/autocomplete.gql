@@ -8,6 +8,11 @@ query Autocomplete($inputValue: String!) {
           images {
             imageUrl
           }
+          sellers {
+            commertialOffer {
+              Price
+            }
+          }
         }
         link
         linkText

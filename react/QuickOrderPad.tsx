@@ -19,6 +19,8 @@ const QuickOrderPad = () => {
     'tableWrapper',
     'headerActions',
     'productContainer',
+    'priceContainer',
+    'productPrice'
   ] as const
 
   const handles = useCssHandles(CSS_HANDLES)
@@ -41,9 +43,14 @@ const QuickOrderPad = () => {
     const { rowData } = rowIndex
     const rowId = rowData.id - 1
 
-    debugger
+    const USDollar = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+
     tableInfo[rowId].thumb = newSelectedItem.thumb
     tableInfo[rowId].label = newSelectedItem.label
+    tableInfo[rowId].price = USDollar.format(newSelectedItem.price)
     setSelectedItem(newSelectedItem)
   }
 
@@ -138,6 +145,18 @@ const QuickOrderPad = () => {
       },
       price: {
         title: 'Price',
+        cellRenderer: (rowIndex: { rowData: { id: number } }) => {
+          return (
+            <div>
+              {tableData[rowIndex.rowData.id - 1]?.price && (
+                <div className={`${handles.priceContainer}`}>
+                  <p className={`${handles.productPrice}`}>{tableData[rowIndex.rowData.id - 1]?.price}</p>
+                  <span>/each</span>
+                </div>
+              )}
+            </div>
+          )
+        }
       },
     },
   }
