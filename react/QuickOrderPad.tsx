@@ -9,6 +9,14 @@ import ClearAllLink from './ClearAllLink'
 import AddAllToCart from './AddAllToCart'
 import './global.css'
 
+interface TableDataItem {
+  id: number;
+  thumb: string;
+  label: string;
+  price: string;
+  quantity: number;
+}
+
 const QuickOrderPad = () => {
   const CSS_HANDLES = [
     'centerDiv',
@@ -31,15 +39,16 @@ const QuickOrderPad = () => {
     console.info('autocompleteState changed:', selectedItem)
   }, [selectedItem])
 
-  const [tableData, setTableData] = useState([
-    { id: 1, quantity: 1, thumb: '', price: '', label: '' },
-  ])
+  const [tableData, setTableData] = useState<TableDataItem[]>([])
 
   const handleSelectedItemChange = (
     rowIndex: { rowData: any },
     newSelectedItem: { thumb: string; label: string, price: number }
   ) => {
-    const tableInfo = [...tableData] // Create a copy of the original array
+    const tableInfo = [...tableData]
+    if (tableInfo.length === 0) {
+      return
+    }
     const { rowData } = rowIndex
     const rowId = rowData.id - 1
 
@@ -58,15 +67,15 @@ const QuickOrderPad = () => {
     rowIndex: { rowData: any },
     newValue: number
   ) => {
-    const updatedTableData = [...tableData] // Create a copy of the original array
-    const { rowData } = rowIndex
-    const rowId = rowData.id - 1
+    const updatedTableData = [...tableData];
+    const { rowData } = rowIndex;
+    const rowId = rowData.id - 1;
 
-    updatedTableData[rowId].quantity = newValue
+    updatedTableData[rowId].quantity = newValue;
 
-    console.info(updatedTableData)
-    setTableData(updatedTableData)
-  }
+    console.info(updatedTableData);
+    setTableData(updatedTableData);
+  };
 
   const addRow = () => {
     const highestId =
@@ -82,7 +91,13 @@ const QuickOrderPad = () => {
     setTableData([])
   }
 
+  const removeRow = (rowData: { id: number }) => {
+    const { id } = rowData;
+    setTableData(prevTableData => prevTableData.filter(item => item.id !== id));
+  };
+
   const schema = {
+
     properties: {
       id: {
         title: 'Part Number/Keyword',
@@ -108,11 +123,11 @@ const QuickOrderPad = () => {
                 size="small"
                 value={tableData[rowIndex.rowData.id - 1].quantity}
                 onChange={(event: any) =>
-                  handleQuantityChange(rowIndex, event.value)
+                  handleQuantityChange(rowIndex, event.target.value)
                 }
               />
             </div>
-          )
+          );
         },
       },
       product: {
@@ -158,6 +173,21 @@ const QuickOrderPad = () => {
           )
         }
       },
+      close: {
+        title: '',
+        cellRenderer: (rowIndex: { rowData: { id: number } }) => {
+          const handleDeleteClick = () => {
+            const { id } = rowIndex.rowData;
+            removeRow({ id });
+          };
+
+          return (
+            <div>
+              <span onClick={handleDeleteClick}>close</span>
+            </div>
+          );
+        }
+      }
     },
   }
 

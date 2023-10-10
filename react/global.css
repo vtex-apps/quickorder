@@ -26,7 +26,7 @@
 }
 
 .vtex-quickorder-3-x-clearOrderList,
-.vtex-quickorder-3-x-addAllToLisT {
+.vtex-quickorder-3-x-addAllToList {
   margin-right: 40px;
 }
 
@@ -50,7 +50,7 @@
 }
 
 .vtex-quickorder-3-x-productThumb img {
-  height: 100%;
+  height: auto;
 }
 
 .ReactVirtualized__Grid__innerScrollContainer div {
@@ -61,6 +61,7 @@
 
 .ReactVirtualized__Grid__innerScrollContainer .vtex-quickorder-3-x-productThumb {
   margin-right: 5px;
+  align-items: center;
 }
 
 .ReactVirtualized__Grid,
