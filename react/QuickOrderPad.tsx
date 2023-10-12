@@ -28,7 +28,8 @@ const QuickOrderPad = () => {
     'headerActions',
     'productContainer',
     'priceContainer',
-    'productPrice'
+    'productPrice',
+    'closeIcon'
   ] as const
 
   const handles = useCssHandles(CSS_HANDLES)
@@ -119,13 +120,15 @@ const QuickOrderPad = () => {
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           return (
             <div className={handles.centerDiv}>
-              <NumericStepper
-                size="small"
-                value={tableData[rowIndex.rowData.id - 1].quantity}
-                onChange={(event: any) =>
-                  handleQuantityChange(rowIndex, event.target.value)
-                }
-              />
+              {tableData[rowIndex.rowData.id - 1]?.thumb && (
+                <NumericStepper
+                  size="small"
+                  value={tableData[rowIndex.rowData.id - 1].quantity}
+                  onChange={(event: any) =>
+                    handleQuantityChange(rowIndex, event.target.value)
+                  }
+                />
+              )}
             </div>
           );
         },
@@ -183,7 +186,9 @@ const QuickOrderPad = () => {
 
           return (
             <div>
-              <span onClick={handleDeleteClick}>close</span>
+              {tableData[rowIndex.rowData.id - 1]?.price && (
+                <span className={`${handles.closeIcon}`} onClick={handleDeleteClick}>X</span>
+              )}
             </div>
           );
         }
@@ -199,14 +204,14 @@ const QuickOrderPad = () => {
       </span>
       <div className={`${handles.headerActions}`}>
         <ClearAllLink removeItems={removeItems} />
-        <AddAllToListButton />
+        <AddAllToListButton isLoading={false} onClick={() => { }} />
         <AddAllToCart />
       </div>
       <Table dynamicRowHeight="true" fullWidth items={tableData} schema={schema} density="low" />
       <div className={`${handles.tableActions}`}>
         <AddMoreLinesButton addRow={addRow} />
         <ClearAllLink removeItems={removeItems} />
-        <AddAllToListButton />
+        <AddAllToListButton isLoading={false} onClick={() => { }} />
         <AddAllToCart />
       </div>
     </>
