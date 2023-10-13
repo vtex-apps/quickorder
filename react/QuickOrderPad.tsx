@@ -125,7 +125,7 @@ const QuickOrderPad = () => {
                   size="small"
                   value={tableData[rowIndex.rowData.id - 1].quantity}
                   onChange={(event: any) =>
-                    handleQuantityChange(rowIndex, event.target.value)
+                    handleQuantityChange(rowIndex, event.value)
                   }
                 />
               )}

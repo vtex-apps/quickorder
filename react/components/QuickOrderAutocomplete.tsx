@@ -21,7 +21,7 @@ const getImageSrc = (img: string) => {
 const CustomOption = (props: any) => {
   const { roundedBottom, searchTerm, value, selected, onClick } = props
   const [highlightOption, setHighlightOption] = useState(false)
-  const CSS_HANDLES = ['customOptionButton'] as const
+  const CSS_HANDLES = ['customOptionButton', 'listItemContainer'] as const
 
   const handles = useCssHandles(CSS_HANDLES)
   const renderOptionHighlightedText = () => {
@@ -63,11 +63,9 @@ const CustomOption = (props: any) => {
       onMouseLeave={() => setHighlightOption(false)}
       onClick={onClick}
     >
-      <div className="flex items-center">
-        <span className="mr3 c-muted-2 flex pt1">
-          {thumb && <img src={thumb} alt="" />}
-        </span>
-        <span className="pr2">{renderOptionHighlightedText()}</span>
+      <div className={`${handles.listItemContainer}`}>
+        {thumb && <img src={thumb} alt="" />}
+        {renderOptionHighlightedText()}
         {typeof value !== 'string' && (
           <div className="t-mini c-muted-1">{value.caption}</div>
         )}
@@ -155,7 +153,7 @@ const QuickOrderAutocomplete: FunctionComponent<
         setTerm(nterm)
       }
     },
-    onSearch: () => () => {},
+    onSearch: () => () => { },
     onClear: () => setTerm(''),
     placeholder: intl.formatMessage(messages.placeholder),
     value: term,
