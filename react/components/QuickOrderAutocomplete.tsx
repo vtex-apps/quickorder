@@ -21,7 +21,7 @@ const getImageSrc = (img: string) => {
 const CustomOption = (props: any) => {
   const { roundedBottom, searchTerm, value, selected, onClick } = props
   const [highlightOption, setHighlightOption] = useState(false)
-  const CSS_HANDLES = ['customOptionButton'] as const
+  const CSS_HANDLES = ['customOptionButton', 'listItemContainer'] as const
 
   const handles = useCssHandles(CSS_HANDLES)
   const renderOptionHighlightedText = () => {
@@ -49,11 +49,9 @@ const CustomOption = (props: any) => {
     )
   }
 
-  const buttonClasses = `${
-    handles.customOptionButton
-  } bn w-100 tl pointer pa4 f6 ${roundedBottom ? 'br2 br--bottom' : ''} ${
-    highlightOption || selected ? 'bg-muted-5' : 'bg-base'
-  }`
+  const buttonClasses = `${handles.customOptionButton
+    } bn w-100 tl pointer pa4 f6 ${roundedBottom ? 'br2 br--bottom' : ''} ${highlightOption || selected ? 'bg-muted-5' : 'bg-base'
+    }`
 
   const thumb = value.thumb ? value.thumb : ''
 
@@ -65,11 +63,9 @@ const CustomOption = (props: any) => {
       onMouseLeave={() => setHighlightOption(false)}
       onClick={onClick}
     >
-      <div className="flex items-center">
-        <span className="mr3 c-muted-2 flex pt1">
-          {thumb && <img src={thumb} alt="" />}
-        </span>
-        <span className="pr2">{renderOptionHighlightedText()}</span>
+      <div className={`${handles.listItemContainer}`}>
+        {thumb && <img src={thumb} alt="" />}
+        {renderOptionHighlightedText()}
         {typeof value !== 'string' && (
           <div className="t-mini c-muted-1">{value.caption}</div>
         )}
@@ -116,17 +112,19 @@ const QuickOrderAutocomplete: FunctionComponent<
     value: !term.length
       ? []
       : optionsResult
-          .filter((item: any) => {
-            return !!item.items[0].images[0].imageUrl
-          })
-          .map((item: any) => {
-            return {
-              value: item.items[0].itemId,
-              label: item.items[0].name,
-              slug: item.linkText,
-              thumb: getImageSrc(item.items[0].images[0].imageUrl),
-            }
-          }),
+        .filter((item: any) => {
+          return !!item.items[0].images[0].imageUrl
+        })
+        .map((item: any) => {
+          return {
+            value: item.items[0].itemId,
+            label: item.items[0].name,
+            slug: item.linkText,
+            thumb: getImageSrc(item.items[0].images[0].imageUrl),
+            price: item.items[0].sellers[0].commertialOffer.Price,
+            seller: item.items[0].sellers[0].sellerId
+          }
+        }),
     lastSearched: {
       value: lastSearched,
       label: 'Last searched products',
@@ -156,7 +154,7 @@ const QuickOrderAutocomplete: FunctionComponent<
         setTerm(nterm)
       }
     },
-    onSearch: () => () => {},
+    onSearch: () => () => { },
     onClear: () => setTerm(''),
     placeholder: intl.formatMessage(messages.placeholder),
     value: term,
