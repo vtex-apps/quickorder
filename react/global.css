@@ -79,6 +79,12 @@
   color: #349beb;
 }
 
+.vtex-quickorder-3-x-productContainer .vtex-quickorder-3-x-productTitle {
+  max-height: 3.2em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .vtex-store-components-3-x-container {
   position: relative;
 }
