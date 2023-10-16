@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Table, NumericStepper } from 'vtex.styleguide'
 import { useCssHandles } from 'vtex.css-handles'
+import { useMutation } from 'react-apollo'
+import { OrderForm } from 'vtex.order-manager'
+import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
+import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 
 import AutocompleteBlock from './AutocompleteBlock'
 import AddMoreLinesButton from './AddMoreLinesButton'
@@ -10,11 +14,20 @@ import AddAllToCart from './AddAllToCart'
 import './global.css'
 
 interface TableDataItem {
-  id: number;
-  thumb: string;
-  label: string;
-  price: string;
-  quantity: number;
+  id: number
+  thumb: string
+  label: string
+  price: string
+  quantity: number
+  seller: number
+  skuId: string
+}
+
+interface ItemType {
+  id: number
+  quantity: number
+  seller: number
+  skuId: string
 }
 
 const QuickOrderPad = () => {
@@ -34,17 +47,25 @@ const QuickOrderPad = () => {
 
   const handles = useCssHandles(CSS_HANDLES)
 
+
+  const [
+    addToCart,
+    { error: mutationError },
+  ] = useMutation<{ addToCart: OrderFormType }, { items: any }>(ADD_TO_CART)
+
   const [selectedItem, setSelectedItem] = useState<any | null>(null)
+  const [tableData, setTableData] = useState<TableDataItem[]>([])
+  const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
+  const orderForm = OrderForm.useOrderForm()
 
   useEffect(() => {
     console.info('autocompleteState changed:', selectedItem)
   }, [selectedItem])
 
-  const [tableData, setTableData] = useState<TableDataItem[]>([])
 
   const handleSelectedItemChange = (
     rowIndex: { rowData: any },
-    newSelectedItem: { thumb: string; label: string, price: number }
+    newSelectedItem: { thumb: string, label: string, price: number, seller: string, value: string }
   ) => {
     const tableInfo = [...tableData]
     if (tableInfo.length === 0) {
@@ -57,10 +78,13 @@ const QuickOrderPad = () => {
       style: 'currency',
       currency: 'USD',
     });
+    const sellerId = JSON.parse(newSelectedItem.seller)
 
     tableInfo[rowId].thumb = newSelectedItem.thumb
     tableInfo[rowId].label = newSelectedItem.label
     tableInfo[rowId].price = USDollar.format(newSelectedItem.price)
+    tableInfo[rowId].seller = sellerId
+    tableInfo[rowId].skuId = newSelectedItem.value
     setSelectedItem(newSelectedItem)
   }
 
@@ -83,7 +107,7 @@ const QuickOrderPad = () => {
       tableData.length > 0 ? tableData[tableData.length - 1].id || 0 : 0
 
     const newId = highestId + 1
-    const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '' }
+    const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '', seller: 0, skuId: '' }
 
     setTableData([...tableData, newItem])
   }
@@ -94,11 +118,66 @@ const QuickOrderPad = () => {
 
   const removeRow = (rowData: { id: number }) => {
     const { id } = rowData;
-    setTableData(prevTableData => prevTableData.filter(item => item.id !== id));
+    setTableData(prevTableData => prevTableData.filter(item => item.id !== id))
   };
 
-  const schema = {
+  const handleAddAllToCart = async () => {
+    const currentItemsInCart = orderForm.orderForm.items
 
+    const mutationResult = await addToCart({
+      variables: {
+        items: tableData.map((item: ItemType) => {
+          const [existsInCurrentOrder] = currentItemsInCart.filter(
+            (el: any) => el.id === item.skuId
+          )
+
+          if (existsInCurrentOrder) {
+            item.quantity += parseInt(existsInCurrentOrder.quantity, 10)
+          }
+
+
+          const skuId = parseInt(item.skuId)
+
+          return {
+            id: skuId,
+            quantity: item.quantity,
+            seller: item.seller
+          }
+        }),
+      },
+    })
+
+    if (mutationError) {
+      console.error(mutationError)
+      console.log({ success: false, isNewItem: false })
+
+      return
+    }
+
+    // Update OrderForm from the context
+    mutationResult.data && setOrderForm(mutationResult.data.addToCart)
+
+
+    if (
+      mutationResult.data?.addToCart?.messages?.generalMessages &&
+      mutationResult.data.addToCart.messages.generalMessages.length
+    ) {
+      mutationResult.data.addToCart.messages.generalMessages.forEach(
+        (msg: any) => {
+          return console.log({
+            message: msg.text,
+            action: undefined,
+            duration: 30000,
+          })
+        }
+      )
+    } else {
+      console.log({ success: true, isNewItem: true })
+    }
+
+  }
+
+  const schema = {
     properties: {
       id: {
         title: 'Part Number/Keyword',
@@ -204,18 +283,24 @@ const QuickOrderPad = () => {
       </span>
       <div className={`${handles.headerActions}`}>
         <ClearAllLink removeItems={removeItems} />
-        <AddAllToListButton isLoading={false} onClick={() => { }} />
+        <AddAllToListButton isLoading={false} onClick={() => { handleAddAllToCart() }} />
         <AddAllToCart />
       </div>
       <Table dynamicRowHeight="true" fullWidth items={tableData} schema={schema} density="low" />
       <div className={`${handles.tableActions}`}>
         <AddMoreLinesButton addRow={addRow} />
         <ClearAllLink removeItems={removeItems} />
-        <AddAllToListButton isLoading={false} onClick={() => { }} />
+        <AddAllToListButton isLoading={false} onClick={() => { handleAddAllToCart() }} />
         <AddAllToCart />
       </div>
     </>
   )
+}
+
+interface OrderFormContext {
+  loading: boolean
+  orderForm: OrderFormType | undefined
+  setOrderForm: (orderForm: Partial<OrderFormType>) => void
 }
 
 export default QuickOrderPad

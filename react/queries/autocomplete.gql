@@ -9,6 +9,7 @@ query Autocomplete($inputValue: String!) {
             imageUrl
           }
           sellers {
+            sellerId
             commertialOffer {
               Price
             }

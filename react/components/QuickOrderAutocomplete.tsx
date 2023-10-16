@@ -122,6 +122,7 @@ const QuickOrderAutocomplete: FunctionComponent<
             slug: item.linkText,
             thumb: getImageSrc(item.items[0].images[0].imageUrl),
             price: item.items[0].sellers[0].commertialOffer.Price,
+            seller: item.items[0].sellers[0].sellerId
           }
         }),
     lastSearched: {
