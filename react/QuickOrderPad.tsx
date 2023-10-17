@@ -8,7 +8,6 @@ import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 
 import AutocompleteBlock from './AutocompleteBlock'
 import AddMoreLinesButton from './AddMoreLinesButton'
-import AddAllToListButton from './AddAllToListButton'
 import ClearAllLink from './ClearAllLink'
 import AddAllToCart from './AddAllToCart'
 import './global.css'
@@ -283,15 +282,13 @@ const QuickOrderPad = () => {
       </span>
       <div className={`${handles.headerActions}`}>
         <ClearAllLink removeItems={removeItems} />
-        <AddAllToListButton isLoading={false} onClick={() => { handleAddAllToCart() }} />
-        <AddAllToCart />
+        <AddAllToCart isLoading={false} onClick={() => { handleAddAllToCart() }} />
       </div>
       <Table dynamicRowHeight="true" fullWidth items={tableData} schema={schema} density="low" />
       <div className={`${handles.tableActions}`}>
         <AddMoreLinesButton addRow={addRow} />
         <ClearAllLink removeItems={removeItems} />
-        <AddAllToListButton isLoading={false} onClick={() => { handleAddAllToCart() }} />
-        <AddAllToCart />
+        <AddAllToCart isLoading={false} onClick={() => { handleAddAllToCart() }} />
       </div>
     </>
   )
