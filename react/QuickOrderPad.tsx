@@ -12,16 +12,6 @@ import ClearAllLink from './ClearAllLink'
 import AddAllToCart from './AddAllToCart'
 import './global.css'
 
-interface TableDataItem {
-  id: number
-  thumb: string
-  label: string
-  price: string
-  quantity: number
-  seller: number
-  skuId: string
-}
-
 interface ItemType {
   id: number
   quantity: number
@@ -53,7 +43,9 @@ const QuickOrderPad = () => {
   ] = useMutation<{ addToCart: OrderFormType }, { items: any }>(ADD_TO_CART)
 
   const [selectedItem, setSelectedItem] = useState<any | null>(null)
-  const [tableData, setTableData] = useState<TableDataItem[]>([])
+  const [tableData, setTableData] = useState([
+    { id: 1, quantity: 1, thumb: '', price: '', label: '', seller: 0, skuId: '' }
+  ])
   const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
   const orderForm = OrderForm.useOrderForm()
 
