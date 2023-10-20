@@ -69,7 +69,7 @@ const QuickOrderPad = () => {
       style: 'currency',
       currency: 'USD',
     });
-    debugger
+
     const sellerId = newSelectedItem.seller
 
     tableInfo[rowId].thumb = newSelectedItem.thumb
