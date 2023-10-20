@@ -31,6 +31,7 @@ const QuickOrderPad = () => {
     'productContainer',
     'priceContainer',
     'productPrice',
+    'productQuantity',
     'closeIcon'
   ] as const
 
@@ -44,7 +45,7 @@ const QuickOrderPad = () => {
 
   const [selectedItem, setSelectedItem] = useState<any | null>(null)
   const [tableData, setTableData] = useState([
-    { id: 1, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '' }
+    { id: 1, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '', stock: 0 }
   ])
   const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
   const orderForm = OrderForm.useOrderForm()
@@ -56,7 +57,7 @@ const QuickOrderPad = () => {
 
   const handleSelectedItemChange = (
     rowIndex: { rowData: any },
-    newSelectedItem: { thumb: string, label: string, price: number, seller: string, value: string }
+    newSelectedItem: { thumb: string, label: string, price: number, seller: string, value: string, quantity: 0 }
   ) => {
     const tableInfo = [...tableData]
     if (tableInfo.length === 0) {
@@ -77,6 +78,7 @@ const QuickOrderPad = () => {
     tableInfo[rowId].price = USDollar.format(newSelectedItem.price)
     tableInfo[rowId].seller = sellerId
     tableInfo[rowId].skuId = newSelectedItem.value
+    tableData[rowId].stock = newSelectedItem.quantity
     setSelectedItem(newSelectedItem)
   }
 
@@ -99,7 +101,7 @@ const QuickOrderPad = () => {
       tableData.length > 0 ? tableData[tableData.length - 1].id || 0 : 0
 
     const newId = highestId + 1
-    const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '' }
+    const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '', stock: 0 }
 
     setTableData([...tableData, newItem])
   }
@@ -126,7 +128,6 @@ const QuickOrderPad = () => {
           if (existsInCurrentOrder) {
             item.quantity += parseInt(existsInCurrentOrder.quantity, 10)
           }
-
 
           const skuId = parseInt(item.skuId)
 
@@ -239,8 +240,11 @@ const QuickOrderPad = () => {
             <div>
               {tableData[rowIndex.rowData.id - 1]?.price && (
                 <div className={`${handles.priceContainer}`}>
-                  <p className={`${handles.productPrice}`}>{tableData[rowIndex.rowData.id - 1]?.price}</p>
-                  <span>/each</span>
+                  <p className={`${handles.productPrice}`}>
+                    {tableData[rowIndex.rowData.id - 1]?.price}
+                    <span>/each</span>
+                  </p>
+                  <p className={`${handles.productQuantity}`}>{tableData[rowIndex.rowData.id - 1]?.stock} Available</p>
                 </div>
               )}
             </div>

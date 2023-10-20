@@ -79,10 +79,15 @@
   color: #349beb;
 }
 
+.vtex-quickorder-3-x-productLabel {
+  align-items: center;
+}
+
 .vtex-quickorder-3-x-productContainer .vtex-quickorder-3-x-productTitle {
   max-height: 3.2em;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 125px;
 }
 
 .vtex-store-components-3-x-container {
@@ -98,6 +103,16 @@
   align-items: center;
   display: flex;
   white-space: unset;
+  flex-direction: column;
+}
+
+.vtex-quickorder-3-x-priceContainer p {
+  margin: 0;
+}
+
+.vtex-quickorder-3-x-productQuantity {
+  font-size: 12px;
+  color: #3D9635;
 }
 
 .vtex-quickorder-3-x-productPrice {
