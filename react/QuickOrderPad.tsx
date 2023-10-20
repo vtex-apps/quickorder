@@ -15,7 +15,7 @@ import './global.css'
 interface ItemType {
   id: number
   quantity: number
-  seller: number
+  seller: string
   skuId: string
 }
 
@@ -44,7 +44,7 @@ const QuickOrderPad = () => {
 
   const [selectedItem, setSelectedItem] = useState<any | null>(null)
   const [tableData, setTableData] = useState([
-    { id: 1, quantity: 1, thumb: '', price: '', label: '', seller: 0, skuId: '' }
+    { id: 1, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '' }
   ])
   const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
   const orderForm = OrderForm.useOrderForm()
@@ -69,7 +69,8 @@ const QuickOrderPad = () => {
       style: 'currency',
       currency: 'USD',
     });
-    const sellerId = JSON.parse(newSelectedItem.seller)
+    debugger
+    const sellerId = newSelectedItem.seller
 
     tableInfo[rowId].thumb = newSelectedItem.thumb
     tableInfo[rowId].label = newSelectedItem.label
@@ -98,7 +99,7 @@ const QuickOrderPad = () => {
       tableData.length > 0 ? tableData[tableData.length - 1].id || 0 : 0
 
     const newId = highestId + 1
-    const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '', seller: 0, skuId: '' }
+    const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '' }
 
     setTableData([...tableData, newItem])
   }

@@ -42,11 +42,16 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
       const seller = selectedSku
         ? data.product.items[0].sellers.find((item: any) => {
+          if (data.product.items[0].sellers.length > 1) {
+            return item.sellerId === "uselectricalcd01"
+          } else {
             return item.sellerDefault === true
-          }).sellerId
+          }
+        }).sellerId
         : null
 
-      let multiplier = 1
+
+      let multiplier = 1;
 
       if (data.product.items.length === 1) {
         multiplier = data.product.items[0].unitMultiplier

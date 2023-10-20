@@ -116,13 +116,22 @@ const QuickOrderAutocomplete: FunctionComponent<
           return !!item.items[0].images[0].imageUrl
         })
         .map((item: any) => {
+          const sellerId = item.items[0].sellers.find((seller: any) => {
+            return seller.sellerId === "uselectricalcd01"
+          }).sellerId
+
+          const quantity = item.items[0].sellers.find((seller: any) => {
+            return seller.sellerId === "uselectricalcd01"
+          }).commertialOffer.AvailableQuantity
+
           return {
             value: item.items[0].itemId,
             label: item.items[0].name,
             slug: item.linkText,
             thumb: getImageSrc(item.items[0].images[0].imageUrl),
             price: item.items[0].sellers[0].commertialOffer.Price,
-            seller: item.items[0].sellers[0].sellerId
+            seller: sellerId,
+            quantity: quantity
           }
         }),
     lastSearched: {

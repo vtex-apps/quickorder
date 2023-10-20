@@ -12,6 +12,7 @@ query Autocomplete($inputValue: String!) {
             sellerId
             commertialOffer {
               Price
+              AvailableQuantity
             }
           }
         }
