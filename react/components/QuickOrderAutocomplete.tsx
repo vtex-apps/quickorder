@@ -10,6 +10,7 @@ import { useCssHandles } from 'vtex.css-handles'
 
 import { autocompleteMessages as messages } from '../utils/messages'
 import autocomplete from '../queries/autocomplete.gql'
+import session from '../queries/sessions.gql'
 
 const getImageSrc = (img: string) => {
   const td = img.split('/')
@@ -123,6 +124,13 @@ const QuickOrderAutocomplete: FunctionComponent<
           const quantity = item.items[0].sellers.find((seller: any) => {
             return seller.sellerId === "uselectricalcd01"
           }).commertialOffer.AvailableQuantity
+
+          const userPrice = () => {
+            debugger
+            console.log(session)
+          }
+
+          console.log(userPrice())
 
           return {
             value: item.items[0].itemId,
