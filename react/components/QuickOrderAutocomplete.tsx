@@ -7,10 +7,11 @@ import type { WrappedComponentProps } from 'react-intl'
 import { injectIntl } from 'react-intl'
 import { useApolloClient } from 'react-apollo'
 import { useCssHandles } from 'vtex.css-handles'
+import { getSession } from '../modules/session'
 
 import { autocompleteMessages as messages } from '../utils/messages'
 import autocomplete from '../queries/autocomplete.gql'
-import session from '../queries/sessions.gql'
+import GET_ORGANIZATIONS_BY_EMAIL from '../queries/getOrganizationsByEmail.gql'
 
 const getImageSrc = (img: string) => {
   const td = img.split('/')
@@ -84,7 +85,7 @@ const QuickOrderAutocomplete: FunctionComponent<
   const client = useApolloClient()
   const [optionsResult, setOptions] = useState([])
   const [term, setTerm] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [loadingInfo, setLoadingInfo] = useState(false)
   const [lastSearched, setLastSearched] = useState([])
   const timeoutRef: any = useRef(null)
 
@@ -105,11 +106,72 @@ const QuickOrderAutocomplete: FunctionComponent<
     }
   }
 
+
+  const handlePrice = async (productId: any) => {
+    try {
+      const sessionResponse = await getSession();
+      const userInfo = sessionResponse?.response?.namespaces?.profile?.email?.value;
+
+      const userEmailResponse = await client.query({
+        query: GET_ORGANIZATIONS_BY_EMAIL,
+        variables: { email: userInfo },
+      });
+
+      const userOrganizationId = userEmailResponse.data.getOrganizationsByEmail[0].costId
+
+      const postData = {
+        customerId: userOrganizationId,
+        branchId: "",
+        productId: productId,
+        orderQty: 1,
+        shouldHidePrice: "false"
+      }
+
+      const response = await fetch('/v0/customerPrice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+      })
+      console.log(response)
+
+      const data = await response.json()
+
+      console.log(data)
+      const formattedPrice = parseInt(data?.price?.CustomersPrice?.Products[0]?.ListPrice)
+
+
+      return formattedPrice
+
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle errors here
+      return error
+    }
+  }
+
+  const fetchPriceData = (productId: any) => {
+    try {
+      const priceData = handlePrice(productId);
+
+      console.log(`Price Data: ${priceData}`)
+      if (priceData !== undefined) {
+        priceData.then((priceValue) => {
+          return priceValue
+        })
+      }
+    } catch (error) {
+      console.error('Error fetching price data:', error);
+      throw error;
+    }
+  }
+
   const options = {
     onSelect: (...args: any) => {
       onSelect(args)
     },
-    loading,
+    loadingInfo,
     value: !term.length
       ? []
       : optionsResult
@@ -125,19 +187,16 @@ const QuickOrderAutocomplete: FunctionComponent<
             return seller.sellerId === "uselectricalcd01"
           }).commertialOffer.AvailableQuantity
 
-          const userPrice = () => {
-            debugger
-            console.log(session)
-          }
+          const priceData = fetchPriceData(item.items[0].itemId);
 
-          console.log(userPrice())
+          console.log(`Price: ${priceData}`)
 
           return {
             value: item.items[0].itemId,
             label: item.items[0].name,
             slug: item.linkText,
             thumb: getImageSrc(item.items[0].images[0].imageUrl),
-            price: item.items[0].sellers[0].commertialOffer.Price,
+            price: priceData,
             seller: sellerId,
             quantity: quantity
           }
@@ -156,13 +215,13 @@ const QuickOrderAutocomplete: FunctionComponent<
   const input = {
     onChange: (nterm: any) => {
       if (nterm) {
-        setLoading(true)
+        setLoadingInfo(true)
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current)
         }
 
         timeoutRef.current = setTimeout(() => {
-          setLoading(false)
+          setLoadingInfo(false)
           setTerm(nterm)
           handleSearch({ value: nterm })
           timeoutRef.current = null
