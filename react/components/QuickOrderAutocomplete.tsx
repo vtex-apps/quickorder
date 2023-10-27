@@ -7,11 +7,9 @@ import type { WrappedComponentProps } from 'react-intl'
 import { injectIntl } from 'react-intl'
 import { useApolloClient } from 'react-apollo'
 import { useCssHandles } from 'vtex.css-handles'
-import { getSession } from '../modules/session'
 
 import { autocompleteMessages as messages } from '../utils/messages'
 import autocomplete from '../queries/autocomplete.gql'
-import GET_ORGANIZATIONS_BY_EMAIL from '../queries/getOrganizationsByEmail.gql'
 
 const getImageSrc = (img: string) => {
   const td = img.split('/')
@@ -107,65 +105,30 @@ const QuickOrderAutocomplete: FunctionComponent<
   }
 
 
-  const handlePrice = async (productId: any) => {
-    try {
-      const sessionResponse = await getSession();
-      const userInfo = sessionResponse?.response?.namespaces?.profile?.email?.value;
+  // const handlePrice = async (productId: any) => {
+  //   try {
 
-      const userEmailResponse = await client.query({
-        query: GET_ORGANIZATIONS_BY_EMAIL,
-        variables: { email: userInfo },
-      });
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //     // Handle errors here
+  //     return error
+  //   }
+  // }
 
-      const userOrganizationId = userEmailResponse.data.getOrganizationsByEmail[0].costId
-
-      const postData = {
-        customerId: userOrganizationId,
-        branchId: "",
-        productId: productId,
-        orderQty: 1,
-        shouldHidePrice: "false"
-      }
-
-      const response = await fetch('/v0/customerPrice', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-      })
-      console.log(response)
-
-      const data = await response.json()
-
-      console.log(data)
-      const formattedPrice = parseInt(data?.price?.CustomersPrice?.Products[0]?.ListPrice)
-
-
-      return formattedPrice
-
-    } catch (error) {
-      console.error('Error:', error);
-      // Handle errors here
-      return error
-    }
-  }
-
-  const fetchPriceData = (productId: any) => {
-    try {
-      const priceData = handlePrice(productId);
-
-      console.log(`Price Data: ${priceData}`)
-      if (priceData !== undefined) {
-        priceData.then((priceValue) => {
-          return priceValue
-        })
-      }
-    } catch (error) {
-      console.error('Error fetching price data:', error);
-      throw error;
-    }
-  }
+  // const fetchPriceData = (productId: any) => {
+  //   try {
+  //     handlePrice(productId).then((result) => {
+  //       if (result != undefined) {
+  //         return result
+  //       } else {
+  //         console.log(`Product price is: ${result}`)
+  //       }
+  //     })
+  //   } catch (error) {
+  //     console.error('Error fetching price data:', error);
+  //     throw error;
+  //   }
+  // }
 
   const options = {
     onSelect: (...args: any) => {
@@ -180,25 +143,21 @@ const QuickOrderAutocomplete: FunctionComponent<
         })
         .map((item: any) => {
           const sellerId = item.items[0].sellers.find((seller: any) => {
-            return seller.sellerId === "uselectricalcd01"
+            if (item.items[0].sellers.length > 1) {
+              return seller.sellerId === "uselectricalcd01"
+            } else {
+              return seller.sellerId
+            }
           }).sellerId
-
-          const quantity = item.items[0].sellers.find((seller: any) => {
-            return seller.sellerId === "uselectricalcd01"
-          }).commertialOffer.AvailableQuantity
-
-          const priceData = fetchPriceData(item.items[0].itemId);
-
-          console.log(`Price: ${priceData}`)
 
           return {
             value: item.items[0].itemId,
             label: item.items[0].name,
             slug: item.linkText,
             thumb: getImageSrc(item.items[0].images[0].imageUrl),
-            price: priceData,
+            price: '',
             seller: sellerId,
-            quantity: quantity
+            quantity: 0
           }
         }),
     lastSearched: {
