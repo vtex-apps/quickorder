@@ -131,6 +131,7 @@ const QuickOrderPad = () => {
 
           const skuId = parseInt(item.skuId)
 
+          debugger
           return {
             id: skuId,
             quantity: item.quantity,

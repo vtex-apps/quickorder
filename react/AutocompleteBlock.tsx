@@ -4,7 +4,7 @@ import type { FunctionComponent } from 'react'
 import React, { useState } from 'react'
 import type { WrappedComponentProps } from 'react-intl'
 import {  injectIntl } from 'react-intl'
-import { Tag } from 'vtex.styleguide'
+import { Tag, Spinner } from 'vtex.styleguide'
 import PropTypes from 'prop-types'
 import { useCssHandles } from 'vtex.css-handles'
 import { useApolloClient } from 'react-apollo'
@@ -24,6 +24,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   componentOnly,
 }) => {
   const client = useApolloClient()
+  const[loading, setLoading] = useState(false)
   const [state, setState] = useState<any>({
     selectedItem: null,
     quantitySelected: 1,
@@ -32,6 +33,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
   const { selectedItem } = state
   const onSelect = async (product: any) => {
+    setLoading(true)
     if (!!product && product.length) {
       const query = {
         query: productQuery,
@@ -71,9 +73,8 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
           })
           .then(quantity => {
             const availability = quantity[0].items[0].sellers.find((seller: any) => {
-              return seller.sellerId = "uselectricalcd01"
+              return seller.sellerId === "uselectricalcd01"
             }).commertialOffer.AvailableQuantity
-            debugger
 
             product[0].quantity = availability
           })
@@ -112,7 +113,6 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
           const data = await response.json();
           const formattedPrice = parseInt(data?.price?.CustomersPrice?.Products[0]?.ListPrice);
-          debugger
 
           return formattedPrice;
         } catch (error) {
@@ -144,6 +144,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
     }
 
 
+    setLoading(false)
     return true
   }
 
@@ -214,7 +215,8 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       >
         <div className="w-100 mb5">
           <div className="bg-base t-body c-on-base pa0 br3 b--muted-4">
-            {!selectedItem && <QuickOrderAutocomplete onSelect={onSelect} />}
+            {!selectedItem && !loading && <QuickOrderAutocomplete onSelect={onSelect} />}
+            {loading && <Spinner color="black" />}
             {!!selectedItem && (
               <div>
                 <div className="w-two-thirds-l w-100-ns fl-l">
