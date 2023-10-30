@@ -83,7 +83,7 @@ const QuickOrderAutocomplete: FunctionComponent<
   const client = useApolloClient()
   const [optionsResult, setOptions] = useState([])
   const [term, setTerm] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [loadingInfo, setLoadingInfo] = useState(false)
   const [lastSearched, setLastSearched] = useState([])
   const timeoutRef: any = useRef(null)
 
@@ -104,11 +104,12 @@ const QuickOrderAutocomplete: FunctionComponent<
     }
   }
 
+
   const options = {
     onSelect: (...args: any) => {
       onSelect(args)
     },
-    loading,
+    loadingInfo,
     value: !term.length
       ? []
       : optionsResult
@@ -116,13 +117,22 @@ const QuickOrderAutocomplete: FunctionComponent<
           return !!item.items[0].images[0].imageUrl
         })
         .map((item: any) => {
+          const sellerId = item.items[0].sellers.find((seller: any) => {
+            if (item.items[0].sellers.length > 1) {
+              return seller.sellerId === "uselectricalcd01"
+            } else {
+              return seller.sellerId
+            }
+          }).sellerId
+
           return {
             value: item.items[0].itemId,
             label: item.items[0].name,
             slug: item.linkText,
             thumb: getImageSrc(item.items[0].images[0].imageUrl),
-            price: item.items[0].sellers[0].commertialOffer.Price,
-            seller: item.items[0].sellers[0].sellerId
+            price: '',
+            seller: sellerId,
+            quantity: 0
           }
         }),
     lastSearched: {
@@ -139,13 +149,13 @@ const QuickOrderAutocomplete: FunctionComponent<
   const input = {
     onChange: (nterm: any) => {
       if (nterm) {
-        setLoading(true)
+        setLoadingInfo(true)
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current)
         }
 
         timeoutRef.current = setTimeout(() => {
-          setLoading(false)
+          setLoadingInfo(false)
           setTerm(nterm)
           handleSearch({ value: nterm })
           timeoutRef.current = null

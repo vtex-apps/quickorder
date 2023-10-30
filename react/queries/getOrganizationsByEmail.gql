@@ -1,0 +1,15 @@
+query GetOrganizationsByEmail($email: String!) {
+  getOrganizationsByEmail(email: $email)
+    @context(provider: "vtex.b2b-organizations-graphql") {
+    id
+    costId
+    orgId
+    roleId
+    clId
+    organizationName
+    costCenterName
+    role {
+      name
+    }
+  }
+}

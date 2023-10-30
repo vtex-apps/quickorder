@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Table, NumericStepper } from 'vtex.styleguide'
+import { Table, NumericStepper, Spinner } from 'vtex.styleguide'
 import { useCssHandles } from 'vtex.css-handles'
 import { useMutation } from 'react-apollo'
 import { OrderForm } from 'vtex.order-manager'
@@ -12,20 +12,10 @@ import ClearAllLink from './ClearAllLink'
 import AddAllToCart from './AddAllToCart'
 import './global.css'
 
-interface TableDataItem {
-  id: number
-  thumb: string
-  label: string
-  price: string
-  quantity: number
-  seller: number
-  skuId: string
-}
-
 interface ItemType {
   id: number
   quantity: number
-  seller: number
+  seller: string
   skuId: string
 }
 
@@ -41,6 +31,7 @@ const QuickOrderPad = () => {
     'productContainer',
     'priceContainer',
     'productPrice',
+    'productQuantity',
     'closeIcon'
   ] as const
 
@@ -53,7 +44,10 @@ const QuickOrderPad = () => {
   ] = useMutation<{ addToCart: OrderFormType }, { items: any }>(ADD_TO_CART)
 
   const [selectedItem, setSelectedItem] = useState<any | null>(null)
-  const [tableData, setTableData] = useState<TableDataItem[]>([])
+  const [tableData, setTableData] = useState([
+    { id: 1, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '', stock: 0 }
+  ])
+  const [loading, setLoading] = useState(false)
   const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
   const orderForm = OrderForm.useOrderForm()
 
@@ -64,8 +58,9 @@ const QuickOrderPad = () => {
 
   const handleSelectedItemChange = (
     rowIndex: { rowData: any },
-    newSelectedItem: { thumb: string, label: string, price: number, seller: string, value: string }
+    newSelectedItem: { thumb: string, label: string, price: number, seller: string, value: string, quantity: 0 }
   ) => {
+    setLoading(true)
     const tableInfo = [...tableData]
     if (tableInfo.length === 0) {
       return
@@ -77,14 +72,17 @@ const QuickOrderPad = () => {
       style: 'currency',
       currency: 'USD',
     });
-    const sellerId = JSON.parse(newSelectedItem.seller)
+
+    const sellerId = newSelectedItem.seller
 
     tableInfo[rowId].thumb = newSelectedItem.thumb
     tableInfo[rowId].label = newSelectedItem.label
     tableInfo[rowId].price = USDollar.format(newSelectedItem.price)
     tableInfo[rowId].seller = sellerId
     tableInfo[rowId].skuId = newSelectedItem.value
+    tableData[rowId].stock = newSelectedItem.quantity
     setSelectedItem(newSelectedItem)
+    setLoading(false)
   }
 
   const handleQuantityChange = (
@@ -106,7 +104,7 @@ const QuickOrderPad = () => {
       tableData.length > 0 ? tableData[tableData.length - 1].id || 0 : 0
 
     const newId = highestId + 1
-    const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '', seller: 0, skuId: '' }
+    const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '', stock: 0 }
 
     setTableData([...tableData, newItem])
   }
@@ -134,9 +132,9 @@ const QuickOrderPad = () => {
             item.quantity += parseInt(existsInCurrentOrder.quantity, 10)
           }
 
-
           const skuId = parseInt(item.skuId)
 
+          debugger
           return {
             id: skuId,
             quantity: item.quantity,
@@ -198,6 +196,7 @@ const QuickOrderPad = () => {
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           return (
             <div className={handles.centerDiv}>
+              {loading && <Spinner color="black" />}
               {tableData[rowIndex.rowData.id - 1]?.thumb && (
                 <NumericStepper
                   size="small"
@@ -216,6 +215,7 @@ const QuickOrderPad = () => {
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           return (
             <div className={`${handles.productContainer} w-two-thirds-l w-100-ns fl-l`}>
+              {loading && <Spinner color="black" />}
               <div
                 className={`flex fl ${handles.productThumb}`}
               >
@@ -244,10 +244,14 @@ const QuickOrderPad = () => {
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           return (
             <div>
+              {loading && <Spinner color="black" />}
               {tableData[rowIndex.rowData.id - 1]?.price && (
                 <div className={`${handles.priceContainer}`}>
-                  <p className={`${handles.productPrice}`}>{tableData[rowIndex.rowData.id - 1]?.price}</p>
-                  <span>/each</span>
+                  <p className={`${handles.productPrice}`}>
+                    {tableData[rowIndex.rowData.id - 1]?.price}
+                    <span>/each</span>
+                  </p>
+                  <p className={`${handles.productQuantity}`}>{tableData[rowIndex.rowData.id - 1]?.stock} Available</p>
                 </div>
               )}
             </div>
@@ -255,7 +259,7 @@ const QuickOrderPad = () => {
         }
       },
       close: {
-        title: '',
+        title: ' ',
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           const handleDeleteClick = () => {
             const { id } = rowIndex.rowData;

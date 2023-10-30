@@ -35,7 +35,8 @@
     "vtex.pixel-manager": "1.x",
     "vtex.store-resources": "0.x",
     "vtex.css-handles": "0.x",
-    "vtex.store-icons": "0.x"
+    "vtex.store-icons": "0.x",
+    "vtex.b2b-organizations-graphql": "0.x"
   },
   "policies": [
     {

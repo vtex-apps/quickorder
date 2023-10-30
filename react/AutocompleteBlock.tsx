@@ -4,13 +4,15 @@ import type { FunctionComponent } from 'react'
 import React, { useState } from 'react'
 import type { WrappedComponentProps } from 'react-intl'
 import {  injectIntl } from 'react-intl'
-import { Tag } from 'vtex.styleguide'
+import { Tag, Spinner } from 'vtex.styleguide'
 import PropTypes from 'prop-types'
 import { useCssHandles } from 'vtex.css-handles'
 import { useApolloClient } from 'react-apollo'
 
 import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
 import productQuery from './queries/product.gql'
+import { getSession } from './modules/session'
+import GET_ORGANIZATIONS_BY_EMAIL from './queries/getOrganizationsByEmail.gql'
 import './global.css'
 
 // const StateContext = React.createContext({ state });
@@ -22,6 +24,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   componentOnly,
 }) => {
   const client = useApolloClient()
+  const[loading, setLoading] = useState(false)
   const [state, setState] = useState<any>({
     selectedItem: null,
     quantitySelected: 1,
@@ -30,6 +33,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
   const { selectedItem } = state
   const onSelect = async (product: any) => {
+    setLoading(true)
     if (!!product && product.length) {
       const query = {
         query: productQuery,
@@ -42,15 +46,92 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
       const seller = selectedSku
         ? data.product.items[0].sellers.find((item: any) => {
+          if (data.product.items[0].sellers.length > 1) {
+            return item.sellerId === "uselectricalcd01"
+          } else {
             return item.sellerDefault === true
-          }).sellerId
+          }
+        }).sellerId
         : null
 
-      let multiplier = 1
+
+      let multiplier = 1;
 
       if (data.product.items.length === 1) {
         multiplier = data.product.items[0].unitMultiplier
       }
+
+      const productAvailability = async (params: any) => {
+        const skuID = JSON.parse(params)
+        fetch(`/api/catalog_system/pub/products/search?fq=skuId:${skuID}&sc=3`)
+          .then(res => {
+            if (res.ok) {
+              return res.json()
+            } else {
+              throw new Error('Error in response')
+            }
+          })
+          .then(quantity => {
+            const availability = quantity[0].items[0].sellers.find((seller: any) => {
+              return seller.sellerId === "uselectricalcd01"
+            }).commertialOffer.AvailableQuantity
+
+            product[0].quantity = availability
+          })
+      }
+
+      productAvailability(product[0].value)
+      console.log(`Quantity Change: ${product[0]}`)
+
+      const productPrice = async (productId: any) => {
+        try {
+          const sessionResponse = await getSession();
+          const userInfo = sessionResponse?.response?.namespaces?.profile?.email?.value;
+
+          const userEmailResponse = await client.query({
+            query: GET_ORGANIZATIONS_BY_EMAIL,
+            variables: { email: userInfo },
+          });
+
+          const userOrganizationId = userEmailResponse.data.getOrganizationsByEmail[0].costId;
+
+          const postData = {
+            customerId: userOrganizationId,
+            branchId: "",
+            productId: productId,
+            orderQty: 1,
+            shouldHidePrice: "false",
+          };
+
+          const response = await fetch('/v0/customerPrice', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(postData),
+          });
+
+          const data = await response.json();
+          const formattedPrice = parseInt(data?.price?.CustomersPrice?.Products[0]?.ListPrice);
+
+          return formattedPrice;
+        } catch (error) {
+          // Handle errors here
+          console.error(error);
+          throw error; // Rethrow the error for the calling code to handle if necessary
+        }
+      };
+
+      const productId = product[0].value
+
+      productPrice(productId)
+        .then((price) => {
+          product[0].price = price
+          onSelectedItemChange(product[0])
+        })
+        .catch((error) => {
+          console.error(`Error fetching product price: ${error}`);
+        })
 
       setState({
         ...state,
@@ -62,8 +143,8 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       })
     }
 
-    onSelectedItemChange(product[0])
 
+    setLoading(false)
     return true
   }
 
@@ -134,7 +215,8 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       >
         <div className="w-100 mb5">
           <div className="bg-base t-body c-on-base pa0 br3 b--muted-4">
-            {!selectedItem && <QuickOrderAutocomplete onSelect={onSelect} />}
+            {!selectedItem && !loading && <QuickOrderAutocomplete onSelect={onSelect} />}
+            {loading && <Spinner color="black" />}
             {!!selectedItem && (
               <div>
                 <div className="w-two-thirds-l w-100-ns fl-l">
