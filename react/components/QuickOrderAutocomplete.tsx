@@ -105,31 +105,6 @@ const QuickOrderAutocomplete: FunctionComponent<
   }
 
 
-  // const handlePrice = async (productId: any) => {
-  //   try {
-
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //     // Handle errors here
-  //     return error
-  //   }
-  // }
-
-  // const fetchPriceData = (productId: any) => {
-  //   try {
-  //     handlePrice(productId).then((result) => {
-  //       if (result != undefined) {
-  //         return result
-  //       } else {
-  //         console.log(`Product price is: ${result}`)
-  //       }
-  //     })
-  //   } catch (error) {
-  //     console.error('Error fetching price data:', error);
-  //     throw error;
-  //   }
-  // }
-
   const options = {
     onSelect: (...args: any) => {
       onSelect(args)
