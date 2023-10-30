@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Table, NumericStepper } from 'vtex.styleguide'
+import { Table, NumericStepper, Spinner } from 'vtex.styleguide'
 import { useCssHandles } from 'vtex.css-handles'
 import { useMutation } from 'react-apollo'
 import { OrderForm } from 'vtex.order-manager'
@@ -47,6 +47,7 @@ const QuickOrderPad = () => {
   const [tableData, setTableData] = useState([
     { id: 1, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '', stock: 0 }
   ])
+  const [loading, setLoading] = useState(false)
   const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
   const orderForm = OrderForm.useOrderForm()
 
@@ -59,6 +60,7 @@ const QuickOrderPad = () => {
     rowIndex: { rowData: any },
     newSelectedItem: { thumb: string, label: string, price: number, seller: string, value: string, quantity: 0 }
   ) => {
+    setLoading(true)
     const tableInfo = [...tableData]
     if (tableInfo.length === 0) {
       return
@@ -80,6 +82,7 @@ const QuickOrderPad = () => {
     tableInfo[rowId].skuId = newSelectedItem.value
     tableData[rowId].stock = newSelectedItem.quantity
     setSelectedItem(newSelectedItem)
+    setLoading(false)
   }
 
   const handleQuantityChange = (
@@ -193,6 +196,7 @@ const QuickOrderPad = () => {
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           return (
             <div className={handles.centerDiv}>
+              {loading && <Spinner color="black" />}
               {tableData[rowIndex.rowData.id - 1]?.thumb && (
                 <NumericStepper
                   size="small"
@@ -211,6 +215,7 @@ const QuickOrderPad = () => {
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           return (
             <div className={`${handles.productContainer} w-two-thirds-l w-100-ns fl-l`}>
+              {loading && <Spinner color="black" />}
               <div
                 className={`flex fl ${handles.productThumb}`}
               >
@@ -239,6 +244,7 @@ const QuickOrderPad = () => {
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           return (
             <div>
+              {loading && <Spinner color="black" />}
               {tableData[rowIndex.rowData.id - 1]?.price && (
                 <div className={`${handles.priceContainer}`}>
                   <p className={`${handles.productPrice}`}>
@@ -253,7 +259,7 @@ const QuickOrderPad = () => {
         }
       },
       close: {
-        title: '',
+        title: ' ',
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           const handleDeleteClick = () => {
             const { id } = rowIndex.rowData;
