@@ -98,7 +98,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
           const postData = {
             customerId: userOrganizationId,
             branchId: "",
-            productId: productId,
+            productId: [productId],
             orderQty: 1,
             shouldHidePrice: "false",
           };
