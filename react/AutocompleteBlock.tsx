@@ -112,13 +112,12 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
           });
 
           const data = await response.json();
-          const formattedPrice = parseFloat(data?.price?.CustomersPrice?.Products[0]?.ListPrice);
+          const formattedPrice = parseFloat(data?.price?.CustomersPrice?.Products[0]?.PricePer);
 
           return formattedPrice;
         } catch (error) {
-          // Handle errors here
           console.error(error);
-          throw error; // Rethrow the error for the calling code to handle if necessary
+          throw error;
         }
       };
 
