@@ -189,15 +189,16 @@ const QuickOrderPad = () => {
       id: {
         title: 'Part Number/Keyword',
         cellRenderer: (rowIndex: any) => {
+          const tableRow =tableData[rowIndex.rowData.id - 1];
           return (
             <div>
-              {!tableData[rowIndex.rowData.id - 1]?.skuId ? (
+              {!tableRow?.skuId ? (
                 <AutocompleteBlock
                   onSelectedItemChange={(event: any) =>
                     handleSelectedItemChange(rowIndex, event)
                   }
                   componentOnly="false"
-                />) : tableData[rowIndex.rowData.id - 1]?.skuId}
+                />) : tableRow?.skuId}
             </div>
           )
         },
@@ -205,13 +206,14 @@ const QuickOrderPad = () => {
       quantity: {
         title: 'Quantity',
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
+          const tableRow =tableData[rowIndex.rowData.id - 1];
           return (
             <div className={handles.centerDiv}>
               {loading && <Spinner color="black" />}
-              {tableData[rowIndex.rowData.id - 1]?.thumb && (
+              {tableRow?.thumb && (
                 <NumericStepper
                   size="small"
-                  value={tableData[rowIndex.rowData.id - 1].quantity}
+                  value={tableRow?.quantity}
                   onChange={(event: any) =>
                     handleQuantityChange(rowIndex, event.value)
                   }
@@ -224,15 +226,16 @@ const QuickOrderPad = () => {
       product: {
         title: 'Product',
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
+          const tableRow =tableData[rowIndex.rowData.id - 1];
           return (
             <div className={`${handles.productContainer} w-two-thirds-l w-100-ns fl-l`}>
               {loading && <Spinner color="black" />}
               <div
                 className={`flex fl ${handles.productThumb}`}
               >
-                {tableData[rowIndex.rowData.id - 1]?.thumb && (
+                {tableRow?.thumb && (
                   <img
-                    src={tableData[rowIndex.rowData.id - 1]?.thumb}
+                    src={tableRow?.thumb}
                     width="50"
                     height="50"
                     alt=""
@@ -243,7 +246,7 @@ const QuickOrderPad = () => {
                 className={`flex  fl ${handles.productLabel}`}
               >
                 <span className={`${handles.productTitle}`}>
-                  {tableData[rowIndex.rowData.id - 1]?.label ?? ''}
+                  {tableRow?.label ?? ''}
                 </span>
               </div>
             </div>
@@ -253,16 +256,20 @@ const QuickOrderPad = () => {
       price: {
         title: 'Price',
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
+          const tableRow =tableData[rowIndex.rowData.id - 1];
           return (
             <div>
               {loading && <Spinner color="black" />}
-              {tableData[rowIndex.rowData.id - 1]?.price && (
+              {tableRow?.price && (
                 <div className={`${handles.priceContainer}`}>
                   <p className={`${handles.productPrice}`}>
-                    {tableData[rowIndex.rowData.id - 1]?.price}
+                    {tableRow?.price}
                     <span>/each</span>
                   </p>
-                  <p className={`${handles.productQuantity}`}>{tableData[rowIndex.rowData.id - 1]?.stock == 0 ? '' : tableData[rowIndex.rowData.id - 1]?.stock} {tableData[rowIndex.rowData.id - 1]?.stock == 0 ? 'Backorder Available' : 'Available'}</p>
+                  <p className={`${handles.productQuantity}`}>
+                    {tableRow?.stock == 0  || tableRow?.stock !== undefined ? '' : tableRow?.stock}
+                    {tableRow?.stock == 0 || tableRow?.stock == undefined ? 'Backorder Available' : 'Available'}
+                  </p>
                 </div>
               )}
             </div>
@@ -275,11 +282,13 @@ const QuickOrderPad = () => {
           const handleDeleteClick = () => {
             const { id } = rowIndex.rowData;
             removeRow({ id });
-          };
+          }
+
+          const tableRow =tableData[rowIndex.rowData.id - 1];
 
           return (
             <div>
-              {tableData[rowIndex.rowData.id - 1]?.price && (
+              {tableRow?.price && (
                 <span className={`${handles.closeIcon}`} onClick={handleDeleteClick}>X</span>
               )}
             </div>

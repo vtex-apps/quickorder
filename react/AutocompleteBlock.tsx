@@ -74,7 +74,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
           .then(quantity => {
             const availability = quantity[0].items[0].sellers.find((seller: any) => {
               return seller.sellerId === "uselectricalcd01"
-            }).commertialOffer.AvailableQuantity
+            })?.commertialOffer?.AvailableQuantity
 
             product[0].quantity = availability
           })
