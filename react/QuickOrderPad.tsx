@@ -115,7 +115,16 @@ const QuickOrderPad = () => {
 
   const removeRow = (rowData: { id: number }) => {
     const { id } = rowData;
-    setTableData(prevTableData => prevTableData.filter(item => item.id !== id))
+    const updatedTableData = tableData.filter(item => item.id !== id);
+
+    const updatedTableDataWithNewIds = updatedTableData.map((item, index) => {
+      return {
+        ...item,
+        id: index + 1,
+      };
+    });
+
+    setTableData(updatedTableDataWithNewIds);
   };
 
   const handleAddAllToCart = async () => {
@@ -182,12 +191,13 @@ const QuickOrderPad = () => {
         cellRenderer: (rowIndex: any) => {
           return (
             <div>
-              <AutocompleteBlock
-                onSelectedItemChange={(event: any) =>
-                  handleSelectedItemChange(rowIndex, event)
-                }
-                componentOnly="false"
-              />
+              {!tableData[rowIndex.rowData.id - 1]?.skuId ? (
+                <AutocompleteBlock
+                  onSelectedItemChange={(event: any) =>
+                    handleSelectedItemChange(rowIndex, event)
+                  }
+                  componentOnly="false"
+                />) : tableData[rowIndex.rowData.id - 1]?.skuId}
             </div>
           )
         },
