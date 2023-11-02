@@ -46,7 +46,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
       const seller = selectedSku
         ? data.product.items[0].sellers.find((item: any) => {
-          if (data.product.items[0].sellers.length > 1) {
+          if (data.product.items[0].sellers.length > 1 && item.sellerId === "uselectricalcd01") {
             return item.sellerId === "uselectricalcd01"
           } else {
             return item.sellerDefault === true
@@ -81,8 +81,6 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       }
 
       productAvailability(product[0].value)
-      console.log(`Quantity Change: ${product[0]}`)
-
       const productPrice = async (productId: any) => {
         try {
           const sessionResponse = await getSession();

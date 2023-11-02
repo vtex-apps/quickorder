@@ -262,7 +262,7 @@ const QuickOrderPad = () => {
                     {tableData[rowIndex.rowData.id - 1]?.price}
                     <span>/each</span>
                   </p>
-                  <p className={`${handles.productQuantity}`}>{tableData[rowIndex.rowData.id - 1]?.stock} Available</p>
+                  <p className={`${handles.productQuantity}`}>{tableData[rowIndex.rowData.id - 1]?.stock == 0 ? '' : tableData[rowIndex.rowData.id - 1]?.stock} {tableData[rowIndex.rowData.id - 1]?.stock == 0 ? 'Backorder Available' : 'Available'}</p>
                 </div>
               )}
             </div>

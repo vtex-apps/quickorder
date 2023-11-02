@@ -118,10 +118,10 @@ const QuickOrderAutocomplete: FunctionComponent<
         })
         .map((item: any) => {
           const sellerId = item.items[0].sellers.find((seller: any) => {
-            if (item.items[0].sellers.length > 1) {
+            if (item.items[0].sellers.length > 1 && seller.sellerId === "uselectricalcd01") {
               return seller.sellerId === "uselectricalcd01"
             } else {
-              return seller.sellerId
+              return seller.sellerId == "1"
             }
           }).sellerId
 
