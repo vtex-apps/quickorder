@@ -128,15 +128,17 @@ const QuickOrderPad = () => {
             (el: any) => el.id === item.skuId
           )
 
+          let updatedQuantity = item.quantity
+
           if (existsInCurrentOrder) {
-            item.quantity += parseInt(existsInCurrentOrder.quantity, 10)
+            updatedQuantity += parseInt(existsInCurrentOrder.quantity, 10)
           }
 
           const skuId = parseInt(item.skuId)
 
           return {
             id: skuId,
-            quantity: item.quantity,
+            quantity: updatedQuantity,
             seller: item.seller
           }
         }),

@@ -29,7 +29,7 @@ let orderFormId = ''
 
 const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   onReviewItems,
-  hiddenColumns,
+  hiddenColumns = [],
   reviewedItems,
   onRefidLoading,
   backList,

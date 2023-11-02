@@ -242,7 +242,7 @@ const CopyPastePad: FunctionComponent<WrappedComponentProps> = ({ intl }) => {
     const merge = (internalItems: ItemType[]) => {
       return internalItems.reduce((acc: ItemType[], val) => {
         const { id, quantity }: ItemType = val
-        const ind = acc.findIndex((el) => el.id === id)
+        const ind = acc?.findIndex((el) => el.id === id)
 
         if (ind !== -1) {
           acc[ind].quantity += quantity

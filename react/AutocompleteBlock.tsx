@@ -24,7 +24,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   componentOnly,
 }) => {
   const client = useApolloClient()
-  const[loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [state, setState] = useState<any>({
     selectedItem: null,
     quantitySelected: 1,
@@ -112,7 +112,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
           });
 
           const data = await response.json();
-          const formattedPrice = parseInt(data?.price?.CustomersPrice?.Products[0]?.ListPrice);
+          const formattedPrice = parseFloat(data?.price?.CustomersPrice?.Products[0]?.ListPrice);
 
           return formattedPrice;
         } catch (error) {
