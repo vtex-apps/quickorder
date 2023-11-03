@@ -1,7 +1,7 @@
 {
   "vendor": "uselectrical",
   "name": "quickorder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "Quickorder",
   "description": "Allow users to add multiple products to the cart at once",
   "defaultLocale": "en-US",
