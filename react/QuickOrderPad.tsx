@@ -267,7 +267,7 @@ const QuickOrderPad = () => {
                     <span>/each</span>
                   </p>
                   <p className={`${handles.productQuantity}`}>
-                    {tableRow?.stock == 0  || tableRow?.stock !== undefined ? '' : tableRow?.stock}
+                    {tableRow?.stock == 0  || tableRow?.stock == undefined ? '' : tableRow?.stock}
                     {tableRow?.stock == 0 || tableRow?.stock == undefined ? 'Backorder Available' : 'Available'}
                   </p>
                 </div>
