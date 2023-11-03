@@ -1,7 +1,7 @@
 {
-  "vendor": "vtex",
+  "vendor": "uselectrical",
   "name": "quickorder",
-  "version": "3.12.7",
+  "version": "1.0.0",
   "title": "Quickorder",
   "description": "Allow users to add multiple products to the cart at once",
   "defaultLocale": "en-US",
@@ -84,16 +84,5 @@
     }
   ],
   "settingsSchema": {},
-  "billingOptions": {
-    "termsURL": "https://compliance.vtex.com/gdpr/policies/vtex-privacy-policy",
-    "support": {
-      "url": "https://support.vtex.com/hc/requests"
-    },
-    "free": true,
-    "type": "free",
-    "availableCountries": [
-      "*"
-    ]
-  },
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }

@@ -81,6 +81,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       }
 
       productAvailability(product[0].value)
+
       const productPrice = async (productId: any) => {
         try {
           const sessionResponse = await getSession();
