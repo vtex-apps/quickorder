@@ -189,7 +189,7 @@ const QuickOrderPad = () => {
       id: {
         title: 'Part Number/Keyword',
         cellRenderer: (rowIndex: any) => {
-          const tableRow =tableData[rowIndex.rowData.id - 1];
+          const tableRow = tableData[rowIndex.rowData.id - 1];
           return (
             <div>
               {!tableRow?.skuId ? (
@@ -206,7 +206,7 @@ const QuickOrderPad = () => {
       quantity: {
         title: 'Quantity',
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
-          const tableRow =tableData[rowIndex.rowData.id - 1];
+          const tableRow = tableData[rowIndex.rowData.id - 1];
           return (
             <div className={handles.centerDiv}>
               {loading && <Spinner color="black" />}
@@ -226,7 +226,7 @@ const QuickOrderPad = () => {
       product: {
         title: 'Product',
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
-          const tableRow =tableData[rowIndex.rowData.id - 1];
+          const tableRow = tableData[rowIndex.rowData.id - 1];
           return (
             <div className={`${handles.productContainer} w-two-thirds-l w-100-ns fl-l`}>
               {loading && <Spinner color="black" />}
@@ -256,7 +256,7 @@ const QuickOrderPad = () => {
       price: {
         title: 'Price',
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
-          const tableRow =tableData[rowIndex.rowData.id - 1];
+          const tableRow = tableData[rowIndex.rowData.id - 1];
           return (
             <div>
               {loading && <Spinner color="black" />}
@@ -284,7 +284,7 @@ const QuickOrderPad = () => {
             removeRow({ id });
           }
 
-          const tableRow =tableData[rowIndex.rowData.id - 1];
+          const tableRow = tableData[rowIndex.rowData.id - 1];
 
           return (
             <div>

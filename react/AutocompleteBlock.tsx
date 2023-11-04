@@ -60,6 +60,9 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       if (data.product.items.length === 1) {
         multiplier = data.product.items[0].unitMultiplier
       }
+      console.log(seller)
+
+      product[0].seller = seller
 
       const productAvailability = async (params: any) => {
         const skuID = JSON.parse(params)
