@@ -83,6 +83,30 @@
       }
     }
   ],
-  "settingsSchema": {},
+  "settingsSchema": {
+    "title": "Settings",
+    "type": "object",
+    "properties": {
+      "appCredentials": {
+        "title": "VTEX App Key & Token",
+        "description": "All credentials are required",
+        "type": "object",
+        "properties": {
+          "appKey": {
+            "title": "VTEX App Key",
+            "description": "Enter the app key from user & rules",
+            "type": "string",
+            "default": ""
+          },
+          "appToken": {
+            "title": "VTEX App Token",
+            "description": "Enter the app token from user & rules",
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
