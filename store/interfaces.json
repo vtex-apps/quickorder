@@ -11,7 +11,11 @@
   "quickorder-copyPastePad": {
     "component": "CopyPastePad"
   },
-  "store.quickorder": {},
+  "store.quickorder": {
+  },
+  "quickorder-wrapper": {
+    "component": "QuickOrderWrapper"
+  },
   "quickorder-addAllButton": {
     "component": "AddAllToCart"
   },

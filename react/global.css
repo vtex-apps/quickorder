@@ -1,3 +1,22 @@
+.uselectrical-quickorder-1-x-wrapperContainer {
+  display: flex;
+  margin-top: 60px;
+}
+
+.uselectrical-quickorder-1-x-quickorderPad {
+  width: 75%;
+  margin-right: 40px;
+  position: relative;
+}
+
+.uselectrical-quickorder-1-x-copyPasteContainer {
+  width: 25%;
+}
+
+.uselectrical-quickorder-1-x-quickOrderPageTitle {
+  font-size: 48px;
+}
+
 .vtex-quickorder-2-x-inputQuantity>label>div>input {
   padding-left: 0;
   padding-right: 0;
@@ -22,13 +41,17 @@
   height: 50px;
   justify-content: flex-end;
   position: absolute;
-  right: 45px;
+  right: calc(100% - 1296px);
   top: -50px;
 }
 
 .uselectrical-quickorder-1-x-clearOrderList,
 .uselectrical-quickorder-1-x-addAllToList {
   margin-right: 40px;
+}
+
+.uselectrical-quickorder-1-x-tableActions button {
+  text-transform: uppercase;
 }
 
 .uselectrical-quickorder-1-x-clearOrderList button {

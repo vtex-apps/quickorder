@@ -21,6 +21,8 @@ interface ItemType {
 
 const QuickOrderPad = () => {
   const CSS_HANDLES = [
+    'quickorderPad',
+    'quickOrderPageTitle',
     'centerDiv',
     'productThumb',
     'productLabel',
@@ -267,7 +269,7 @@ const QuickOrderPad = () => {
                     <span>/each</span>
                   </p>
                   <p className={`${handles.productQuantity}`}>
-                    {tableRow?.stock == 0  || tableRow?.stock == undefined ? '' : tableRow?.stock}
+                    {tableRow?.stock == 0 || tableRow?.stock == undefined ? '' : tableRow?.stock}
                     {tableRow?.stock == 0 || tableRow?.stock == undefined ? 'Backorder Available' : 'Available'}
                   </p>
                 </div>
@@ -299,7 +301,8 @@ const QuickOrderPad = () => {
   }
 
   return (
-    <>
+    <div className={handles.quickorderPad}>
+      <h1 className={handles.quickOrderPageTitle}>Quick Order</h1>
       <span>
         Quickly place an order using either the Quick Order Pad or Copy &
         Paste Pad.
@@ -314,7 +317,7 @@ const QuickOrderPad = () => {
         <ClearAllLink removeItems={removeItems} />
         <AddAllToCart isLoading={false} onClick={() => { handleAddAllToCart() }} />
       </div>
-    </>
+    </div>
   )
 }
 

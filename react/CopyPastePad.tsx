@@ -219,7 +219,7 @@ const CopyPastePad: FunctionComponent<WrappedComponentProps> = ({ intl }) => {
   const CSS_HANDLES = [
     'buttonValidate',
     'textContainer',
-    'componentContainer',
+    'copyPasteContainer',
     'reviewBlock',
     'buttonsBlock',
     'textContainerTitle',
@@ -265,9 +265,7 @@ const CopyPastePad: FunctionComponent<WrappedComponentProps> = ({ intl }) => {
 
   return (
     <div
-      className={`${handles.componentContainer}
-          w-80-l w-100-ns fr-l pb6
-        `}
+      className={`${handles.copyPasteContainer}`}
     >
       <h2>Copy & Paste Pad</h2>
       <p>
