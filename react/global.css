@@ -16,9 +16,15 @@
   display: flex;
 }
 
-.uselectrical-quickorder-1-x-quickOrderMainContent .vtex-table__container {
+.uselectrical-quickorder-1-x-quickOrderMainContent .uselectrical-quickorder-1-x-quickOrderTableContainer {
   width: 75%;
   margin-right: 40px;
+}
+
+.uselectrical-quickorder-1-x-quickOrderActionsContainer {
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .uselectrical-quickorder-1-x-copyPasteContainer {
@@ -173,4 +179,13 @@
   max-width: 20px;
   max-height: 20px;
   margin-right: 5px;
+}
+
+.uselectrical-quickorder-1-x-centerDiv .vtex-numeric-stepper__plus-button-container,
+.uselectrical-quickorder-1-x-centerDiv .vtex-numeric-stepper__minus-button-container {
+  width: 30px;
+}
+
+.uselectrical-quickorder-1-x-centerDiv .vtex-numeric-stepper__input {
+  width: 45px;
 }

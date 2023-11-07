@@ -27,6 +27,8 @@ const QuickOrderPad = () => {
     'quickOrderPageTitle',
     'quickOrderPadHeader',
     'quickOrderMainContent',
+    'quickOrderTableContainer',
+    'quickOrderActionsContainer',
     'centerDiv',
     'productThumb',
     'productLabel',
@@ -194,6 +196,7 @@ const QuickOrderPad = () => {
     properties: {
       id: {
         title: 'Part Number/Keyword',
+        width: 300,
         cellRenderer: (rowIndex: any) => {
           const tableRow = tableData[rowIndex.rowData.id - 1];
           return (
@@ -211,6 +214,7 @@ const QuickOrderPad = () => {
       },
       quantity: {
         title: 'Quantity',
+        width: 200,
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           const tableRow = tableData[rowIndex.rowData.id - 1];
           return (
@@ -231,10 +235,11 @@ const QuickOrderPad = () => {
       },
       product: {
         title: 'Product',
+        width: 200,
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           const tableRow = tableData[rowIndex.rowData.id - 1];
           return (
-            <div className={`${handles.productContainer} w-two-thirds-l w-100-ns fl-l`}>
+            <div className={`${handles.productContainer}`}>
               {loading && <Spinner color="black" />}
               <div
                 className={`flex fl ${handles.productThumb}`}
@@ -261,6 +266,7 @@ const QuickOrderPad = () => {
       },
       price: {
         title: 'Price',
+        width: 100,
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           const tableRow = tableData[rowIndex.rowData.id - 1];
           return (
@@ -284,6 +290,7 @@ const QuickOrderPad = () => {
       },
       close: {
         title: ' ',
+        width: 50,
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           const handleDeleteClick = () => {
             const { id } = rowIndex.rowData;
@@ -318,13 +325,17 @@ const QuickOrderPad = () => {
         </div>
       </div>
       <div className={handles.quickOrderMainContent}>
-        <Table dynamicRowHeight="true" fullWidth items={tableData} schema={schema} density="low" />
+        <div className={handles.quickOrderTableContainer}>
+          <Table items={tableData} schema={schema} fullWidth={false} />
+          <div className={handles.quickOrderActionsContainer}>
+            <AddMoreLinesButton addRow={addRow} />
+            <ClearAllLink removeItems={removeItems} />
+            <AddAllToCart isLoading={false} onClick={() => { handleAddAllToCart() }} />
+          </div>
+        </div>
         <CopyPastePad />
       </div>
       <div className={`${handles.tableActions}`}>
-        <AddMoreLinesButton addRow={addRow} />
-        <ClearAllLink removeItems={removeItems} />
-        <AddAllToCart isLoading={false} onClick={() => { handleAddAllToCart() }} />
       </div>
     </div>
   )
