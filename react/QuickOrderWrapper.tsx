@@ -1,5 +1,4 @@
 import React from 'react'
-import CopyPastePad from './CopyPastePad';
 import QuickOrderPad from './QuickOrderPad';
 import { useCssHandles } from 'vtex.css-handles'
 import './global.css'
@@ -14,7 +13,6 @@ function QuickOrderWrapper() {
   return (
     <div className={handles.wrapperContainer}>
       <QuickOrderPad />
-      <CopyPastePad />
     </div>
   )
 }

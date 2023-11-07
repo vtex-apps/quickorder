@@ -5,6 +5,7 @@ import { useMutation } from 'react-apollo'
 import { OrderForm } from 'vtex.order-manager'
 import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
+import CopyPastePad from './CopyPastePad';
 
 import AutocompleteBlock from './AutocompleteBlock'
 import AddMoreLinesButton from './AddMoreLinesButton'
@@ -22,7 +23,10 @@ interface ItemType {
 const QuickOrderPad = () => {
   const CSS_HANDLES = [
     'quickorderPad',
+    'quickorderPadContainer',
     'quickOrderPageTitle',
+    'quickOrderPadHeader',
+    'quickOrderMainContent',
     'centerDiv',
     'productThumb',
     'productLabel',
@@ -302,16 +306,21 @@ const QuickOrderPad = () => {
 
   return (
     <div className={handles.quickorderPad}>
-      <h1 className={handles.quickOrderPageTitle}>Quick Order</h1>
-      <span>
-        Quickly place an order using either the Quick Order Pad or Copy &
-        Paste Pad.
-      </span>
-      <div className={`${handles.headerActions}`}>
-        <ClearAllLink removeItems={removeItems} />
-        <AddAllToCart isLoading={false} onClick={() => { handleAddAllToCart() }} />
+      <div className={handles.quickOrderPadHeader}>
+        <h1 className={handles.quickOrderPageTitle}>Quick Order</h1>
+        <span>
+          Quickly place an order using either the Quick Order Pad or Copy &
+          Paste Pad.
+        </span>
+        <div className={`${handles.headerActions}`}>
+          <ClearAllLink removeItems={removeItems} />
+          <AddAllToCart isLoading={false} onClick={() => { handleAddAllToCart() }} />
+        </div>
       </div>
-      <Table dynamicRowHeight="true" fullWidth items={tableData} schema={schema} density="low" />
+      <div className={handles.quickOrderMainContent}>
+        <Table dynamicRowHeight="true" fullWidth items={tableData} schema={schema} density="low" />
+        <CopyPastePad />
+      </div>
       <div className={`${handles.tableActions}`}>
         <AddMoreLinesButton addRow={addRow} />
         <ClearAllLink removeItems={removeItems} />
