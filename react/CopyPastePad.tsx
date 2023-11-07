@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { FunctionComponent } from 'react'
 import React, { useState, useContext } from 'react'
 import type { WrappedComponentProps, MessageDescriptor } from 'react-intl'
 import { FormattedMessage, injectIntl } from 'react-intl'
@@ -27,7 +26,14 @@ interface ItemType {
   quantity: number
 }
 
-const CopyPastePad: FunctionComponent<WrappedComponentProps> = ({ intl }) => {
+interface CopyPastePadProps {
+  onReviewItemsChange: (items: any) => void;
+}
+
+const CopyPastePad: React.FC<CopyPastePadProps & WrappedComponentProps> = ({
+  onReviewItemsChange,
+  intl
+}) => {
   const [state, setState] = useState<any>({
     reviewState: false,
     showAddToCart: null,
@@ -174,6 +180,7 @@ const CopyPastePad: FunctionComponent<WrappedComponentProps> = ({ intl }) => {
           return item.error
         }).length === 0
 
+      onReviewItemsChange(items)
       setState({
         ...state,
         reviewItems: items,

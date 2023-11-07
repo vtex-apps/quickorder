@@ -189,8 +189,12 @@ const QuickOrderPad = () => {
     } else {
       console.log({ success: true, isNewItem: true })
     }
-
   }
+
+  const handleReviewItemsChange = (items: any) => {
+    console.log(items)
+    debugger
+  };
 
   const schema = {
     properties: {
@@ -333,7 +337,7 @@ const QuickOrderPad = () => {
             <AddAllToCart isLoading={false} onClick={() => { handleAddAllToCart() }} />
           </div>
         </div>
-        <CopyPastePad />
+        <CopyPastePad onReviewItemsChange={handleReviewItemsChange} />
       </div>
       <div className={`${handles.tableActions}`}>
       </div>

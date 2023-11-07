@@ -3,7 +3,7 @@
 import type { FunctionComponent } from 'react'
 import React, { useState } from 'react'
 import type { WrappedComponentProps } from 'react-intl'
-import {  injectIntl } from 'react-intl'
+import { injectIntl } from 'react-intl'
 import { Tag, Spinner } from 'vtex.styleguide'
 import PropTypes from 'prop-types'
 import { useCssHandles } from 'vtex.css-handles'
@@ -210,9 +210,8 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
         </div>
       )}
       <div
-        className={`${handles.componentContainer} ${
-          !componentOnly ? 'w-two-thirds-l w-100-ns fr-l' : ''
-        }`}
+        className={`${handles.componentContainer} ${!componentOnly ? 'w-two-thirds-l w-100-ns fr-l' : ''
+          }`}
       >
         <div className="w-100 mb5">
           <div className="bg-base t-body c-on-base pa0 br3 b--muted-4">
