@@ -155,6 +155,7 @@ const QuickOrderPad = () => {
   const addRow = (selectedProduct: any = null) => {
     const highestId =
       tableData.length > 0 ? tableData[tableData.length - 1].id || 0 : 0;
+    if(!selectedProduct) {
     const { images, sellers, name, itemId } = selectedProduct
     const seller = selectedProduct
       ? sellers.find((item: any) => {
@@ -191,6 +192,12 @@ const QuickOrderPad = () => {
     };
 
     setTableData([...tableData, newItem]);
+  } else {
+    const newId = highestId + 1
+    const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '', stock: 0 }
+
+    setTableData([...tableData, newItem])
+  }
   };
 
   const removeItems = () => {
