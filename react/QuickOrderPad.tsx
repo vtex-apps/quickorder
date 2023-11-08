@@ -138,7 +138,6 @@ const QuickOrderPad = () => {
       skuId: itemId || '',
       stock: selectedProduct?.quantity || 0,
     };
-    console.log(selectedProduct)
 
     setTableData([...tableData, newItem]);
   };
@@ -218,7 +217,6 @@ const QuickOrderPad = () => {
   }
 
   const handleReviewItemsChange = async (item: any) => {
-    console.log(copyProduct)
     if (copyProduct !== undefined) return
     const skuId = item[0].sku
     const { data } = await client.query({
@@ -229,7 +227,6 @@ const QuickOrderPad = () => {
     const slug = data.productSuggestions.products[0].linkText
 
     setCopyProduct(slug)
-    console.log(`Slug: ${slug}`)
     const query = {
       query: productQuery,
       variables: { slug: slug },
