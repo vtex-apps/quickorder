@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { FunctionComponent } from 'react'
 import React, { useState, useContext } from 'react'
 import type { WrappedComponentProps, MessageDescriptor } from 'react-intl'
 import { FormattedMessage, injectIntl } from 'react-intl'
@@ -27,7 +26,14 @@ interface ItemType {
   quantity: number
 }
 
-const CopyPastePad: FunctionComponent<WrappedComponentProps> = ({ intl }) => {
+interface CopyPastePadProps {
+  onReviewItemsChange: (items: any) => void;
+}
+
+const CopyPastePad: React.FC<CopyPastePadProps & WrappedComponentProps> = ({
+  onReviewItemsChange,
+  intl
+}) => {
   const [state, setState] = useState<any>({
     reviewState: false,
     showAddToCart: null,
@@ -174,6 +180,7 @@ const CopyPastePad: FunctionComponent<WrappedComponentProps> = ({ intl }) => {
           return item.error
         }).length === 0
 
+      onReviewItemsChange(items)
       setState({
         ...state,
         reviewItems: items,
@@ -219,7 +226,7 @@ const CopyPastePad: FunctionComponent<WrappedComponentProps> = ({ intl }) => {
   const CSS_HANDLES = [
     'buttonValidate',
     'textContainer',
-    'componentContainer',
+    'copyPasteContainer',
     'reviewBlock',
     'buttonsBlock',
     'textContainerTitle',
@@ -242,7 +249,7 @@ const CopyPastePad: FunctionComponent<WrappedComponentProps> = ({ intl }) => {
     const merge = (internalItems: ItemType[]) => {
       return internalItems.reduce((acc: ItemType[], val) => {
         const { id, quantity }: ItemType = val
-        const ind = acc.findIndex((el) => el.id === id)
+        const ind = acc?.findIndex((el) => el.id === id)
 
         if (ind !== -1) {
           acc[ind].quantity += quantity
@@ -265,9 +272,7 @@ const CopyPastePad: FunctionComponent<WrappedComponentProps> = ({ intl }) => {
 
   return (
     <div
-      className={`${handles.componentContainer}
-          w-80-l w-100-ns fr-l pb6
-        `}
+      className={`${handles.copyPasteContainer}`}
     >
       <h2>Copy & Paste Pad</h2>
       <p>

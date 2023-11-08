@@ -1,6 +1,6 @@
 {
   "store.quickorder": {
-    "blocks": ["flex-layout.row#title", "flex-layout.row#pads"]
+    "blocks": ["flex-layout.row#pads"]
   },
   "flex-layout.row#title": {
     "children": ["flex-layout.col#title"]
@@ -82,10 +82,10 @@
     }
   },
   "flex-layout.row#pads": {
-    "children": ["flex-layout.col#orderPad", "flex-layout.col#pastePad"]
+    "children": ["quickorder-wrapper"]
   },
   "flex-layout.col#orderPad": {
-    "children": ["quickorder-quickOrderPad"],
+    "children": ["quickorder-wrapper"],
     "props": {
       "width": "76%"
     }

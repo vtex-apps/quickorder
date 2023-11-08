@@ -5,6 +5,7 @@ import { useMutation } from 'react-apollo'
 import { OrderForm } from 'vtex.order-manager'
 import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
+import CopyPastePad from './CopyPastePad';
 
 import AutocompleteBlock from './AutocompleteBlock'
 import AddMoreLinesButton from './AddMoreLinesButton'
@@ -21,6 +22,13 @@ interface ItemType {
 
 const QuickOrderPad = () => {
   const CSS_HANDLES = [
+    'quickorderPad',
+    'quickorderPadContainer',
+    'quickOrderPageTitle',
+    'quickOrderPadHeader',
+    'quickOrderMainContent',
+    'quickOrderTableContainer',
+    'quickOrderActionsContainer',
     'centerDiv',
     'productThumb',
     'productLabel',
@@ -115,7 +123,16 @@ const QuickOrderPad = () => {
 
   const removeRow = (rowData: { id: number }) => {
     const { id } = rowData;
-    setTableData(prevTableData => prevTableData.filter(item => item.id !== id))
+    const updatedTableData = tableData.filter(item => item.id !== id);
+
+    const updatedTableDataWithNewIds = updatedTableData.map((item, index) => {
+      return {
+        ...item,
+        id: index + 1,
+      };
+    });
+
+    setTableData(updatedTableDataWithNewIds);
   };
 
   const handleAddAllToCart = async () => {
@@ -128,15 +145,17 @@ const QuickOrderPad = () => {
             (el: any) => el.id === item.skuId
           )
 
+          let updatedQuantity = item.quantity
+
           if (existsInCurrentOrder) {
-            item.quantity += parseInt(existsInCurrentOrder.quantity, 10)
+            updatedQuantity += parseInt(existsInCurrentOrder.quantity, 10)
           }
 
           const skuId = parseInt(item.skuId)
 
           return {
             id: skuId,
-            quantity: item.quantity,
+            quantity: updatedQuantity,
             seller: item.seller
           }
         }),
@@ -170,36 +189,45 @@ const QuickOrderPad = () => {
     } else {
       console.log({ success: true, isNewItem: true })
     }
-
   }
+
+  const handleReviewItemsChange = (items: any) => {
+    console.log(items)
+    debugger
+  };
 
   const schema = {
     properties: {
       id: {
         title: 'Part Number/Keyword',
+        width: 300,
         cellRenderer: (rowIndex: any) => {
+          const tableRow = tableData[rowIndex.rowData.id - 1];
           return (
             <div>
-              <AutocompleteBlock
-                onSelectedItemChange={(event: any) =>
-                  handleSelectedItemChange(rowIndex, event)
-                }
-                componentOnly="false"
-              />
+              {!tableRow?.skuId ? (
+                <AutocompleteBlock
+                  onSelectedItemChange={(event: any) =>
+                    handleSelectedItemChange(rowIndex, event)
+                  }
+                  componentOnly="false"
+                />) : tableRow?.skuId}
             </div>
           )
         },
       },
       quantity: {
         title: 'Quantity',
+        width: 200,
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
+          const tableRow = tableData[rowIndex.rowData.id - 1];
           return (
             <div className={handles.centerDiv}>
               {loading && <Spinner color="black" />}
-              {tableData[rowIndex.rowData.id - 1]?.thumb && (
+              {tableRow?.thumb && (
                 <NumericStepper
                   size="small"
-                  value={tableData[rowIndex.rowData.id - 1].quantity}
+                  value={tableRow?.quantity}
                   onChange={(event: any) =>
                     handleQuantityChange(rowIndex, event.value)
                   }
@@ -211,16 +239,18 @@ const QuickOrderPad = () => {
       },
       product: {
         title: 'Product',
+        width: 200,
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
+          const tableRow = tableData[rowIndex.rowData.id - 1];
           return (
-            <div className={`${handles.productContainer} w-two-thirds-l w-100-ns fl-l`}>
+            <div className={`${handles.productContainer}`}>
               {loading && <Spinner color="black" />}
               <div
                 className={`flex fl ${handles.productThumb}`}
               >
-                {tableData[rowIndex.rowData.id - 1]?.thumb && (
+                {tableRow?.thumb && (
                   <img
-                    src={tableData[rowIndex.rowData.id - 1]?.thumb}
+                    src={tableRow?.thumb}
                     width="50"
                     height="50"
                     alt=""
@@ -231,7 +261,7 @@ const QuickOrderPad = () => {
                 className={`flex  fl ${handles.productLabel}`}
               >
                 <span className={`${handles.productTitle}`}>
-                  {tableData[rowIndex.rowData.id - 1]?.label ?? ''}
+                  {tableRow?.label ?? ''}
                 </span>
               </div>
             </div>
@@ -240,17 +270,22 @@ const QuickOrderPad = () => {
       },
       price: {
         title: 'Price',
+        width: 100,
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
+          const tableRow = tableData[rowIndex.rowData.id - 1];
           return (
             <div>
               {loading && <Spinner color="black" />}
-              {tableData[rowIndex.rowData.id - 1]?.price && (
+              {tableRow?.price && (
                 <div className={`${handles.priceContainer}`}>
                   <p className={`${handles.productPrice}`}>
-                    {tableData[rowIndex.rowData.id - 1]?.price}
+                    {tableRow?.price}
                     <span>/each</span>
                   </p>
-                  <p className={`${handles.productQuantity}`}>{tableData[rowIndex.rowData.id - 1]?.stock} Available</p>
+                  <p className={`${handles.productQuantity}`}>
+                    {tableRow?.stock == 0 || tableRow?.stock == undefined ? '' : tableRow?.stock}
+                    {tableRow?.stock == 0 || tableRow?.stock == undefined ? 'Backorder Available' : 'Available'}
+                  </p>
                 </div>
               )}
             </div>
@@ -259,15 +294,18 @@ const QuickOrderPad = () => {
       },
       close: {
         title: ' ',
+        width: 50,
         cellRenderer: (rowIndex: { rowData: { id: number } }) => {
           const handleDeleteClick = () => {
             const { id } = rowIndex.rowData;
             removeRow({ id });
-          };
+          }
+
+          const tableRow = tableData[rowIndex.rowData.id - 1];
 
           return (
             <div>
-              {tableData[rowIndex.rowData.id - 1]?.price && (
+              {tableRow?.price && (
                 <span className={`${handles.closeIcon}`} onClick={handleDeleteClick}>X</span>
               )}
             </div>
@@ -278,22 +316,32 @@ const QuickOrderPad = () => {
   }
 
   return (
-    <>
-      <span>
-        Quickly place an order using either the Quick Order Pad or Copy &
-        Paste Pad.
-      </span>
-      <div className={`${handles.headerActions}`}>
-        <ClearAllLink removeItems={removeItems} />
-        <AddAllToCart isLoading={false} onClick={() => { handleAddAllToCart() }} />
+    <div className={handles.quickorderPad}>
+      <div className={handles.quickOrderPadHeader}>
+        <h1 className={handles.quickOrderPageTitle}>Quick Order</h1>
+        <span>
+          Quickly place an order using either the Quick Order Pad or Copy &
+          Paste Pad.
+        </span>
+        <div className={`${handles.headerActions}`}>
+          <ClearAllLink removeItems={removeItems} />
+          <AddAllToCart isLoading={false} onClick={() => { handleAddAllToCart() }} />
+        </div>
       </div>
-      <Table dynamicRowHeight="true" fullWidth items={tableData} schema={schema} density="low" />
+      <div className={handles.quickOrderMainContent}>
+        <div className={handles.quickOrderTableContainer}>
+          <Table items={tableData} schema={schema} fullWidth={false} />
+          <div className={handles.quickOrderActionsContainer}>
+            <AddMoreLinesButton addRow={addRow} />
+            <ClearAllLink removeItems={removeItems} />
+            <AddAllToCart isLoading={false} onClick={() => { handleAddAllToCart() }} />
+          </div>
+        </div>
+        <CopyPastePad onReviewItemsChange={handleReviewItemsChange} />
+      </div>
       <div className={`${handles.tableActions}`}>
-        <AddMoreLinesButton addRow={addRow} />
-        <ClearAllLink removeItems={removeItems} />
-        <AddAllToCart isLoading={false} onClick={() => { handleAddAllToCart() }} />
       </div>
-    </>
+    </div>
   )
 }
 

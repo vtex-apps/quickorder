@@ -3,7 +3,7 @@
 import type { FunctionComponent } from 'react'
 import React, { useState } from 'react'
 import type { WrappedComponentProps } from 'react-intl'
-import {  injectIntl } from 'react-intl'
+import { injectIntl } from 'react-intl'
 import { Tag, Spinner } from 'vtex.styleguide'
 import PropTypes from 'prop-types'
 import { useCssHandles } from 'vtex.css-handles'
@@ -24,7 +24,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   componentOnly,
 }) => {
   const client = useApolloClient()
-  const[loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [state, setState] = useState<any>({
     selectedItem: null,
     quantitySelected: 1,
@@ -46,7 +46,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
       const seller = selectedSku
         ? data.product.items[0].sellers.find((item: any) => {
-          if (data.product.items[0].sellers.length > 1) {
+          if (data.product.items[0].sellers.length > 1 && item.sellerId === "uselectricalcd01") {
             return item.sellerId === "uselectricalcd01"
           } else {
             return item.sellerDefault === true
@@ -60,6 +60,9 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       if (data.product.items.length === 1) {
         multiplier = data.product.items[0].unitMultiplier
       }
+      console.log(seller)
+
+      product[0].seller = seller
 
       const productAvailability = async (params: any) => {
         const skuID = JSON.parse(params)
@@ -74,14 +77,13 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
           .then(quantity => {
             const availability = quantity[0].items[0].sellers.find((seller: any) => {
               return seller.sellerId === "uselectricalcd01"
-            }).commertialOffer.AvailableQuantity
+            })?.commertialOffer?.AvailableQuantity
 
             product[0].quantity = availability
           })
       }
 
       productAvailability(product[0].value)
-      console.log(`Quantity Change: ${product[0]}`)
 
       const productPrice = async (productId: any) => {
         try {
@@ -112,13 +114,12 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
           });
 
           const data = await response.json();
-          const formattedPrice = parseInt(data?.price?.CustomersPrice?.Products[0]?.ListPrice);
+          const formattedPrice = parseFloat(data?.price?.CustomersPrice?.Products[0]?.PricePer);
 
           return formattedPrice;
         } catch (error) {
-          // Handle errors here
           console.error(error);
-          throw error; // Rethrow the error for the calling code to handle if necessary
+          throw error;
         }
       };
 
@@ -209,9 +210,8 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
         </div>
       )}
       <div
-        className={`${handles.componentContainer} ${
-          !componentOnly ? 'w-two-thirds-l w-100-ns fr-l' : ''
-        }`}
+        className={`${handles.componentContainer} ${!componentOnly ? 'w-two-thirds-l w-100-ns fr-l' : ''
+          }`}
       >
         <div className="w-100 mb5">
           <div className="bg-base t-body c-on-base pa0 br3 b--muted-4">
