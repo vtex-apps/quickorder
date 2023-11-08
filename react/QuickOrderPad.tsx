@@ -6,6 +6,11 @@ import { OrderForm } from 'vtex.order-manager'
 import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import CopyPastePad from './CopyPastePad';
+import { useApolloClient } from 'react-apollo'
+import autocomplete from './queries/autocomplete.gql'
+import productQuery from './queries/product.gql'
+import { getSession } from './modules/session'
+import GET_ORGANIZATIONS_BY_EMAIL from './queries/getOrganizationsByEmail.gql'
 
 import AutocompleteBlock from './AutocompleteBlock'
 import AddMoreLinesButton from './AddMoreLinesButton'
@@ -44,7 +49,7 @@ const QuickOrderPad = () => {
   ] as const
 
   const handles = useCssHandles(CSS_HANDLES)
-
+  const client = useApolloClient()
 
   const [
     addToCart,
@@ -52,6 +57,7 @@ const QuickOrderPad = () => {
   ] = useMutation<{ addToCart: OrderFormType }, { items: any }>(ADD_TO_CART)
 
   const [selectedItem, setSelectedItem] = useState<any | null>(null)
+  const [copyProduct, setCopyProduct] = useState()
   const [tableData, setTableData] = useState([
     { id: 1, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '', stock: 0 }
   ])
@@ -62,6 +68,11 @@ const QuickOrderPad = () => {
   useEffect(() => {
     console.info('autocompleteState changed:', selectedItem)
   }, [selectedItem])
+
+  const USDollar = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
 
 
   const handleSelectedItemChange = (
@@ -76,10 +87,6 @@ const QuickOrderPad = () => {
     const { rowData } = rowIndex
     const rowId = rowData.id - 1
 
-    const USDollar = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
 
     const sellerId = newSelectedItem.seller
 
@@ -92,6 +99,44 @@ const QuickOrderPad = () => {
     setSelectedItem(newSelectedItem)
     setLoading(false)
   }
+
+  const productPrice = async (productId: any) => {
+    try {
+      const sessionResponse = await getSession();
+      const userInfo = sessionResponse?.response?.namespaces?.profile?.email?.value;
+
+      const userEmailResponse = await client.query({
+        query: GET_ORGANIZATIONS_BY_EMAIL,
+        variables: { email: userInfo },
+      });
+
+      const userOrganizationId = userEmailResponse.data.getOrganizationsByEmail[0].costId;
+
+      const postData = {
+        customerId: userOrganizationId,
+        branchId: "",
+        productId: [productId],
+        orderQty: 1,
+        shouldHidePrice: "false",
+      };
+
+      const response = await fetch('/v0/customerPrice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+      });
+
+      const data = await response.json();
+      const formattedPrice = parseFloat(data?.price?.CustomersPrice?.Products[0]?.PricePer);
+
+      return formattedPrice;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
 
   const handleQuantityChange = (
     rowIndex: { rowData: any },
@@ -107,15 +152,53 @@ const QuickOrderPad = () => {
     setTableData(updatedTableData);
   };
 
-  const addRow = () => {
+  const addRow = (selectedProduct: any = null) => {
     const highestId =
-      tableData.length > 0 ? tableData[tableData.length - 1].id || 0 : 0
+      tableData.length > 0 ? tableData[tableData.length - 1].id || 0 : 0;
+    if(!selectedProduct) {
+    const { images, sellers, name, itemId } = selectedProduct
+    const seller = selectedProduct
+      ? sellers.find((item: any) => {
+        if (sellers.length > 1 && item.sellerId === "uselectricalcd01") {
+          return item.sellerId === "uselectricalcd01"
+        } else {
+          return item.sellerDefault === true
+        }
+      }).sellerId
+      : null
 
+      productPrice(itemId)
+      .then((price) => {
+        selectedProduct.price = price
+      })
+      .catch((error) => {
+        console.error(`Error fetching product price: ${error}`);
+      })
+
+
+    const quantity = selectedProduct.sellers.find((id: { sellerId: string }) => id.sellerId == 'uselectricalcd01').commertialOffer.AvailableQuantity
+
+    console.log(selectedProduct.price)
+    const newId = highestId + 1;
+    const newItem = {
+      id: newId,
+      quantity: 1,
+      thumb: images[0]?.imageUrl || '',
+      price: USDollar.format(selectedProduct?.price) || '',
+      label: name || '',
+      seller: seller || '',
+      skuId: itemId || '',
+      stock: quantity || 0,
+    };
+
+    setTableData([...tableData, newItem]);
+  } else {
     const newId = highestId + 1
     const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '', stock: 0 }
 
     setTableData([...tableData, newItem])
   }
+  };
 
   const removeItems = () => {
     setTableData([])
@@ -191,10 +274,28 @@ const QuickOrderPad = () => {
     }
   }
 
-  const handleReviewItemsChange = (items: any) => {
-    console.log(items)
-    debugger
-  };
+  const handleReviewItemsChange = async (item: any) => {
+    if (copyProduct !== undefined) return
+    const skuId = item[0].sku
+    const { data } = await client.query({
+      query: autocomplete,
+      variables: { inputValue: skuId },
+    })
+
+    const slug = data.productSuggestions.products[0].linkText
+
+    setCopyProduct(slug)
+    const query = {
+      query: productQuery,
+      variables: { slug: slug },
+    }
+
+    const product = await client.query(query)
+    const productSelected = product.data.product.items[0]
+
+
+    addRow(productSelected)
+  }
 
   const schema = {
     properties: {
