@@ -6,6 +6,9 @@ import { OrderForm } from 'vtex.order-manager'
 import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import CopyPastePad from './CopyPastePad';
+import { useApolloClient } from 'react-apollo'
+import autocomplete from './queries/autocomplete.gql'
+import productQuery from './queries/product.gql'
 
 import AutocompleteBlock from './AutocompleteBlock'
 import AddMoreLinesButton from './AddMoreLinesButton'
@@ -44,7 +47,7 @@ const QuickOrderPad = () => {
   ] as const
 
   const handles = useCssHandles(CSS_HANDLES)
-
+  const client = useApolloClient()
 
   const [
     addToCart,
@@ -52,6 +55,7 @@ const QuickOrderPad = () => {
   ] = useMutation<{ addToCart: OrderFormType }, { items: any }>(ADD_TO_CART)
 
   const [selectedItem, setSelectedItem] = useState<any | null>(null)
+  const [copyProduct, setCopyProduct] = useState()
   const [tableData, setTableData] = useState([
     { id: 1, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '', stock: 0 }
   ])
@@ -107,15 +111,37 @@ const QuickOrderPad = () => {
     setTableData(updatedTableData);
   };
 
-  const addRow = () => {
+  const addRow = (selectedProduct: any = null) => {
     const highestId =
-      tableData.length > 0 ? tableData[tableData.length - 1].id || 0 : 0
+      tableData.length > 0 ? tableData[tableData.length - 1].id || 0 : 0;
+    const { images, sellers, name, itemId } = selectedProduct
+    const seller = selectedProduct
+      ? sellers.find((item: any) => {
+        if (sellers.length > 1 && item.sellerId === "uselectricalcd01") {
+          return item.sellerId === "uselectricalcd01"
+        } else {
+          return item.sellerDefault === true
+        }
+      }).sellerId
+      : null
 
-    const newId = highestId + 1
-    const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '', stock: 0 }
 
-    setTableData([...tableData, newItem])
-  }
+
+    const newId = highestId + 1;
+    const newItem = {
+      id: newId,
+      quantity: 1,
+      thumb: images[0]?.imageUrl || '',
+      price: selectedProduct?.price || '',
+      label: name || '',
+      seller: seller || '',
+      skuId: itemId || '',
+      stock: selectedProduct?.quantity || 0,
+    };
+    console.log(selectedProduct)
+
+    setTableData([...tableData, newItem]);
+  };
 
   const removeItems = () => {
     setTableData([])
@@ -191,10 +217,30 @@ const QuickOrderPad = () => {
     }
   }
 
-  const handleReviewItemsChange = (items: any) => {
-    console.log(items)
-    debugger
-  };
+  const handleReviewItemsChange = async (item: any) => {
+    console.log(copyProduct)
+    if (copyProduct !== undefined) return
+    const skuId = item[0].sku
+    const { data } = await client.query({
+      query: autocomplete,
+      variables: { inputValue: skuId },
+    })
+
+    const slug = data.productSuggestions.products[0].linkText
+
+    setCopyProduct(slug)
+    console.log(`Slug: ${slug}`)
+    const query = {
+      query: productQuery,
+      variables: { slug: slug },
+    }
+
+    const product = await client.query(query)
+    const productSelected = product.data.product.items[0]
+
+
+    addRow(productSelected)
+  }
 
   const schema = {
     properties: {
