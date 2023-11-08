@@ -9,6 +9,8 @@ import CopyPastePad from './CopyPastePad';
 import { useApolloClient } from 'react-apollo'
 import autocomplete from './queries/autocomplete.gql'
 import productQuery from './queries/product.gql'
+import { getSession } from './modules/session'
+import GET_ORGANIZATIONS_BY_EMAIL from './queries/getOrganizationsByEmail.gql'
 
 import AutocompleteBlock from './AutocompleteBlock'
 import AddMoreLinesButton from './AddMoreLinesButton'
@@ -67,6 +69,11 @@ const QuickOrderPad = () => {
     console.info('autocompleteState changed:', selectedItem)
   }, [selectedItem])
 
+  const USDollar = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
+
 
   const handleSelectedItemChange = (
     rowIndex: { rowData: any },
@@ -80,10 +87,6 @@ const QuickOrderPad = () => {
     const { rowData } = rowIndex
     const rowId = rowData.id - 1
 
-    const USDollar = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
 
     const sellerId = newSelectedItem.seller
 
@@ -96,6 +99,44 @@ const QuickOrderPad = () => {
     setSelectedItem(newSelectedItem)
     setLoading(false)
   }
+
+  const productPrice = async (productId: any) => {
+    try {
+      const sessionResponse = await getSession();
+      const userInfo = sessionResponse?.response?.namespaces?.profile?.email?.value;
+
+      const userEmailResponse = await client.query({
+        query: GET_ORGANIZATIONS_BY_EMAIL,
+        variables: { email: userInfo },
+      });
+
+      const userOrganizationId = userEmailResponse.data.getOrganizationsByEmail[0].costId;
+
+      const postData = {
+        customerId: userOrganizationId,
+        branchId: "",
+        productId: [productId],
+        orderQty: 1,
+        shouldHidePrice: "false",
+      };
+
+      const response = await fetch('/v0/customerPrice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+      });
+
+      const data = await response.json();
+      const formattedPrice = parseFloat(data?.price?.CustomersPrice?.Products[0]?.PricePer);
+
+      return formattedPrice;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
 
   const handleQuantityChange = (
     rowIndex: { rowData: any },
@@ -125,18 +166,28 @@ const QuickOrderPad = () => {
       }).sellerId
       : null
 
+      productPrice(itemId)
+      .then((price) => {
+        selectedProduct.price = price
+      })
+      .catch((error) => {
+        console.error(`Error fetching product price: ${error}`);
+      })
 
 
+    const quantity = selectedProduct.sellers.find((id: { sellerId: string }) => id.sellerId == 'uselectricalcd01').commertialOffer.AvailableQuantity
+
+    console.log(selectedProduct.price)
     const newId = highestId + 1;
     const newItem = {
       id: newId,
       quantity: 1,
       thumb: images[0]?.imageUrl || '',
-      price: selectedProduct?.price || '',
+      price: USDollar.format(selectedProduct?.price) || '',
       label: name || '',
       seller: seller || '',
       skuId: itemId || '',
-      stock: selectedProduct?.quantity || 0,
+      stock: quantity || 0,
     };
 
     setTableData([...tableData, newItem]);
