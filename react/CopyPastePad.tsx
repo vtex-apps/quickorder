@@ -1,30 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useContext } from 'react'
-import type { WrappedComponentProps, MessageDescriptor } from 'react-intl'
-import { FormattedMessage, injectIntl } from 'react-intl'
+import React, { useState } from 'react'
+import type { WrappedComponentProps } from 'react-intl'
+import { injectIntl } from 'react-intl'
 import {
   Button,
   Textarea,
   RadioGroup,
-  ToastContext,
-  Spinner,
 } from 'vtex.styleguide'
-import { OrderForm } from 'vtex.order-manager'
-import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
-import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { useCssHandles } from 'vtex.css-handles'
-import { useMutation } from 'react-apollo'
-import { usePWA } from 'vtex.store-resources/PWAContext'
-import { usePixel } from 'vtex.pixel-manager/PixelContext'
 
-import { categoryMessages as messages } from './utils/messages'
-import ReviewBlock from './components/ReviewBlock'
 import { ParseText, GetText } from './utils'
-
-interface ItemType {
-  id: string
-  quantity: number
-}
 
 interface CopyPastePadProps {
   onReviewItemsChange: (items: any) => void;
@@ -32,7 +17,6 @@ interface CopyPastePadProps {
 
 const CopyPastePad: React.FC<CopyPastePadProps & WrappedComponentProps> = ({
   onReviewItemsChange,
-  intl
 }) => {
   const [state, setState] = useState<any>({
     reviewState: false,
@@ -42,136 +26,10 @@ const CopyPastePad: React.FC<CopyPastePadProps & WrappedComponentProps> = ({
     reviewItems: [],
   })
 
-  const [refidLoading, setRefIdLoading] = useState<any>()
-
   const {
     textAreaValue,
     partType,
-    reviewItems,
-    reviewState,
-    showAddToCart,
   } = state
-
-  const [
-    addToCart,
-    { error: mutationError, loading: mutationLoading },
-  ] = useMutation<{ addToCart: OrderFormType }, { items: [] }>(ADD_TO_CART)
-
-  const { push } = usePixel()
-  const { settings = {}, showInstallPrompt = undefined } = usePWA() || {}
-  const { promptOnCustomEvent } = settings
-
-  const { setOrderForm }: OrderFormContext = OrderForm.useOrderForm()
-  const orderForm = OrderForm.useOrderForm()
-  const { showToast } = useContext(ToastContext)
-
-  const translateMessage = (message: MessageDescriptor) => {
-    return intl.formatMessage(message)
-  }
-
-  const resolveToastMessage = (success: boolean, isNewItem: boolean) => {
-    if (!success) return translateMessage(messages.error)
-    if (!isNewItem) return translateMessage(messages.duplicate)
-
-    return translateMessage(messages.success)
-  }
-
-  const toastMessage = ({
-    success,
-    isNewItem,
-  }: {
-    success: boolean
-    isNewItem: boolean
-  }) => {
-    const message = resolveToastMessage(success, isNewItem)
-
-    const action = success
-      ? {
-          label: translateMessage(messages.seeCart),
-          href: '/checkout/#/cart',
-        }
-      : undefined
-
-    showToast({ message, action })
-  }
-
-  const backList = () => {
-    setState({
-      ...state,
-      reviewState: false,
-    })
-  }
-
-  const callAddToCart = async (items: any) => {
-    const currentItemsInCart = orderForm.orderForm.items
-    const mutationResult = await addToCart({
-      variables: {
-        items: items.map((item: ItemType) => {
-          const [existsInCurrentOrder] = currentItemsInCart.filter(
-            (el: any) => el.id === item.id.toString()
-          )
-
-          if (existsInCurrentOrder) {
-            item.quantity += parseInt(existsInCurrentOrder.quantity, 10)
-          }
-
-          return {
-            ...item,
-          }
-        }),
-      },
-    })
-
-    if (mutationError) {
-      console.error(mutationError)
-      toastMessage({ success: false, isNewItem: false })
-
-      return
-    }
-
-    // Update OrderForm from the context
-    mutationResult.data && setOrderForm(mutationResult.data.addToCart)
-
-    const adjustSkuItemForPixelEvent = (item: any) => {
-      return {
-        skuId: item.id,
-        quantity: item.quantity,
-      }
-    }
-
-    // Send event to pixel-manager
-    const pixelEventItems = items.map(adjustSkuItemForPixelEvent)
-
-    push({
-      event: 'addToCart',
-      items: pixelEventItems,
-    })
-
-    if (
-      mutationResult.data?.addToCart?.messages?.generalMessages &&
-      mutationResult.data.addToCart.messages.generalMessages.length
-    ) {
-      mutationResult.data.addToCart.messages.generalMessages.forEach(
-        (msg: any) => {
-          return showToast({
-            message: msg.text,
-            action: undefined,
-            duration: 30000,
-          })
-        }
-      )
-    } else {
-      toastMessage({ success: true, isNewItem: true })
-    }
-
-    if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
-      showInstallPrompt()
-    }
-
-    backList()
-
-    return showInstallPrompt
-  }
 
   const onReviewItems = (items: any) => {
     if (items) {
@@ -235,41 +93,6 @@ const CopyPastePad: React.FC<CopyPastePadProps & WrappedComponentProps> = ({
 
   const handles = useCssHandles(CSS_HANDLES)
 
-  const addToCartCopyNPaste = () => {
-    const items: any = reviewItems
-      .filter((item: any) => item.error === null && item.vtexSku !== null)
-      .map(({ vtexSku, quantity, seller }: any) => {
-        return {
-          id: parseInt(vtexSku, 10),
-          quantity: parseFloat(quantity),
-          seller,
-        }
-      })
-
-    const merge = (internalItems: ItemType[]) => {
-      return internalItems.reduce((acc: ItemType[], val) => {
-        const { id, quantity }: ItemType = val
-        const ind = acc?.findIndex((el) => el.id === id)
-
-        if (ind !== -1) {
-          acc[ind].quantity += quantity
-        } else {
-          acc.push(val)
-        }
-
-        return acc
-      }, [])
-    }
-
-    const mergedItems = merge(items)
-
-    callAddToCart(mergedItems)
-  }
-
-  const onRefidLoading = (data: boolean) => {
-    setRefIdLoading(data)
-  }
-
   return (
     <div
       className={`${handles.copyPasteContainer}`}
@@ -327,50 +150,8 @@ const CopyPastePad: React.FC<CopyPastePadProps & WrappedComponentProps> = ({
         </Button>
       </section>
 
-      {reviewState && (
-        <div className={`w-100 ph6 ${handles.reviewBlock}`}>
-          <ReviewBlock
-            reviewedItems={reviewItems}
-            onReviewItems={onReviewItems}
-            onRefidLoading={onRefidLoading}
-            backList={backList}
-          />
-          <div
-            className={`mb4 mt4 flex justify-between ${handles.buttonsBlock}`}
-          >
-            <Button
-              variation="tertiary"
-              size="small"
-              onClick={() => {
-                backList()
-              }}
-            >
-              <FormattedMessage id="store/quickorder.back" />
-            </Button>
-            {refidLoading && <Spinner />}
-            {showAddToCart && (
-              <Button
-                variation="primary"
-                size="small"
-                isLoading={mutationLoading}
-                onClick={() => {
-                  addToCartCopyNPaste()
-                }}
-              >
-                <FormattedMessage id="store/quickorder.addToCart" />
-              </Button>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   )
-}
-
-interface OrderFormContext {
-  loading: boolean
-  orderForm: OrderFormType | undefined
-  setOrderForm: (orderForm: Partial<OrderFormType>) => void
 }
 
 export default injectIntl(CopyPastePad)
