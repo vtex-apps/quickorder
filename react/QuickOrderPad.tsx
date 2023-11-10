@@ -155,49 +155,49 @@ const QuickOrderPad = () => {
   const addRow = (selectedProduct: any = null) => {
     const highestId =
       tableData.length > 0 ? tableData[tableData.length - 1].id || 0 : 0;
-    if(!selectedProduct) {
-    const { images, sellers, name, itemId } = selectedProduct
-    const seller = selectedProduct
-      ? sellers.find((item: any) => {
-        if (sellers.length > 1 && item.sellerId === "uselectricalcd01") {
-          return item.sellerId === "uselectricalcd01"
-        } else {
-          return item.sellerDefault === true
-        }
-      }).sellerId
-      : null
+    if (selectedProduct?.itemId) {
+      const { images, sellers, name, itemId } = selectedProduct
+      const seller = selectedProduct
+        ? sellers.find((item: any) => {
+          if (sellers.length > 1 && item.sellerId === "uselectricalcd01") {
+            return item.sellerId === "uselectricalcd01"
+          } else {
+            return item.sellerDefault === true
+          }
+        }).sellerId
+        : null
 
       productPrice(itemId)
-      .then((price) => {
-        selectedProduct.price = price
-      })
-      .catch((error) => {
-        console.error(`Error fetching product price: ${error}`);
-      })
+        .then((price) => {
+          selectedProduct.price = price
+        })
+        .catch((error) => {
+          console.error(`Error fetching product price: ${error}`);
+        })
 
 
-    const quantity = selectedProduct.sellers.find((id: { sellerId: string }) => id.sellerId == 'uselectricalcd01').commertialOffer.AvailableQuantity
+      const quantity = selectedProduct.sellers.find((id: { sellerId: string }) => id.sellerId == 'uselectricalcd01').commertialOffer.AvailableQuantity
 
-    console.log(selectedProduct.price)
-    const newId = highestId + 1;
-    const newItem = {
-      id: newId,
-      quantity: 1,
-      thumb: images[0]?.imageUrl || '',
-      price: USDollar.format(selectedProduct?.price) || '',
-      label: name || '',
-      seller: seller || '',
-      skuId: itemId || '',
-      stock: quantity || 0,
-    };
+      console.log(selectedProduct.price)
+      const newId = highestId + 1;
+      const newItem = {
+        id: newId,
+        quantity: 1,
+        thumb: images[0]?.imageUrl || '',
+        price: USDollar.format(selectedProduct?.price) || '',
+        label: name || '',
+        seller: seller || '',
+        skuId: itemId || '',
+        stock: quantity || 0,
+      };
 
-    setTableData([...tableData, newItem]);
-  } else {
-    const newId = highestId + 1
-    const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '', stock: 0 }
+      setTableData([...tableData, newItem]);
+    } else {
+      const newId = highestId + 1
+      const newItem = { id: newId, quantity: 1, thumb: '', price: '', label: '', seller: '', skuId: '', stock: 0 }
 
-    setTableData([...tableData, newItem])
-  }
+      setTableData([...tableData, newItem])
+    }
   };
 
   const removeItems = () => {
