@@ -15,7 +15,7 @@ import { usePixel } from 'vtex.pixel-manager/PixelContext'
 
 import { categoryMessages as messages } from './utils/messages'
 import ReviewBlock from './components/ReviewBlock'
-import { ParseText, GetText } from './utils'
+import { ParseText } from './utils'
 
 interface ItemType {
   id: string
@@ -156,7 +156,7 @@ const TextAreaBlock: FunctionComponent<
   }
 
   const onReviewItems = (items: any) => {
-    if (items) {
+    if (items?.length) {
       const show =
         items.filter((item: any) => {
           return item.error
@@ -167,9 +167,8 @@ const TextAreaBlock: FunctionComponent<
         reviewItems: items,
         reviewState: true,
         showAddToCart: show,
-        textAreaValue: GetText(items),
       })
-    }
+    } else backList()
 
     return true
   }
