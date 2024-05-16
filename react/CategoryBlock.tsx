@@ -1,13 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-key */
 import PropTypes from 'prop-types'
-import React, { useState, useContext, FunctionComponent } from 'react'
-import {
-  FormattedMessage,
-  WrappedComponentProps,
-  defineMessages,
-  injectIntl,
-} from 'react-intl'
+import type { FunctionComponent } from 'react'
+import React, { useState, useContext } from 'react'
+import type { WrappedComponentProps } from 'react-intl'
+import { FormattedMessage, injectIntl } from 'react-intl'
 import {
   Collapsible,
   Input,
@@ -17,44 +14,16 @@ import {
   Tag,
 } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
-import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
+import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import { useCssHandles } from 'vtex.css-handles'
-import { graphql, useApolloClient, compose, useMutation } from 'react-apollo'
+import { graphql, useApolloClient, useMutation } from 'react-apollo'
 
+import { categoryMessages as messages } from './utils/messages'
 import getCategories from './queries/categoriesQuery.gql'
 import SearchByCategory from './queries/productsByCategory.gql'
-
-const messages = defineMessages({
-  success: {
-    id: 'store/toaster.cart.success',
-    defaultMessage: '',
-    label: '',
-  },
-  duplicate: {
-    id: 'store/toaster.cart.duplicated',
-    defaultMessage: '',
-    label: '',
-  },
-  noneSelection: {
-    id: 'store/quickorder.category.noneSelection',
-    defaultMessage: '',
-    label: '',
-  },
-  multiplier: {
-    id: 'store/quickorder.category.multiplier',
-    defaultMessage: '',
-    label: '',
-  },
-  error: { id: 'store/toaster.cart.error', defaultMessage: '', label: '' },
-  seeCart: {
-    id: 'store/toaster.cart.seeCart',
-    defaultMessage: '',
-    label: '',
-  },
-})
 
 const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
   text,
@@ -387,8 +356,10 @@ const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
                         className={`flex flex-column w-10 ph5-l ph2 p fl ${handles.categoryInputQuantity}`}
                       >
                         <Input
-                          value={quantitySelected[content.itemId] || 0}
+                          value={quantitySelected[content.itemId] ?? 0}
                           size="small"
+                          type="number"
+                          min={0}
                           disabled={loading}
                           onChange={(e: any) => {
                             const newQtd = quantitySelected
@@ -574,4 +545,4 @@ interface OrderFormContext {
   setOrderForm: (orderForm: Partial<OrderFormType>) => void
 }
 
-export default injectIntl(compose(graphql(getCategories))(CategoryBlock))
+export default injectIntl(graphql(getCategories)(CategoryBlock))

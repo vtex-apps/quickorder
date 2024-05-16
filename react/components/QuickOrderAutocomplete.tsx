@@ -1,30 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useRef, FunctionComponent } from 'react'
+import type { FunctionComponent } from 'react'
+import React, { useState, useRef } from 'react'
 import { AutocompleteInput } from 'vtex.styleguide'
 import PropTypes from 'prop-types'
-import { WrappedComponentProps, injectIntl, defineMessages } from 'react-intl'
+import type { WrappedComponentProps } from 'react-intl'
+import { injectIntl } from 'react-intl'
 import { useApolloClient } from 'react-apollo'
+import { useCssHandles } from 'vtex.css-handles'
 
+import { autocompleteMessages as messages } from '../utils/messages'
 import autocomplete from '../queries/autocomplete.gql'
 
-const messages = defineMessages({
-  placeholder: {
-    id: 'store/quickorder.autocomplete.placeholder',
-    defaultMessage: '',
-    label: '',
-  },
-})
-
 const getImageSrc = (img: string) => {
-  const src: any = img ? img.match(/src=["']([^"']+)/) : []
+  const td = img.split('/')
+  const ids = td[td.indexOf('ids') + 1]
 
-  return !!src && src.length ? src[1] : ''
+  return img.replace(ids, `${ids}-50-50`)
 }
 
 const CustomOption = (props: any) => {
   const { roundedBottom, searchTerm, value, selected, onClick } = props
   const [highlightOption, setHighlightOption] = useState(false)
+  const CSS_HANDLES = ['customOptionButton'] as const
 
+  const handles = useCssHandles(CSS_HANDLES)
   const renderOptionHighlightedText = () => {
     const highlightableText = typeof value === 'string' ? value : value.label
     const index: number = highlightableText
@@ -50,9 +49,11 @@ const CustomOption = (props: any) => {
     )
   }
 
-  const buttonClasses = `bn w-100 tl pointer pa4 f6 ${
-    roundedBottom ? 'br2 br--bottom' : ''
-  } ${highlightOption || selected ? 'bg-muted-5' : 'bg-base'}`
+  const buttonClasses = `${
+    handles.customOptionButton
+  } bn w-100 tl pointer pa4 f6 ${roundedBottom ? 'br2 br--bottom' : ''} ${
+    highlightOption || selected ? 'bg-muted-5' : 'bg-base'
+  }`
 
   const thumb = value.thumb ? value.thumb : ''
 
@@ -80,8 +81,9 @@ const CustomOption = (props: any) => {
 interface QuickOrderAutocompleteInt {
   onSelect: any
 }
-const QuickOrderAutocomplete: FunctionComponent<WrappedComponentProps &
-  QuickOrderAutocompleteInt> = ({ onSelect, intl }: any) => {
+const QuickOrderAutocomplete: FunctionComponent<
+  WrappedComponentProps & QuickOrderAutocompleteInt
+> = ({ onSelect, intl }: any) => {
   const client = useApolloClient()
   const [optionsResult, setOptions] = useState([])
   const [term, setTerm] = useState('')
@@ -97,8 +99,10 @@ const QuickOrderAutocomplete: FunctionComponent<WrappedComponentProps &
       })
 
       setOptions(
-        !!data && !!data.autocomplete && !!data.autocomplete.itemsReturned
-          ? data.autocomplete.itemsReturned
+        !!data &&
+          !!data.productSuggestions &&
+          !!data.productSuggestions.products
+          ? data.productSuggestions.products
           : []
       )
     }
@@ -113,14 +117,14 @@ const QuickOrderAutocomplete: FunctionComponent<WrappedComponentProps &
       ? []
       : optionsResult
           .filter((item: any) => {
-            return !!item.thumb
+            return !!item.items[0].images[0].imageUrl
           })
           .map((item: any) => {
             return {
-              value: item.productId,
-              label: item.name,
-              slug: item.slug,
-              thumb: getImageSrc(item.thumb),
+              value: item.items[0].itemId,
+              label: item.items[0].name,
+              slug: item.linkText,
+              thumb: getImageSrc(item.items[0].images[0].imageUrl),
             }
           }),
     lastSearched: {

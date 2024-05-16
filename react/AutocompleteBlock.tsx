@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/prop-types */
-import React, { useState, useContext, FunctionComponent } from 'react'
-import {
-  FormattedMessage,
-  WrappedComponentProps,
-  injectIntl,
-  defineMessages,
-} from 'react-intl'
+import type { FunctionComponent } from 'react'
+import React, { useState, useContext } from 'react'
+import type { WrappedComponentProps } from 'react-intl'
+import { FormattedMessage, injectIntl } from 'react-intl'
 import { Button, Tag, Input, ToastContext, IconClear } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
-import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
+import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
@@ -17,38 +14,10 @@ import PropTypes from 'prop-types'
 import { useCssHandles } from 'vtex.css-handles'
 import { useApolloClient, useMutation } from 'react-apollo'
 
+import { autocompleteMessages as messages } from './utils/messages'
 import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
 import productQuery from './queries/product.gql'
 import './global.css'
-
-const messages = defineMessages({
-  success: {
-    id: 'store/toaster.cart.success',
-    defaultMessage: '',
-    label: '',
-  },
-  duplicate: {
-    id: 'store/toaster.cart.duplicated',
-    defaultMessage: '',
-    label: '',
-  },
-  selectSku: {
-    id: 'store/quickorder.autocomplete.selectSku',
-    defaultMessage: '',
-    label: '',
-  },
-  multiplier: {
-    id: 'store/quickorder.category.multiplier',
-    defaultMessage: '',
-    label: '',
-  },
-  error: { id: 'store/toaster.cart.error', defaultMessage: '', label: '' },
-  seeCart: {
-    id: 'store/toaster.cart.seeCart',
-    defaultMessage: '',
-    label: '',
-  },
-})
 
 const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   text,
@@ -119,7 +88,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
     setState({
       ...state,
       selectedItem: null,
-      quantitySelected: 0,
+      quantitySelected: 1,
       unitMultiplier: 1,
     })
   }
@@ -136,7 +105,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       variables: {
         items: items.map((item: ItemType) => {
           const [existsInCurrentOrder] = currentItemsInCart.filter(
-            el => el.id === item.id.toString()
+            (el) => el.id === item.id.toString()
           )
 
           if (existsInCurrentOrder) {
@@ -228,6 +197,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
             ? { ...product[0], value: selectedSku, seller, data }
             : null,
         unitMultiplier: multiplier,
+        quantitySelected: multiplier,
       })
     }
 
@@ -250,13 +220,14 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
     }
 
     const matchedItem = selectedItem.data.product.items.find(
-      item => item.itemId === value
+      (item) => item.itemId === value
     )
 
     setState({
       ...state,
       selectedItem: newSelected,
       unitMultiplier: matchedItem.unitMultiplier,
+      quantitySelected: matchedItem.unitMultiplier,
     })
   }
 
@@ -411,7 +382,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
                       value={quantitySelected}
                       size="small"
                       type="number"
-                      min="1"
+                      min={unitMultiplier}
                       step={unitMultiplier}
                       onChange={(e: any) => {
                         if (e.target.value > 0) {

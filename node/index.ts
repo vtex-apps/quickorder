@@ -1,9 +1,11 @@
 import './globals'
 
-import { Cached, LRUCache, RecorderState, Service } from '@vtex/api'
+import type { Cached, RecorderState } from '@vtex/api'
+import { LRUCache, Service } from '@vtex/api'
 
 import { Clients } from './clients'
 import { resolvers } from './resolvers'
+import { schemaDirectives } from './directives/index'
 
 const TWO_SECONDS_MS = 2 * 1000
 const THREE_SECONDS_MS = 3 * 1000
@@ -41,5 +43,6 @@ export default new Service<Clients, RecorderState, CustomContext>({
   },
   graphql: {
     resolvers,
+    schemaDirectives,
   },
 })

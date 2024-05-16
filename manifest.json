@@ -1,7 +1,7 @@
 {
   "vendor": "vtex",
   "name": "quickorder",
-  "version": "3.8.1",
+  "version": "3.14.0",
   "title": "Quickorder",
   "description": "Allow users to add multiple products to the cart at once",
   "defaultLocale": "en-US",
@@ -63,21 +63,21 @@
     {
       "name": "outbound-access",
       "attrs": {
-        "host": "{{account}}.vtexcommercestable.com.br",
+        "host": "portal.vtexcommercestable.com.br",
         "path": "/api/catalog_system/pvt/sku/stockkeepingunitbyid/*"
       }
     },
     {
       "name": "outbound-access",
       "attrs": {
-        "host": "{{account}}.vtexcommercestable.com.br",
+        "host": "portal.vtexcommercestable.com.br",
         "path": "/api/checkout/pub/orderForm/*"
       }
     },
     {
       "name": "outbound-access",
       "attrs": {
-        "host": "{{account}}.vtexcommercestable.com.br",
+        "host": "portal.vtexcommercestable.com.br",
         "path": "/api/catalog_system/pub/sku/stockkeepingunitidsbyrefids"
       }
     }

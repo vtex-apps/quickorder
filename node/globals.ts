@@ -1,12 +1,13 @@
-import {
+import type {
   IOContext,
-  MetricsAccumulator,
   ParamsContext,
   RecorderState,
   ServiceContext,
+  SegmentData,
 } from '@vtex/api'
+import { MetricsAccumulator } from '@vtex/api'
 
-import { Clients } from './clients'
+import type { Clients } from './clients'
 
 if (!global.metrics) {
   console.error('No global.metrics at require time')
@@ -19,9 +20,12 @@ declare global {
   interface CustomContext extends ParamsContext {
     cookie: string
     originalPath: string
-    vtex: IOContext
+    vtex: CustomIOContext
   }
 
+  interface CustomIOContext extends IOContext {
+    segment?: SegmentData
+  }
 
   interface Property {
     name: string

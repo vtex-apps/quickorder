@@ -11,6 +11,181 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fixed a bug where removing all items from review block would send the user to a "Nothing to Show" page.
 
+## [3.14.0] - 2023-08-30
+
+### Added
+
+- Set default value true for alwaysShowAddToCart
+
+## [3.13.0] - 2023-08-24
+
+### Added
+
+- Added prop alwaysShowAddToCart to hide or show the add to cart button when there was an invalid SKU
+
+## [3.12.7] - 2023-03-28
+
+### Added
+
+- Define product result limit for category component
+
+## [3.12.6] - 2023-02-14
+
+### Fixed
+
+- Bug fixed on UI adding to cart flow
+
+### Added
+
+- [ENGINEERS-989] - Added verify the excel file testcase in cypress
+
+## [3.12.5] - 2022-12-23
+
+### Fixed
+
+- Arabic translation.
+
+### Added
+
+- Indonesian translation.
+
+## [3.12.4] - 2022-12-13
+
+### Changed
+
+- Fixed XLSX package version
+
+## [3.12.3] - 2022-11-23
+
+### Added
+
+- [ENGINEERS-875] & [ENGINEERS-876] - Added more cypress tests
+
+### Added
+
+- Added cypress tests
+
+### Added
+
+- Added dispatch workflow for cypress
+
+### Fixed
+
+- Map of null of seller's array of a not found item
+
+## [3.12.2] - 2022-11-23
+
+### Fixed
+
+- Yarn packages versions mismatch
+
+## [3.12.1] - 2022-11-08
+
+### Fixed
+
+- Text that contains partial availability error will not show Add To Cart button
+
+### Changed
+
+- GitHub reusable workflow uptaded to v2
+
+## [3.12.0] - 2022-10-12
+
+### Added
+
+- Partial availability error message in `ReviewBlock` when full item quantity entered is not available in selected seller
+
+### Changed
+
+- Run checkout simulation with item quantity input in `TextArea` and `Upload` blocks
+- Check for SKU match in full `items` list from `productSuggestions` query results
+
+## [3.11.0] - 2022-10-06
+
+### Added
+
+- Added collection restriction for both text area and upload area
+- Added message util in react admi
+
+## [3.10.0] - 2022-08-26
+
+### Added
+
+- Error logging
+- GraphQL directive withSegment
+
+### Changed
+
+- TextArea description from `Sku's Code` to `SKU Reference ID`
+
+## [3.9.4] - 2022-07-15
+
+### Fixed
+
+- Get sales channel from segment instead of orderForm
+
+## [3.9.3] - 2022-07-05
+
+### Fixed
+
+- Fixed checkout simulation error by filtering out sellers unavailable in orderForm's sales channel
+
+### Added
+
+- Added error message when query for SKU info fails in ReviewBlock
+
+## [3.9.2] - 2022-06-27
+
+### Added
+
+- Added the unit tests
+
+## [3.9.1] - 2022-06-22
+
+### Fixed
+
+- Fix miniumn quantity selected in autocomplete block to equal unit multiplier
+
+## [3.9.0] - 2022-05-25
+
+### Added
+
+- Filter sellers without stock from options in ReviewBlock component
+
+### Changed
+
+- Change `availability` and `unitMultiplier` to seller level information instead of item level
+
+## [3.8.5] - 2022-05-23
+
+### Fixed
+
+- Fix Spanish translations that were previously using English
+- Make empty state message in TextArea block translatable
+- Restrict Category block quantity input to numbers
+
+## [3.8.4] - 2022-05-05
+
+## Fixed
+
+- Replace the autocomplete search query with the intelligent search autocomplete
+
+## [3.8.3] - 2022-04-01
+
+### Fixed
+
+- Documentation on README.md
+
+## [3.8.2] - 2022-03-29
+
+### Added
+
+- Added a CSS handle for autocomplete button.
+
+### Fixed
+
+- Update tooling
+
 ## [3.8.1] - 2022-02-22
 
 ### Fixed
@@ -19,7 +194,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [3.8.0] - 2022-02-22
 
-### Added 
+### Added
 
 - Adding an option as a prop to make the columns of the review block hideable
 

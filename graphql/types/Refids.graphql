@@ -4,7 +4,13 @@ type Refids {
 type ItemsRefId {
   sku: String
   refid: String
+  sellers: [ItemsSeller]
+}
+
+type ItemsSeller {
+  id: String
+  name: String
   availability: String
   unitMultiplier: Float
-  sellers: [ItemsSeller]
+  availableQuantity: Int
 }

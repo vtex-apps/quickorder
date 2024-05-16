@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
-import React, { useState, useContext, FunctionComponent } from 'react'
-import {
-  FormattedMessage,
-  injectIntl,
-  WrappedComponentProps,
-  defineMessages,
-} from 'react-intl'
-import { Button, Dropzone, ToastContext, Spinner } from 'vtex.styleguide'
+import type { FunctionComponent } from 'react'
+import React, { useState, useContext } from 'react'
+import type { WrappedComponentProps } from 'react-intl'
+import { FormattedMessage, injectIntl } from 'react-intl'
+import { Button, Dropzone, ToastContext } from 'vtex.styleguide'
 import { OrderForm } from 'vtex.order-manager'
-import { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
+import type { OrderForm as OrderFormType } from 'vtex.checkout-graphql'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
 import { useCssHandles } from 'vtex.css-handles'
 import { useMutation } from 'react-apollo'
@@ -17,6 +14,7 @@ import { usePWA } from 'vtex.store-resources/PWAContext'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import XLSX from 'xlsx'
 
+import { categoryMessages as messages } from './utils/messages'
 import { ParseText, GetText } from './utils'
 import ReviewBlock from './components/ReviewBlock'
 
@@ -25,33 +23,16 @@ interface ItemType {
   quantity: number
 }
 
-const messages = defineMessages({
-  success: {
-    id: 'store/toaster.cart.success',
-    defaultMessage: '',
-    label: '',
-  },
-  duplicate: {
-    id: 'store/toaster.cart.duplicated',
-    defaultMessage: '',
-    label: '',
-  },
-  error: { id: 'store/toaster.cart.error', defaultMessage: '', label: '' },
-  seeCart: {
-    id: 'store/toaster.cart.seeCart',
-    defaultMessage: '',
-    label: '',
-  },
-})
-
-const UploadBlock: FunctionComponent<UploadBlockInterface &
-  WrappedComponentProps> = ({
+const UploadBlock: FunctionComponent<
+  UploadBlockInterface & WrappedComponentProps
+> = ({
   text,
   hiddenColumns,
   description,
   downloadText,
   componentOnly,
   intl,
+  alwaysShowAddToCart = true,
 }: any) => {
   let productsArray: any = []
   const [state, setState] = useState<any>({
@@ -144,7 +125,7 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
         ...state,
         reviewItems: items,
         reviewState: true,
-        showAddToCart: show,
+        showAddToCart: alwaysShowAddToCart || show,
         textAreaValue: GetText(items),
       })
     } else backList()
@@ -155,7 +136,7 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
   const parseText = () => {
     let textAreaValue = ''
 
-    productsQueue.forEach(element => {
+    productsQueue.forEach((element) => {
       textAreaValue += `${element[0]},${element[1]}\n`
     })
 
@@ -208,8 +189,8 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
 
       result[sheetName].splice(0, 1)
       productsArray = result[sheetName]
-      productsArray = productsArray.filter(item => item.length)
-      productsArray.forEach(p => {
+      productsArray = productsArray.filter((item) => item.length)
+      productsArray.forEach((p) => {
         p[0] = (p[0] || '').toString().trim()
         p[1] = (p[1] || '').toString().trim()
       })
@@ -247,7 +228,6 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
     const loopCount = Math.floor(items.length / splitBy) + 1
 
     const promises: any = []
-    // let orderFormData = []
 
     for (let i = 0; i < loopCount; i++) {
       const chunk = tempItems.splice(0, splitBy)
@@ -259,7 +239,7 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
           variables: {
             items: chunk.map((item: ItemType) => {
               const [existsInCurrentOrder] = currentItemsInCart.filter(
-                el => el.id === item.id.toString()
+                (el) => el.id === item.id.toString()
               )
 
               if (existsInCurrentOrder) {
@@ -333,10 +313,10 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
         }
       })
 
-    const merge = internalItems => {
+    const merge = (internalItems) => {
       return internalItems.reduce((acc: any, val) => {
         const { id, quantity }: ItemType = val
-        const ind = acc.findIndex(el => el.id === id)
+        const ind = acc.findIndex((el) => el.id === id)
 
         if (ind !== -1) {
           acc[ind].quantity += quantity
@@ -448,6 +428,7 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
               hiddenColumns={hiddenColumns ?? []}
               onReviewItems={onReviewItems}
               onRefidLoading={onRefidLoading}
+              backList={backList}
             />
             <div
               className={`mb4 mt4 flex justify-between ${handles.buttonsBlock}`}
@@ -461,12 +442,11 @@ const UploadBlock: FunctionComponent<UploadBlockInterface &
               >
                 <FormattedMessage id="store/quickorder.back" />
               </Button>
-              {refidLoading && <Spinner />}
               {showAddToCart && (
                 <Button
                   variation="primary"
                   size="small"
-                  isLoading={mutationLoading}
+                  isLoading={mutationLoading || refidLoading}
                   onClick={() => {
                     addToCartUpload()
                   }}
@@ -499,6 +479,7 @@ interface UploadBlockInterface {
   description?: string
   componentOnly?: boolean
   downloadText?: string
+  alwaysShowAddToCart?: boolean
 }
 
 export default injectIntl(UploadBlock)
