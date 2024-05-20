@@ -273,6 +273,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   }
 
   const CSS_HANDLES = [
+    'autoCompleteBlock',
     'skuSelection',
     'productThumb',
     'productTitle',
@@ -290,7 +291,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   const handles = useCssHandles(CSS_HANDLES)
 
   return (
-    <div>
+    <div className={`${handles.autoCompleteBlock}`}>
       {!componentOnly && (
         <div className={`${handles.textContainer} w-third-l w-100-ns fl-l`}>
           <h2
