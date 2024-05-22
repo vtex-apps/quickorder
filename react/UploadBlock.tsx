@@ -17,6 +17,7 @@ import XLSX from 'xlsx'
 import { categoryMessages as messages } from './utils/messages'
 import { ParseText, GetText } from './utils'
 import ReviewBlock from './components/ReviewBlock'
+import {DropzoneIcon} from './assets/DropZoneIcon'
 
 interface ItemType {
   id: string
@@ -347,7 +348,7 @@ const UploadBlock: FunctionComponent<
   ] as const
 
   const handles = useCssHandles(CSS_HANDLES)
-  const Icon = (<svg className={handles.dropzoneIcon} width="40" height="46" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24.793.793A1 1 0 0 0 24.086.5H1.5a1 1 0 0 0-1 1v43a1 1 0 0 0 1 1h37a1 1 0 0 0 1-1V15.914a1 1 0 0 0-.293-.707L24.793.793z" fill="#E3E4E6"></path><path d="M9.5 33.5h21M9.5 24.5h21" stroke="#3F3F40" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path><path d="M9.5 15.5h6" stroke="#F71963" stroke-width="1.2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path><path d="M24.5.5v15h15" fill="#CACBCC"></path></svg>)
+  
  
   return (
     <div className={`${handles.uploadBlock}`}>
@@ -389,7 +390,7 @@ const UploadBlock: FunctionComponent<
                 onDropAccepted={handleFile}
                 onFileReset={handleReset}
                 accept=".xls,.xlsx"
-                icon={Icon}
+                icon={<DropzoneIcon className={handles.dropzoneIcon}/>}
               >
                 <div className="pt7">
                   <div>
