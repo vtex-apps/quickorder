@@ -198,6 +198,7 @@ const TextAreaBlock: FunctionComponent<
   }
 
   const CSS_HANDLES = [
+    'textAreaBlock',
     'buttonValidate',
     'textContainer',
     'componentContainer',
@@ -245,7 +246,7 @@ const TextAreaBlock: FunctionComponent<
   }
 
   return (
-    <div>
+    <div className={`${handles.textAreaBlock}`}>
       {!componentOnly && (
         <div className={`${handles.textContainer} w-20-l w-100-ns fl-l`}>
           <h2
