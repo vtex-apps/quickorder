@@ -278,7 +278,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
     'productThumb',
     'productTitle',
     'productSku',
-    'skuSelectionSelected',
+    'skuSelected',
     'productLabel',
     'inputQuantity',
     'buttonAdd',
