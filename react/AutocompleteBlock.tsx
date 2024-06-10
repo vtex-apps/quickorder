@@ -278,6 +278,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
     'productThumb',
     'productTitle',
     'productSku',
+    'skuSelected',
     'productLabel',
     'inputQuantity',
     'buttonAdd',
@@ -341,7 +342,10 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
                             return (
                               <span
                                 key={item.itemId}
-                                className={`mr4 ${handles.skuSelection}`}
+                                className={`mr4 ${handles.skuSelection} ${
+                                  item.itemId === selectedItem.value &&
+                                  handles.skuSelected
+                                }`}
                               >
                                 <Tag
                                   size="small"

@@ -580,3 +580,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Add css handles in components parents div to manipulate styles easily.
+
+### Added
+
+- Add css handles to selected sku on AutoComplete block.
