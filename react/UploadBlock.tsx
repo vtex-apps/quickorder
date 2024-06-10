@@ -348,7 +348,7 @@ const UploadBlock: FunctionComponent<
   ] as const
 
   const handles = useCssHandles(CSS_HANDLES)
-  
+
   return (
     <div className={`${handles.uploadBlock}`}>
       {!componentOnly && (
