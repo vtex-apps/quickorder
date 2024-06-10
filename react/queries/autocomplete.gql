@@ -2,6 +2,7 @@ query Autocomplete($inputValue: String!) {
   productSuggestions(fullText: $inputValue, hideUnavailableItems: true)
     @context(provider: "vtex.search-graphql") {
       products {
+        productName
         items {
           itemId
           name
