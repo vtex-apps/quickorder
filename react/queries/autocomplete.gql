@@ -3,6 +3,7 @@ query Autocomplete($inputValue: String!) {
     @context(provider: "vtex.search-graphql") {
       products {
         productName
+        productId
         items {
           itemId
           name

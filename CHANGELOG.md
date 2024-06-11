@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Adjust autocomplete list to show product name rather then product sku name
+- Adjust autocomplete list to show product name rather than just the product sku name
 
 ## [3.15.2] - 2024-06-10
 
