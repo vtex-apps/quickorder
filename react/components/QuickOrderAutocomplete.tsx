@@ -119,7 +119,7 @@ const QuickOrderAutocomplete: FunctionComponent<
         })
         .map((item: any) => {
           return {
-            value: item.productId,
+            value: item.items[0].itemId,
             label: item.productName,
             slug: item.linkText,
             thumb: getImageSrc(item.items[0].images[0].imageUrl),
