@@ -49,11 +49,9 @@ const CustomOption = (props: any) => {
     )
   }
 
-  const buttonClasses = `${
-    handles.customOptionButton
-  } bn w-100 tl pointer pa4 f6 ${roundedBottom ? 'br2 br--bottom' : ''} ${
-    highlightOption || selected ? 'bg-muted-5' : 'bg-base'
-  }`
+  const buttonClasses = `${handles.customOptionButton
+    } bn w-100 tl pointer pa4 f6 ${roundedBottom ? 'br2 br--bottom' : ''} ${highlightOption || selected ? 'bg-muted-5' : 'bg-base'
+    }`
 
   const thumb = value.thumb ? value.thumb : ''
 
@@ -116,17 +114,17 @@ const QuickOrderAutocomplete: FunctionComponent<
     value: !term.length
       ? []
       : optionsResult
-          .filter((item: any) => {
-            return !!item.items[0].images[0].imageUrl
-          })
-          .map((item: any) => {
-            return {
-              value: item.items[0].itemId,
-              label: item.items[0].name,
-              slug: item.linkText,
-              thumb: getImageSrc(item.items[0].images[0].imageUrl),
-            }
-          }),
+        .filter((item: any) => {
+          return !!item.items[0].images[0].imageUrl
+        })
+        .map((item: any) => {
+          return {
+            value: item.items[0].itemId,
+            label: item.productName,
+            slug: item.linkText,
+            thumb: getImageSrc(item.items[0].images[0].imageUrl),
+          }
+        }),
     lastSearched: {
       value: lastSearched,
       label: 'Last searched products',
@@ -156,7 +154,7 @@ const QuickOrderAutocomplete: FunctionComponent<
         setTerm(nterm)
       }
     },
-    onSearch: () => () => {},
+    onSearch: () => () => { },
     onClear: () => setTerm(''),
     placeholder: intl.formatMessage(messages.placeholder),
     value: term,
