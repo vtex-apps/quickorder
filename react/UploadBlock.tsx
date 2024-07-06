@@ -116,8 +116,11 @@ const UploadBlock: FunctionComponent<
   }
 
   const onReviewItems = (items: any) => {
-    if (items) {
-      const show = !items.some((item: any) => item.error)
+    if (items?.length) {
+      const show =
+        items.filter((item: any) => {
+          return !item.vtexSku
+        }).length === 0
 
       setState({
         ...state,
@@ -126,7 +129,7 @@ const UploadBlock: FunctionComponent<
         showAddToCart: alwaysShowAddToCart || show,
         textAreaValue: GetText(items),
       })
-    }
+    } else backList()
 
     return true
   }
