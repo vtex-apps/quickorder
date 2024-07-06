@@ -17,6 +17,7 @@ import XLSX from 'xlsx'
 import { categoryMessages as messages } from './utils/messages'
 import { ParseText, GetText } from './utils'
 import ReviewBlock from './components/ReviewBlock'
+import { DropzoneIcon } from './assets/DropZoneIcon'
 
 interface ItemType {
   id: string
@@ -334,8 +335,10 @@ const UploadBlock: FunctionComponent<
   }
 
   const CSS_HANDLES = [
+    'uploadBlock',
     'buttonValidate',
     'dropzoneContainer',
+    'dropzoneIcon',
     'dropzoneText',
     'dropzoneLink',
     'downloadLink',
@@ -350,7 +353,7 @@ const UploadBlock: FunctionComponent<
   const handles = useCssHandles(CSS_HANDLES)
 
   return (
-    <div>
+    <div className={`${handles.uploadBlock}`}>
       {!componentOnly && (
         <div className={`${handles.textContainer} w-20-l w-100-ns fl-l`}>
           <h2
@@ -389,6 +392,7 @@ const UploadBlock: FunctionComponent<
                 onDropAccepted={handleFile}
                 onFileReset={handleReset}
                 accept=".xls,.xlsx"
+                icon={<DropzoneIcon className={handles.dropzoneIcon} />}
               >
                 <div className="pt7">
                   <div>

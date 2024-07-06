@@ -11,6 +11,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fixed a bug where removing all items from review block would send the user to a "Nothing to Show" page.
 
+## [3.15.4] - 2024-06-13
+
+## [3.15.3] - 2024-06-10
+
+### Changed
+
+- Adjust autocomplete list to show product name rather than just the product sku name
+
+## [3.15.2] - 2024-06-10
+
+## [3.15.1] - 2024-05-27
+
+## [3.15.0] - 2024-05-27
+
 ## [3.14.0] - 2023-08-30
 
 ### Added
@@ -576,3 +590,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Initial release with Copy/Paste and One by One modules.
+
+### Added
+
+- Add css handles in components parents div to manipulate styles easily.
+
+### Added
+
+- Add css handles to selected sku on AutoComplete block.
