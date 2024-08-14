@@ -23,4 +23,5 @@ declare module 'vtex.styleguide' {
   export const IconClear
   export const Tag
   export const Collapsible
+  export const Alert
 }

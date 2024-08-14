@@ -7,10 +7,9 @@ import {
   Input,
   ButtonWithIcon,
   IconDelete,
-  IconInfo,
-  Tooltip,
   Dropdown,
   ToastContext,
+  Tag,
 } from 'vtex.styleguide'
 import type { WrappedComponentProps } from 'react-intl'
 import { injectIntl } from 'react-intl'
@@ -32,8 +31,8 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   hiddenColumns,
   reviewedItems,
   onRefidLoading,
-  backList,
   intl,
+  backList,
 }: any) => {
   const client = useApolloClient()
   const { showToast } = useContext(ToastContext)
@@ -128,11 +127,11 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
     // drops sellers without stock from refidData
     refidData?.skuFromRefIds.items.forEach((item: any) => {
-      if (!item.sellers) return
+      if (!item?.sellers) return
       item.sellers = item.sellers.filter(
         (seller: any) =>
-          seller.availability === 'available' ||
-          seller.availability === 'partiallyAvailable'
+          seller?.availability === 'available' ||
+          seller?.availability === 'partiallyAvailable'
       )
     })
 
@@ -192,19 +191,20 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
         let selectedSellerHasPartialStock
         const foundHasStock =
-          found?.sellers?.length &&
-          found.sellers.filter((seller: any) => {
-            if (seller.id === sellerWithStock) {
-              selectedSellerHasPartialStock =
-                seller.availability === 'partiallyAvailable'
-            }
+          (found?.sellers?.length &&
+            found.sellers.filter((seller: any) => {
+              if (seller?.id === sellerWithStock) {
+                selectedSellerHasPartialStock =
+                  seller?.availability === 'partiallyAvailable'
+              }
 
-            return (
-              seller.availability &&
-              (seller.availability === 'available' ||
-                seller.availability === 'partiallyAvailable')
-            )
-          }).length
+              return (
+                seller?.availability &&
+                (seller?.availability === 'available' ||
+                  seller?.availability === 'partiallyAvailable')
+              )
+            })?.length) ||
+          0
 
         const itemRestricted = sellerWithStock
           ? null
@@ -281,6 +281,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       })
 
       onReviewItems(updated)
+
       if (JSON.stringify(reviewItems) !== JSON.stringify(updated)) {
         setReviewState({
           ...state,
@@ -546,7 +547,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.status',
         }),
-        width: 75,
+
         cellRenderer: ({ cellData, rowData }: any) => {
           if (rowData.error) {
             const errMsg = errorMessage[cellData || 'store/quickorder.valid']
@@ -560,12 +561,10 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
                 : intl.formatMessage(errMsg)
 
             return (
-              <span className="pa3 br2 dib mr5 mv0">
-                <Tooltip label={text}>
-                  <span className="c-danger pointer">
-                    <IconInfo />
-                  </span>
-                </Tooltip>
+              <span>
+                <Tag type="error" variation="low">
+                  {text}
+                </Tag>
               </span>
             )
           }
