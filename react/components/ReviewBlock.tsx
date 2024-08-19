@@ -476,7 +476,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       tableSchema.properties.sku = {
         type: 'string',
         title: intl.formatMessage({ id: 'store/quickorder.review.label.sku' }),
-        width: 125,
+        width: 112,
       }
     }
 
@@ -486,7 +486,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.quantity',
         }),
-        width: 75,
+        width: 72,
       }
     }
 
@@ -501,12 +501,20 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     }
 
     if (columnsToBeHidden.indexOf('totalQuantity') === -1) {
+      const totalQuantity = intl.formatMessage({
+        id: 'store/quickorder.review.label.totalQuantity',
+      }) as string
+
+      const [quantity, total] = totalQuantity.split(' ')
+
       tableSchema.properties.totalQuantity = {
         type: 'float',
-        title: intl.formatMessage({
-          id: 'store/quickorder.review.label.totalQuantity',
-        }),
-        width: 100,
+        title: (
+          <>
+            {quantity} <span style={{ display: 'block' }}>{total}</span>
+          </>
+        ),
+        width: 82,
       }
     }
 
@@ -547,7 +555,6 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.status',
         }),
-
         cellRenderer: ({ cellData, rowData }: any) => {
           if (rowData.error) {
             const errMsg = errorMessage[cellData || 'store/quickorder.valid']
@@ -562,7 +569,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
             return (
               <span>
-                <Tag type="error" variation="low">
+                <Tag type="error" variation="low" size="small">
                   {text}
                 </Tag>
               </span>
@@ -578,7 +585,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       tableSchema.properties.delete = {
         type: 'object',
         title: ' ',
-        width: 75,
+        width: 58,
         // eslint-disable-next-line react/display-name
         cellRenderer: ({ rowData }: any) => {
           return (
