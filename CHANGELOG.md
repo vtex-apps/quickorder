@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- Fixes validation of SKU codes in the quickorder and styles of the ReviewBlock component
+
 ## [3.15.4] - 2024-06-13
 
 ## [3.15.3] - 2024-06-10
