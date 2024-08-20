@@ -501,18 +501,15 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     }
 
     if (columnsToBeHidden.indexOf('totalQuantity') === -1) {
-      const totalQuantity = intl.formatMessage({
-        id: 'store/quickorder.review.label.totalQuantity',
-      }) as string
-
-      const [quantity, total] = totalQuantity.split(' ')
-
       tableSchema.properties.totalQuantity = {
         type: 'float',
         title: (
-          <>
-            {quantity} <span style={{ display: 'block' }}>{total}</span>
-          </>
+          <div style={{ whiteSpace: 'break-spaces' }}>
+            {intl.formatMessage({
+              id: 'store/quickorder.review.label.totalQuantity',
+            })}
+            aa
+          </div>
         ),
         width: 82,
       }
