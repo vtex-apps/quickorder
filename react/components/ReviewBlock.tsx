@@ -508,7 +508,6 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
             {intl.formatMessage({
               id: 'store/quickorder.review.label.totalQuantity',
             })}
-            aa
           </div>
         ),
         width: 82,
