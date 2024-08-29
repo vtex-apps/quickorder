@@ -139,22 +139,22 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       const refIdNotFound =
         !!refidData && !!refidData.skuFromRefIds.items
           ? refidData.skuFromRefIds.items.filter((item: any) => {
-              return item.sku === null
-            })
+            return item.sku === null
+          })
           : []
 
       const refIdFound =
         !!refidData && !!refidData.skuFromRefIds.items
           ? refidData.skuFromRefIds.items.filter((item: any) => {
-              return item.sku !== null
-            })
+            return item.sku !== null
+          })
           : []
 
       const refNotAvailable =
         !!refidData && !!refidData.skuFromRefIds.items
           ? refidData.skuFromRefIds.items.filter((item: any) => {
-              return !!item.sellers?.length
-            })
+            return !!item.sellers?.length
+          })
           : []
 
       const mappedRefId = {}
@@ -233,25 +233,25 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         const sellerWithStock = item.seller
           ? item.seller
           : item.sku && mappedRefId[item.sku]?.sellers?.length
-          ? mappedRefId[item.sku]?.sellers.find(
+            ? mappedRefId[item.sku]?.sellers.find(
               (seller: any) =>
                 seller.availability === 'available' ||
                 seller.availability === 'partiallyAvailable'
             )?.id ?? ''
-          : ''
+            : ''
 
         const sellerUnitMultiplier =
           item.sku && mappedRefId[item.sku]?.sellers?.length
             ? mappedRefId[item.sku]?.sellers.find(
-                (seller: any) => seller.id === sellerWithStock
-              )?.unitMultiplier ?? '1'
+              (seller: any) => seller.id === sellerWithStock
+            )?.unitMultiplier ?? '1'
             : '1'
 
         const sellerAvailableQuantity =
           item.sku && mappedRefId[item.sku]?.sellers?.length
             ? mappedRefId[item.sku]?.sellers.find(
-                (seller: any) => seller.id === sellerWithStock
-              )?.availableQuantity
+              (seller: any) => seller.id === sellerWithStock
+            )?.availableQuantity
             : null
 
         return {
@@ -378,9 +378,9 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     const items = reviewItems.map((item: any) => {
       return item.index === index
         ? {
-            ...item,
-            content,
-          }
+          ...item,
+          content,
+        }
         : item
     })
 
@@ -395,9 +395,9 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     const items = reviewItems.map((item: any) => {
       return item.index === index
         ? {
-            ...item,
-            seller,
-          }
+          ...item,
+          seller,
+        }
         : item
     })
 
@@ -486,7 +486,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.quantity',
         }),
-        width: 72,
+        width: 90,
       }
     }
 
@@ -557,10 +557,10 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
             const text =
               errMsg === messages.partiallyAvailable
                 ? intl.formatMessage(errMsg, {
-                    quantity: rowData.availableQuantity,
-                    totalQuantity:
-                      rowData.availableQuantity * rowData.unitMultiplier,
-                  })
+                  quantity: rowData.availableQuantity,
+                  totalQuantity:
+                    rowData.availableQuantity * rowData.unitMultiplier,
+                })
                 : intl.formatMessage(errMsg)
 
             return (
