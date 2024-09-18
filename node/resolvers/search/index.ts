@@ -136,16 +136,16 @@ const getSkuSellers = async (
         .then((res: any) => {
           const validSellers = res.data?.SkuSellers
             ? res.data.SkuSellers.filter((seller: any) => {
-                // check if seller is active and available in current sales channel
-                return (
-                  seller.IsActive === true && sellersIds.has(seller.SellerId)
-                )
-              }).map(({ SellerId }: any) => {
-                return {
-                  id: SellerId,
-                  name: sellerIdNameMap.get(SellerId),
-                }
-              })
+              // check if seller is active and available in current sales channel
+              return (
+                seller.IsActive === true && sellersIds.has(seller.SellerId)
+              )
+            }).map(({ SellerId }: any) => {
+              return {
+                id: SellerId,
+                name: sellerIdNameMap.get(SellerId),
+              }
+            })
             : null
 
           return {
@@ -303,7 +303,7 @@ export const queries = {
         } else {
           // ensures that each item in the result array has a sellers array that only includes sellers with a defined and non-null availability property.
           // If no such sellers exist, the sellers array will be empty.
-            items = result.map((item: { sellers: any[] }) => ({
+          items = result.map((item: { sellers: any[] }) => ({
             ...item,
             sellers: item.sellers?.filter((seller: any) =>
               'availability' in seller &&
