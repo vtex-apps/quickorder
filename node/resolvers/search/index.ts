@@ -301,7 +301,9 @@ export const queries = {
           // include SKU's availability and unit multiplier info in given seller
           items = getSkuSellerInfo(simulationResults, result)
         } else {
-          items = result.map((item: { sellers: any[] }) => ({
+          // ensures that each item in the result array has a sellers array that only includes sellers with a defined and non-null availability property.
+          // If no such sellers exist, the sellers array will be empty.
+            items = result.map((item: { sellers: any[] }) => ({
             ...item,
             sellers: item.sellers?.filter((seller: any) =>
               'availability' in seller &&
