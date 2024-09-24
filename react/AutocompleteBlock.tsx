@@ -24,6 +24,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   description,
   componentOnly,
   intl,
+  checkoutUrl
 }) => {
   const client = useApolloClient()
   const { showToast } = useContext(ToastContext)
@@ -76,7 +77,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       action = success
         ? {
             label: translateMessage(messages.seeCart),
-            href: '/checkout/#/cart',
+            href: checkoutUrl ?? '/checkout/#/cart',
           }
         : undefined
     }

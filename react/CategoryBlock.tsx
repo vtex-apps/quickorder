@@ -31,6 +31,7 @@ const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
   componentOnly,
   intl,
   data: { categories },
+  checkoutUrl
 }) => {
   const [state, setState] = useState<any>({
     categoryItems: {},
@@ -89,7 +90,7 @@ const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
       action = success
         ? {
             label: intl.formatMessage(messages.seeCart),
-            href: '/checkout/#/cart',
+            href: checkoutUrl ?? '/checkout/#/cart',
           }
         : undefined
     }

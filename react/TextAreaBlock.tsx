@@ -24,7 +24,7 @@ interface ItemType {
 
 const TextAreaBlock: FunctionComponent<
   TextAreaBlockInterface & WrappedComponentProps
-> = ({ intl, value, text, hiddenColumns, description, componentOnly }: any) => {
+> = ({ intl, value, text, hiddenColumns, description, componentOnly, checkoutUrl }: any) => {
   const [state, setState] = useState<any>({
     reviewState: false,
     showAddToCart: null,
@@ -72,7 +72,7 @@ const TextAreaBlock: FunctionComponent<
     const action = success
       ? {
           label: translateMessage(messages.seeCart),
-          href: '/checkout/#/cart',
+          href: checkoutUrl ?? '/checkout/#/cart',
         }
       : undefined
 
