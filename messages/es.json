@@ -35,6 +35,7 @@
   "store/quickorder.available": "Disponible",
   "store/quickorder.back": "Atrás",
   "store/quickorder.cannotBeDelivered": "No se puede entregar",
+  "store/quickorder.inactive": "No disponible",
   "store/quickorder.cannotGetSkuInfo": "No se pudo obtener la información de SKU",
   "store/quickorder.category.addButton": "Agregar ítems al carrito",
   "store/quickorder.category.loading": "Cargando...",

@@ -30,6 +30,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   onReviewItems,
   hiddenColumns,
   reviewedItems,
+  refidLoading,
   onRefidLoading,
   intl,
   backList,
@@ -92,6 +93,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       messages.withoutPriceFulfillment,
     'store/quickorder.limited': messages.limited,
     'store/quickorder.cannotBeDelivered': messages.cannotBeDelivered,
+    'store/quickorder.inactive': messages.inactive,
     'store/quickorder.ORD002': messages.ORD002,
     'store/quickorder.ORD003': messages.ORD003,
     'store/quickorder.ORD004': messages.ORD004,
@@ -125,13 +127,14 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   const validateRefids = async (refidData: any, reviewed: any) => {
     let error = false
 
-    // drops sellers without stock from refidData
+    // drops sellers from refidData
     refidData?.skuFromRefIds.items.forEach((item: any) => {
       if (!item?.sellers) return
       item.sellers = item.sellers.filter(
         (seller: any) =>
           seller?.availability === 'available' ||
-          seller?.availability === 'partiallyAvailable'
+          seller?.availability === 'partiallyAvailable' ||
+          seller?.availability === 'withoutStock'
       )
     })
 
@@ -217,6 +220,10 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         const availabilityError = foundHasStock
           ? partialStockError
           : `store/quickorder.withoutStock`
+
+        if (found?.sku && found?.sellers?.length === 0) {
+          return 'store/quickorder.inactive'
+        }
 
         ret = notfound
           ? 'store/quickorder.skuNotFound'
@@ -525,12 +532,14 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
             return (
               <div>
                 <Dropdown
-                  options={rowData.sellers.map((item: any) => {
-                    return {
-                      label: item.name,
-                      value: item.id,
-                    }
-                  })}
+                  options={rowData.sellers
+                    .filter((seller) => seller?.availability !== 'withoutStock')
+                    .map((item: any) => {
+                      return {
+                        label: item.name,
+                        value: item.id,
+                      }
+                    })}
                   value={rowData.seller}
                   onChange={(_: any, v: any) => {
                     updateLineSeller(rowData.index, v)
@@ -540,7 +549,14 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
             )
           }
 
-          return rowData?.sellers?.length ? rowData.sellers[0].name : ''
+          const hasStock = rowData?.sellers?.find(
+            (seller?: { availability: string; [key: string]: unknown }) =>
+              seller?.availability !== 'withoutStock'
+          )
+
+          return rowData?.sellers?.length && hasStock
+            ? rowData.sellers[0].name
+            : ''
         },
       }
     }
@@ -572,7 +588,10 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
             )
           }
 
-          return intl.formatMessage({ id: 'store/quickorder.valid' })
+          return (
+            !refidLoading &&
+            intl.formatMessage({ id: 'store/quickorder.valid' })
+          )
         },
       }
     }
