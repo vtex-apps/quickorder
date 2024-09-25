@@ -163,7 +163,7 @@ All blocks exported by the `quickorder` app share the same props:
 | `text`          | `string`  | Component title.                                                                                                | `undefined`   |
 | `description`   | `string`  | Component description. It should be used to explain users how to properly bulk order using the given component. | `undefined`   |
 | `componentOnly` | `boolean` | If `true`, only the component will be loaded, removing the `text` and `description` column.                     | `false`       |
-| `checkoutUrl`   | `string`  | Checkout cart URL for redirect                                                                                  | `false`       |
+| `checkoutUrl`   | `string`  | Checkout cart URL for redirect                                                                                  | `/checkout#/cart`       |
 
 Especially, the `quickorder-upload` block also can use the following prop:
 

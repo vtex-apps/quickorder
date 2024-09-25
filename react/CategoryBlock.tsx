@@ -90,7 +90,7 @@ const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
       action = success
         ? {
             label: intl.formatMessage(messages.seeCart),
-            href: checkoutUrl ?? '/checkout/#/cart',
+            href: typeof checkoutUrl === "string" && checkoutUrl !== "" ? checkoutUrl : '/checkout/#/cart',
           }
         : undefined
     }
