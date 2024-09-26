@@ -100,7 +100,8 @@ To use these blocks, follow the instructions below.
        "props": {
          "componentOnly": false,
          "text": "Copy/Paste Skus",
-         "description": "[SKU Reference ID],[Quantity]"
+         "description": "[SKU Reference ID],[Quantity]",
+         "checkoutUrl:": "/checkout#/cart"
        }
      },
 
@@ -116,7 +117,8 @@ To use these blocks, follow the instructions below.
          "text": "Upload",
          "description": "Upload a Spreadsheet with two columns (SKU, Quantity) to bulk order",
          "downloadText": "Click here to download a spreadsheet model",
-         "alwaysShowAddToCart:": true
+         "alwaysShowAddToCart:": true,
+         "checkoutUrl:": "/checkout#/cart"
        }
      },
 
@@ -130,7 +132,8 @@ To use these blocks, follow the instructions below.
        "props": {
          "componentOnly": false,
          "text": "One by One",
-         "description": "Type the product name, select, enter quantity, add to the cart"
+         "description": "Type the product name, select, enter quantity, add to the cart",
+         "checkoutUrl:": "/checkout#/cart"
        }
      },
 
@@ -144,7 +147,8 @@ To use these blocks, follow the instructions below.
        "props": {
          "componentOnly": false,
          "text": "Categories",
-         "description": "Add products directly from their categories"
+         "description": "Add products directly from their categories",
+         "checkoutUrl:": "/checkout#/cart"
        }
      }
    }
@@ -159,6 +163,7 @@ All blocks exported by the `quickorder` app share the same props:
 | `text`          | `string`  | Component title.                                                                                                | `undefined`   |
 | `description`   | `string`  | Component description. It should be used to explain users how to properly bulk order using the given component. | `undefined`   |
 | `componentOnly` | `boolean` | If `true`, only the component will be loaded, removing the `text` and `description` column.                     | `false`       |
+| `checkoutUrl`   | `string`  | Checkout cart URL for redirect                                                                                  | `/checkout#/cart`       |
 
 Especially, the `quickorder-upload` block also can use the following prop:
 

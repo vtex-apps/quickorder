@@ -34,6 +34,7 @@ const UploadBlock: FunctionComponent<
   componentOnly,
   intl,
   alwaysShowAddToCart = true,
+  checkoutUrl,
 }: any) => {
   let productsArray: any = []
   const [state, setState] = useState<any>({
@@ -84,7 +85,10 @@ const UploadBlock: FunctionComponent<
     const action = success
       ? {
           label: translateMessage(messages.seeCart),
-          href: '/checkout/#/cart',
+          href:
+            typeof checkoutUrl === 'string' && checkoutUrl !== ''
+              ? checkoutUrl
+              : '/checkout/#/cart',
         }
       : undefined
 
