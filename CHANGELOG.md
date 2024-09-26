@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.15.7] - 2024-09-26
+
 ## [3.15.6] - 2024-09-26
 ### Added
 - Add a cart url prop so the store can control the redirect via theme
