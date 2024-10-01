@@ -12,8 +12,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed the message in the status column of the SKU table, specifically inactive skus
 - Fixed the return from skuFromRefIds and improve the return from getSkuSellerInfo
 
-- Fixed the message in the status column of the SKU table, specifically inactive skus
-
 ### Fixed
 
 - Fixed the return from skuFromRefIds and improve the return from getSkuSellerInfo
