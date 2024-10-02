@@ -31,6 +31,9 @@ export const reviewMessages = defineMessages({
   cannotBeDelivered: {
     id: `${storePrefix}cannotBeDelivered`,
   },
+  inactive: {
+    id: `${storePrefix}inactive`,
+  },
   ORD002: {
     id: `${storePrefix}ORD002`,
   },

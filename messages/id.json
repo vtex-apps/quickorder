@@ -35,6 +35,7 @@
   "store/quickorder.available": "Tersedia",
   "store/quickorder.back": "Kembali",
   "store/quickorder.cannotBeDelivered": "Tidak dapat dikirimkan",
+  "store/quickorder.inactive": "Tidak tersedia",
   "store/quickorder.cannotGetSkuInfo": "Tidak bisa mendapat informasi SKU",
   "store/quickorder.category.addButton": "Tambahkan item ke Troli",
   "store/quickorder.category.loading": "Memuat…",
