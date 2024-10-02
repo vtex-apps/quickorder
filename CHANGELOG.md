@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.15.9] - 2024-10-02
+
 ### Fixed
 
 - Fixed the message in the status column of the SKU table, specifically inactive skus
