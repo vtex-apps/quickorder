@@ -181,9 +181,9 @@ const getSkuSellerInfo = (simulationResults: any, result: any) => {
 
   if (Object.keys(simulationResults).length !== 0) {
     items = result.map((item: any) => {
-      const skuInfoBySeller = item.sellers?.map((seller: any) => {
+      const skuInfoBySeller = item.sellers?.flatMap((seller: any) => {
         if (!simulationResults[item.sku]) {
-          return null
+          return [];
         }
 
         const currSeller = simulationResults[item.sku].sellers.find(
@@ -210,7 +210,7 @@ const getSkuSellerInfo = (simulationResults: any, result: any) => {
 
       return {
         ...item,
-        sellers: item.sellers ? skuInfoBySeller : null,
+        sellers: skuInfoBySeller,
       }
     })
   }
@@ -297,8 +297,20 @@ export const queries = {
         },
         ctx
       ).then(simulationResults => {
-        // include SKU's availability and unit multiplier info in given seller
-        items = getSkuSellerInfo(simulationResults, result)
+        if (Object.keys(simulationResults).length !== 0) {
+          // include SKU's availability and unit multiplier info in given seller
+          items = getSkuSellerInfo(simulationResults, result)
+        } else {
+          // ensures that each item in the result array has a sellers array that only includes sellers with a defined and non-null availability property.
+          // If no such sellers exist, the sellers array will be empty.
+            items = result.map((item: { sellers: any[] }) => ({
+            ...item,
+            sellers: item.sellers?.filter((seller: any) =>
+              'availability' in seller &&
+              seller.availability !== null
+            ) || []
+          }))
+        }
       })
     } catch (error) {
       logger.error({
