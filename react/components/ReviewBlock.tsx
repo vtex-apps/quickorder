@@ -433,6 +433,8 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
   const createSchema = (columnsToBeHidden: string[]) => {
     if (columnsToBeHidden.indexOf('line') === -1) {
+      let count = 0
+
       tableSchema.properties.line = {
         type: 'object',
         title: intl.formatMessage({
@@ -440,8 +442,10 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         }),
         width: 50,
         // eslint-disable-next-line react/display-name
-        cellRenderer: ({ rowData }: any) => {
-          return <div>{parseInt(rowData.line, 10) + 1}</div>
+        cellRenderer: () => {
+          count++
+
+          return <div>{refidLoading ? '-' : count}</div>
         },
       }
     }
