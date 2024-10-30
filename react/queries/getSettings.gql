@@ -1,0 +1,6 @@
+query getSettings($version: String!) {
+  publicSettingsForApp(app: "vtex.quickorder", version: $version)
+    @context(provider: "vtex.apps-graphql") {
+    message
+  }
+}

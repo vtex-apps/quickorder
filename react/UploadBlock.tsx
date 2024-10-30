@@ -18,7 +18,8 @@ import { categoryMessages as messages } from './utils/messages'
 import { ParseText, GetText } from './utils'
 import ReviewBlock from './components/ReviewBlock'
 import { DropzoneIcon } from './assets/DropZoneIcon'
-
+import getAppSettings from './utils/getAppSettings'
+  
 interface ItemType {
   id: string
   quantity: number
@@ -34,7 +35,7 @@ const UploadBlock: FunctionComponent<
   componentOnly,
   intl,
   alwaysShowAddToCart = true,
-  checkoutUrl
+
 }: any) => {
   let productsArray: any = []
   const [state, setState] = useState<any>({
@@ -42,6 +43,9 @@ const UploadBlock: FunctionComponent<
     reviewState: false,
     showAddToCart: false,
   })
+
+  const appSettings = getAppSettings()
+  const checkoutUrl = appSettings?.checkoutUrl ?? "/checkout#/cart"
 
   const [showValidateButton, setShowValidateButton] = useState<boolean>(false)
 

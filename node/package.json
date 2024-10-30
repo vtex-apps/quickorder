@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@gocommerce/utils": "^0.7.3",
-    "@vtex/api": "6.46.1",
+    "@vtex/api": "6.48.0",
     "atob": "^2.1.2",
     "axios": "^0.19.0",
     "camelcase": "^5.0.0",

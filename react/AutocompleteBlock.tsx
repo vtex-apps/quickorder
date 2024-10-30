@@ -17,14 +17,15 @@ import { useApolloClient, useMutation } from 'react-apollo'
 import { autocompleteMessages as messages } from './utils/messages'
 import QuickOrderAutocomplete from './components/QuickOrderAutocomplete'
 import productQuery from './queries/product.gql'
+import getAppSettings from './utils/getAppSettings'
+
 import './global.css'
 
 const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   text,
   description,
   componentOnly,
-  intl,
-  checkoutUrl
+  intl
 }) => {
   const client = useApolloClient()
   const { showToast } = useContext(ToastContext)
@@ -34,6 +35,9 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
     unitMultiplier: 1,
   })
 
+  const appSettings = getAppSettings()
+  const checkoutUrl = appSettings?.checkoutUrl ?? "/checkout#/cart"
+  
   const [addToCart, { error, loading }] = useMutation<
     { addToCart: OrderFormType },
     { items: [] }

@@ -22,7 +22,6 @@
     "vtex.flex-layout": "0.x",
     "vtex.rich-text": "0.x",
     "vtex.checkout": "0.x",
-    "vtex.render-runtime": "7.x",
     "vtex.store": "2.x",
     "vtex.styleguide": "9.x",
     "vtex.store-graphql": "2.x",
@@ -35,7 +34,8 @@
     "vtex.pixel-manager": "1.x",
     "vtex.store-resources": "0.x",
     "vtex.css-handles": "0.x",
-    "vtex.store-icons": "0.x"
+    "vtex.store-icons": "0.x",
+    "vtex.render-runtime": "8.x"
   },
   "policies": [
     {
@@ -82,7 +82,19 @@
       }
     }
   ],
-  "settingsSchema": {},
+  "settingsSchema": {
+    "title": "Quickorder settings",
+    "type": "object",
+    "access": "public",
+    "properties": {
+      "checkoutUrl": {
+        "title": "URL",
+        "type": "string",
+        "description": "Checkout redirect href",
+        "default": "/checkout#/cart"
+      }
+    }
+  },
   "billingOptions": {
     "termsURL": "https://compliance.vtex.com/gdpr/policies/vtex-privacy-policy",
     "support": {

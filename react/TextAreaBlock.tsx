@@ -16,7 +16,7 @@ import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import { categoryMessages as messages } from './utils/messages'
 import ReviewBlock from './components/ReviewBlock'
 import { ParseText, GetText } from './utils'
-
+import getAppSettings from './utils/getAppSettings'
 interface ItemType {
   id: string
   quantity: number
@@ -24,14 +24,15 @@ interface ItemType {
 
 const TextAreaBlock: FunctionComponent<
   TextAreaBlockInterface & WrappedComponentProps
-> = ({ intl, value, text, hiddenColumns, description, componentOnly, checkoutUrl }: any) => {
+> = ({ intl, value, text, hiddenColumns, description, componentOnly }: any) => {
   const [state, setState] = useState<any>({
     reviewState: false,
     showAddToCart: null,
     textAreaValue: value || '',
     reviewItems: [],
   })
-
+  const appSettings = getAppSettings()
+  const checkoutUrl = appSettings?.checkoutUrl ?? "/checkout#/cart"
   const [refidLoading, setRefIdLoading] = useState<any>()
 
   const { textAreaValue, reviewItems, reviewState, showAddToCart } = state
