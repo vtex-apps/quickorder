@@ -35,6 +35,7 @@
   "store/quickorder.available": "주문 가능",
   "store/quickorder.back": "뒤",
   "store/quickorder.cannotBeDelivered": "배송 불가",
+  "store/quickorder.inactive": "사용 불가능",
   "store/quickorder.cannotGetSkuInfo": "SKU 정보를 가져올 수 없습니다",
   "store/quickorder.category.addButton": "장바구니가 비어있습니다",
   "store/quickorder.category.loading": "로딩 중...",

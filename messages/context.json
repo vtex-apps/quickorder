@@ -35,6 +35,7 @@
   "store/quickorder.available": "store/quickorder.available",
   "store/quickorder.back": "store/quickorder.back",
   "store/quickorder.cannotBeDelivered": "store/quickorder.cannotBeDelivered",
+  "store/quickorder.inactive": "store/quickorder.inactive",
   "store/quickorder.cannotGetSkuInfo": "store/quickorder.cannotGetSkuInfo",
   "store/quickorder.category.addButton": "store/quickorder.category.addButton",
   "store/quickorder.category.loading": "store/quickorder.category.loading",

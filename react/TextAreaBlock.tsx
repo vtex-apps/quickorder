@@ -303,6 +303,7 @@ const TextAreaBlock: FunctionComponent<
               reviewedItems={reviewItems}
               hiddenColumns={hiddenColumns ?? []}
               onReviewItems={onReviewItems}
+              refidLoading={refidLoading}
               onRefidLoading={onRefidLoading}
               backList={backList}
             />

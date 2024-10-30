@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [3.15.9] - 2024-10-02
+
+### Fixed
+
+- Fixed the message in the status column of the SKU table, specifically inactive skus
+- Fixed the return from skuFromRefIds and improve the return from getSkuSellerInfo
+
+## [3.15.8] - 2024-10-02
+### Fixed
+
+- Fixed the return from skuFromRefIds and improve the return from getSkuSellerInfo
+
+## [3.15.7] - 2024-09-26
+
+## [3.15.6] - 2024-09-26
 ### Added
 - Add a cart url prop so the store can control the redirect via theme
 
