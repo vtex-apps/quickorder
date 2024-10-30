@@ -81,7 +81,10 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       action = success
         ? {
             label: translateMessage(messages.seeCart),
-            href: typeof checkoutUrl === "string" && checkoutUrl !== "" ? checkoutUrl : '/checkout/#/cart',
+            href:
+              typeof checkoutUrl === 'string' && checkoutUrl !== ''
+                ? checkoutUrl
+                : '/checkout/#/cart',
           }
         : undefined
     }
