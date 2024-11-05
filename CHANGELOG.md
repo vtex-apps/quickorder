@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- Autocomplete not working with French language
+
 ## [3.15.9] - 2024-10-02
 
 ### Fixed
