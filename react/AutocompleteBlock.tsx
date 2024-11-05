@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/prop-types */
 import type { FunctionComponent } from 'react'
@@ -175,7 +176,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
     if (!!product && product.length) {
       const query = {
         query: productQuery,
-        variables: { slug: product[0].slug },
+        variables: { skuId: product[0].value },
       }
 
       const { data } = await client.query(query)
