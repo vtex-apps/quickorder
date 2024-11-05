@@ -1,5 +1,6 @@
-query Product($slug: String) {
-  product(slug: $slug) @context(provider: "vtex.search-graphql") {
+query Product($skuId: ID!) {
+  product(identifier: { field: sku, value: $skuId })
+    @context(provider: "vtex.search-graphql") {
     productName
     items {
       itemId
