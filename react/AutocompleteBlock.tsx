@@ -25,7 +25,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   text,
   description,
   componentOnly,
-  intl
+  intl,
 }) => {
   const client = useApolloClient()
   const { showToast } = useContext(ToastContext)
@@ -36,8 +36,8 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   })
 
   const appSettings = getAppSettings()
-  const checkoutUrl = appSettings?.checkoutUrl ?? "/checkout#/cart"
-  
+  const checkoutUrl = appSettings?.checkoutUrl ?? '/checkout#/cart'
+
   const [addToCart, { error, loading }] = useMutation<
     { addToCart: OrderFormType },
     { items: [] }

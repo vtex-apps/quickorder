@@ -25,13 +25,13 @@ import { categoryMessages as messages } from './utils/messages'
 import getCategories from './queries/categoriesQuery.gql'
 import SearchByCategory from './queries/productsByCategory.gql'
 import getAppSettings from './utils/getAppSettings'
+
 const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
   text,
   description,
   componentOnly,
   intl,
   data: { categories },
-  
 }) => {
   const [state, setState] = useState<any>({
     categoryItems: {},
@@ -40,9 +40,9 @@ const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
     // All the items with their respective units
     unitMultiplierList: {},
   })
-  
+
   const appSettings = getAppSettings()
-  const checkoutUrl = appSettings?.checkoutUrl ?? "/checkout#/cart"
+  const checkoutUrl = appSettings?.checkoutUrl ?? '/checkout#/cart'
 
   const { showToast } = useContext(ToastContext)
 

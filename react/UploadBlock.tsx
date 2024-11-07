@@ -19,7 +19,7 @@ import { ParseText, GetText } from './utils'
 import ReviewBlock from './components/ReviewBlock'
 import { DropzoneIcon } from './assets/DropZoneIcon'
 import getAppSettings from './utils/getAppSettings'
-  
+
 interface ItemType {
   id: string
   quantity: number
@@ -35,7 +35,6 @@ const UploadBlock: FunctionComponent<
   componentOnly,
   intl,
   alwaysShowAddToCart = true,
-
 }: any) => {
   let productsArray: any = []
   const [state, setState] = useState<any>({
@@ -45,7 +44,7 @@ const UploadBlock: FunctionComponent<
   })
 
   const appSettings = getAppSettings()
-  const checkoutUrl = appSettings?.checkoutUrl ?? "/checkout#/cart"
+  const checkoutUrl = appSettings?.checkoutUrl ?? '/checkout#/cart'
 
   const [showValidateButton, setShowValidateButton] = useState<boolean>(false)
 
@@ -89,7 +88,10 @@ const UploadBlock: FunctionComponent<
     const action = success
       ? {
           label: translateMessage(messages.seeCart),
-          href: typeof checkoutUrl === "string" && checkoutUrl !== "" ? checkoutUrl : '/checkout/#/cart',
+          href:
+            typeof checkoutUrl === 'string' && checkoutUrl !== ''
+              ? checkoutUrl
+              : '/checkout/#/cart',
         }
       : undefined
 
