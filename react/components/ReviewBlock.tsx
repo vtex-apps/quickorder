@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable vtex/prefer-early-return */
 import type { FunctionComponent } from 'react'
@@ -53,10 +54,8 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   }
 
   const setRestriction = async (data: any) => {
-    return Promise.all(
-      data.map(async (item: any) => {
-        const res: any = await checkRestriction(item.refid)
-
+    const promises = data.map((item: any) =>
+      checkRestriction(item.refid).then((res: any) => {
         const foundSku = res?.data?.productSuggestions?.products[0]?.items.find(
           (suggestedItem) => suggestedItem.itemId === item.sku
         )
@@ -64,6 +63,8 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         return foundSku ? item : null
       })
     )
+
+    return Promise.all(promises)
   }
 
   const [state, setReviewState] = useState<any>({
@@ -177,59 +178,54 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
       }
 
       const errorMsg = (item: any, sellerWithStock: string) => {
-        let ret: any = null
+        const { sku } = item
 
-        /* order of precedence for errors
-         * 1) Item not found
-         * 2) Item availability
-         * 3) Item restriction
-         */
-        const notfound = refIdNotFound.find((curr: any) => {
-          return curr.refid === item.sku && curr.sku === null
-        })
+        // Error precedence
+        const notfound = refIdNotFound.find(
+          (curr: any) => curr.refid === sku && curr.sku === null
+        )
 
-        const found = refIdFound.find((curr: any) => {
-          return curr.refid === item.sku && curr.sku !== null
-        })
+        const found = refIdFound.find(
+          (curr: any) => curr.refid === sku && curr.sku !== null
+        )
 
-        let selectedSellerHasPartialStock
+        if (found?.sku && found.sellers.length === 0) {
+          return 'store/quickorder.inactive'
+        }
+
+        // Check for stock in the selected seller
+        let selectedSellerHasPartialStock = false
         const foundHasStock =
-          (found?.sellers?.length &&
-            found.sellers.filter((seller: any) => {
-              if (seller?.id === sellerWithStock) {
-                selectedSellerHasPartialStock =
-                  seller?.availability === 'partiallyAvailable'
-              }
+          found?.sellers?.some((seller: any) => {
+            if (seller?.id === sellerWithStock) {
+              selectedSellerHasPartialStock =
+                seller.availability === 'partiallyAvailable'
+            }
 
-              return (
-                seller?.availability &&
-                (seller?.availability === 'available' ||
-                  seller?.availability === 'partiallyAvailable')
-              )
-            })?.length) ||
-          0
+            return (
+              seller?.availability &&
+              (seller.availability === 'available' ||
+                seller.availability === 'partiallyAvailable')
+            )
+          }) ?? false
 
-        const itemRestricted = sellerWithStock
-          ? null
-          : `store/quickorder.limited`
-
+        // Error handling for availability and restriction
         const partialStockError = selectedSellerHasPartialStock
           ? 'store/quickorder.partiallyAvailable'
           : null
 
         const availabilityError = foundHasStock
           ? partialStockError
-          : `store/quickorder.withoutStock`
+          : 'store/quickorder.withoutStock'
 
-        if (found?.sku && found?.sellers?.length === 0) {
-          return 'store/quickorder.inactive'
-        }
+        const itemRestricted = !sellerWithStock
+          ? 'store/quickorder.limited'
+          : null
 
-        ret = notfound
+        // Final return
+        return notfound
           ? 'store/quickorder.skuNotFound'
           : availabilityError ?? itemRestricted
-
-        return ret
       }
 
       if (refIdNotFound.length || refNotAvailable.length) {

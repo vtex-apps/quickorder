@@ -6,11 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Autocomplete not working with French language
 
 ## [3.16.0] - 2024-11-07
 ### Added
 
-- Changed the checkoutUrl prop to admin app settings 
+- Changed the checkoutUrl prop to admin app settings
 
 ## [3.15.9] - 2024-10-02
 
