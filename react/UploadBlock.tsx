@@ -213,6 +213,7 @@ const UploadBlock: FunctionComponent<
 
   const handleFile = (files: any) => {
     doFile(files)
+    onRefidLoading(false)
   }
 
   const handleReset = () => {
@@ -435,6 +436,7 @@ const UploadBlock: FunctionComponent<
               reviewedItems={reviewItems}
               hiddenColumns={hiddenColumns ?? []}
               onReviewItems={onReviewItems}
+              refidLoading={refidLoading}
               onRefidLoading={onRefidLoading}
               backList={backList}
             />
