@@ -4,6 +4,7 @@ metadata:
   name: quickorder
   annotations:
     github.com/project-slug: vtex-apps/quickorder
+    vtex.com/application-id: TA2R2SA2
 spec:
   system: b2b-suite
   type: frontend-ui
