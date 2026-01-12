@@ -431,6 +431,10 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     properties: {},
   }
 
+  const lineNumberCellRenderer = ({ rowData }: any) => {
+    return <div> {refidLoading ? '-' : rowData.index + 1}</div>
+  }
+
   const createSchema = (columnsToBeHidden: string[]) => {
     if (columnsToBeHidden.indexOf('line') === -1) {
       tableSchema.properties.line = {
@@ -439,10 +443,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
           id: 'store/quickorder.review.label.lineNumber',
         }),
         width: 50,
-        // eslint-disable-next-line react/display-name
-        cellRenderer: ({ rowData }: any) => {
-          return <div> {refidLoading ? '-' : rowData.index + 1}</div>
-        },
+        cellRenderer: lineNumberCellRenderer,
       }
     }
 
