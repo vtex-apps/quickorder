@@ -431,22 +431,19 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     properties: {},
   }
 
+  const lineNumberCellRenderer = ({ rowData }: any) => {
+    return <div> {refidLoading ? '-' : rowData.index + 1}</div>
+  }
+
   const createSchema = (columnsToBeHidden: string[]) => {
     if (columnsToBeHidden.indexOf('line') === -1) {
-      let count = 0
-
       tableSchema.properties.line = {
         type: 'object',
         title: intl.formatMessage({
           id: 'store/quickorder.review.label.lineNumber',
         }),
         width: 50,
-        // eslint-disable-next-line react/display-name
-        cellRenderer: () => {
-          count++
-
-          return <div>{refidLoading ? '-' : count}</div>
-        },
+        cellRenderer: lineNumberCellRenderer,
       }
     }
 
