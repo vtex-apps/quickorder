@@ -432,7 +432,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   }
 
   const lineNumberCellRenderer = ({ rowData }: any) => {
-    return <div> {refidLoading ? '-' : rowData.index + 1}</div>
+    return <div> {refidLoading ? '-' : String(Number(rowData.index) + 1)}</div>
   }
 
   const createSchema = (columnsToBeHidden: string[]) => {
