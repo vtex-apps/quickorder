@@ -10,6 +10,8 @@
 
 The Quickorder app, designed for **B2B scenarios**, creates a custom page in your store aimed at purchases in bulk, offering tools such as uploading a spreadsheet to make bulk orders more agile.
 
+> ℹ This specification applies to B2B Suite only.
+
 ![quick-order](https://raw.githubusercontent.com/vtex-apps/quickorder/master/docs/image/RawQuickorder.png)
 _Example of a quick order page without customization_
 
