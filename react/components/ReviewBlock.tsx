@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable vtex/prefer-early-return */
 import type { FunctionComponent } from 'react'
@@ -184,26 +183,10 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
           ? 'store/quickorder.limited'
           : null
 
-        if (itemRestricted && foundHasStock) {
-          console.log(
-            '[quickorder:ReviewBlock] "Restricted Item" shown despite API reporting stock',
-            {
-              refId: sku,
-              sellerWithStock,
-              foundHasStock,
-              foundSellers: found?.sellers?.map((s: any) => ({
-                id: s.id,
-                name: s.name,
-                availability: s.availability,
-              })),
-            }
-          )
-        }
-
         // Final return
         return notfound
           ? 'store/quickorder.skuNotFound'
-          : availabilityError ?? itemRestricted
+          : (availabilityError ?? itemRestricted)
       }
 
       if (refIdNotFound.length || refNotAvailable.length) {
@@ -229,101 +212,15 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
         const sellerWithStock = item.seller
           ? item.seller
-          : findFirstSellerWithStock(rowSellers)?.id ?? ''
+          : (findFirstSellerWithStock(rowSellers)?.id ?? '')
 
         const selectedSeller = rowSellers.find(
           (seller: any) => seller.id === sellerWithStock
         )
 
-        const availableSellersFromApi =
-          rowSellers.filter(
-            (seller: any) =>
-              seller.availability === 'available' ||
-              seller.availability === 'partiallyAvailable'
-          )
-
-        if (
-          !sellerWithStock &&
-          availableSellersFromApi.length > 0
-        ) {
-          console.log(
-            '[quickorder:ReviewBlock] Restricted Item scenario — stock exists but no seller resolved',
-            {
-              refId: item.sku,
-              vtexSku: refIdDataItem?.sku,
-              itemSeller: item.seller,
-              resolvedSellerWithStock: sellerWithStock,
-              apiSellers: rowSellers,
-              availableSellersFromApi: availableSellersFromApi.map(
-                (s: any) => ({ id: s.id, name: s.name, availability: s.availability })
-              ),
-            }
-          )
-        }
-
-        if (
-          sellerWithStock &&
-          selectedSeller &&
-          selectedSeller.availability === 'withoutStock' &&
-          availableSellersFromApi.some((s: any) => s.id !== sellerWithStock)
-        ) {
-          console.log(
-            '[quickorder:ReviewBlock] Selected seller has no stock but other sellers are available',
-            {
-              refId: item.sku,
-              vtexSku: refIdDataItem?.sku,
-              selectedSellerId: sellerWithStock,
-              selectedSellerAvailability: selectedSeller.availability,
-              otherAvailableSellers: availableSellersFromApi
-                .filter((s: any) => s.id !== sellerWithStock)
-                .map((s: any) => ({
-                  id: s.id,
-                  name: s.name,
-                  availability: s.availability,
-                })),
-            }
-          )
-        }
-
         const sellerUnitMultiplier = selectedSeller?.unitMultiplier ?? '1'
-        const sellerAvailableQuantity = selectedSeller?.availableQuantity ?? null
-
-        const dropdownOptions = rowSellers.filter(
-          (seller: any) => seller?.availability !== 'withoutStock'
-        )
-        const hasStockInRowSellers = rowSellers.find(
-          (seller: any) => seller?.availability !== 'withoutStock'
-        )
-        const willShowDropdown = rowSellers.length > 1
-        const sellerDisplayMode = willShowDropdown
-          ? 'dropdown'
-          : rowSellers.length && hasStockInRowSellers
-          ? 'singleName'
-          : 'empty'
-
-        console.log(
-          '[quickorder:ReviewBlock] Seller column display resolution',
-          {
-            refId: item.sku,
-            vtexSku: refIdDataItem?.sku,
-            displayMode: sellerDisplayMode,
-            willShowDropdown,
-            dropdownCondition: 'rowData.sellers.length > 1',
-            rowSellersCount: rowSellers.length,
-            rowSellers: rowSellers.map((s: any) => ({
-              id: s.id,
-              name: s.name,
-              availability: s.availability,
-              availableQuantity: s.availableQuantity,
-            })),
-            dropdownOptions: dropdownOptions.map((s: any) => ({
-              id: s.id,
-              name: s.name,
-              availability: s.availability,
-            })),
-            selectedSeller: sellerWithStock,
-          }
-        )
+        const sellerAvailableQuantity =
+          selectedSeller?.availableQuantity ?? null
 
         return {
           ...item,
@@ -386,20 +283,6 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     try {
       const { data } = await client.query(query)
 
-      console.log('[quickorder:ReviewBlock] skuFromRefIds response', {
-        refIdSellerMap,
-        items: data?.skuFromRefIds?.items?.map((item: any) => ({
-          refid: item.refid,
-          sku: item.sku,
-          sellers: item.sellers?.map((s: any) => ({
-            id: s.id,
-            name: s.name,
-            availability: s.availability,
-            availableQuantity: s.availableQuantity,
-          })),
-        })),
-      })
-
       await validateRefids(data, reviewed)
       onRefidLoading(false)
     } catch (err) {
@@ -421,13 +304,6 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
         return item.sku
       })
-
-    console.log('[quickorder:ReviewBlock] convertRefIds — initial refIdSellerMap', {
-      refIdSellerMap,
-      orderFormId,
-      note:
-        'Seller "1" is hardcoded; backend may return marketplace sellers (e.g. "cromosolsc1") for the active sales channel',
-    })
 
     getRefIds(refids, items, refIdSellerMap)
   }
@@ -624,30 +500,6 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
             (seller?: { availability: string; [key: string]: unknown }) =>
               seller?.availability !== 'withoutStock'
           )
-          const displayMode = willShowDropdown
-            ? 'dropdown'
-            : sellers.length && hasStock
-            ? 'singleName'
-            : 'empty'
-
-          if (!refidLoading) {
-            console.log(
-              '[quickorder:ReviewBlock] Seller cell render',
-              {
-                refId: rowData.sku,
-                lineIndex: rowData.index,
-                displayMode,
-                willShowDropdown,
-                sellersCount: sellers.length,
-                availableSellers: dropdownOptions.map((s: any) => ({
-                  id: s.id,
-                  name: s.name,
-                  availability: s.availability,
-                })),
-                selectedSeller: rowData.seller,
-              }
-            )
-          }
 
           if (willShowDropdown) {
             return (
