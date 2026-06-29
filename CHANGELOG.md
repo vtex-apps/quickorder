@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix `ReviewBlock` seller resolution to use sellers returned by `skuFromRefIds` instead of the autocomplete restriction map, preventing false "Restricted Item" errors and missing seller dropdowns when multiple sellers are available for the active sales channel (including marketplace sellers with non-numeric IDs)
+
 ## [3.16.7] - 2026-03-06
 
 ### Changed

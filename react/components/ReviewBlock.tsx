@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable vtex/prefer-early-return */
 import type { FunctionComponent } from 'react'
@@ -21,7 +20,6 @@ import { reviewMessages as messages } from '../utils/messages'
 import { ParseText, GetText } from '../utils'
 import getRefIdTranslation from '../queries/refids.gql'
 import OrderFormQuery from '../queries/orderForm.gql'
-import autocomplete from '../queries/autocomplete.gql'
 
 const remove = <IconDelete />
 
@@ -45,27 +43,6 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     ssr: false,
     skip: !!orderFormId,
   })
-
-  const checkRestriction = async (sku: any) => {
-    return client.query({
-      query: autocomplete,
-      variables: { inputValue: sku },
-    })
-  }
-
-  const setRestriction = async (data: any) => {
-    const promises = data.map((item: any) =>
-      checkRestriction(item.refid).then((res: any) => {
-        const foundSku = res?.data?.productSuggestions?.products[0]?.items.find(
-          (suggestedItem) => suggestedItem.itemId === item.sku
-        )
-
-        return foundSku ? item : null
-      })
-    )
-
-    return Promise.all(promises)
-  }
 
   const [state, setReviewState] = useState<any>({
     reviewItems:
@@ -161,22 +138,6 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
             })
           : []
 
-      const mappedRefId = {}
-
-      if (refidData?.skuFromRefIds?.items) {
-        const restrictedData = await setRestriction(
-          refidData.skuFromRefIds.items
-        ).then((data) =>
-          data.filter((item: any) => {
-            return item != null
-          })
-        )
-
-        restrictedData.forEach((item: any) => {
-          mappedRefId[item.refid] = item
-        })
-      }
-
       const errorMsg = (item: any, sellerWithStock: string) => {
         const { sku } = item
 
@@ -225,43 +186,47 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         // Final return
         return notfound
           ? 'store/quickorder.skuNotFound'
-          : availabilityError ?? itemRestricted
+          : (availabilityError ?? itemRestricted)
       }
 
       if (refIdNotFound.length || refNotAvailable.length) {
         error = true
       }
 
+      const refIdApiMap: Record<string, any> = {}
+
+      refIdFound.forEach((apiItem: any) => {
+        refIdApiMap[apiItem.refid] = apiItem
+      })
+
+      const findFirstSellerWithStock = (sellers: any[] = []) =>
+        sellers.find(
+          (seller: any) =>
+            seller.availability === 'available' ||
+            seller.availability === 'partiallyAvailable'
+        )
+
       const items = reviewed.map((item: any) => {
+        const refIdDataItem = refIdApiMap[item.sku]
+        const rowSellers = refIdDataItem?.sellers ?? []
+
         const sellerWithStock = item.seller
           ? item.seller
-          : item.sku && mappedRefId[item.sku]?.sellers?.length
-          ? mappedRefId[item.sku]?.sellers.find(
-              (seller: any) =>
-                seller.availability === 'available' ||
-                seller.availability === 'partiallyAvailable'
-            )?.id ?? ''
-          : ''
+          : (findFirstSellerWithStock(rowSellers)?.id ?? '')
 
-        const sellerUnitMultiplier =
-          item.sku && mappedRefId[item.sku]?.sellers?.length
-            ? mappedRefId[item.sku]?.sellers.find(
-                (seller: any) => seller.id === sellerWithStock
-              )?.unitMultiplier ?? '1'
-            : '1'
+        const selectedSeller = rowSellers.find(
+          (seller: any) => seller.id === sellerWithStock
+        )
 
+        const sellerUnitMultiplier = selectedSeller?.unitMultiplier ?? '1'
         const sellerAvailableQuantity =
-          item.sku && mappedRefId[item.sku]?.sellers?.length
-            ? mappedRefId[item.sku]?.sellers.find(
-                (seller: any) => seller.id === sellerWithStock
-              )?.availableQuantity
-            : null
+          selectedSeller?.availableQuantity ?? null
 
         return {
           ...item,
-          sellers: item.sku ? mappedRefId[item.sku]?.sellers : [],
+          sellers: rowSellers,
           seller: sellerWithStock,
-          vtexSku: item.sku ? mappedRefId[item.sku]?.sku : '1',
+          vtexSku: refIdDataItem?.sku ?? item.vtexSku,
           unitMultiplier: sellerUnitMultiplier,
           totalQuantity: sellerUnitMultiplier
             ? sellerUnitMultiplier * item.quantity
@@ -525,18 +490,27 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
           id: 'store/quickorder.review.label.seller',
         }),
         cellRenderer: ({ rowData }: any) => {
-          if (rowData?.sellers?.length > 1) {
+          const sellers = rowData?.sellers ?? []
+          const dropdownOptions = sellers.filter(
+            (seller: { availability?: string }) =>
+              seller?.availability !== 'withoutStock'
+          )
+          const willShowDropdown = sellers.length > 1
+          const hasStock = sellers.find(
+            (seller?: { availability: string; [key: string]: unknown }) =>
+              seller?.availability !== 'withoutStock'
+          )
+
+          if (willShowDropdown) {
             return (
               <div>
                 <Dropdown
-                  options={rowData.sellers
-                    .filter((seller) => seller?.availability !== 'withoutStock')
-                    .map((item: any) => {
-                      return {
-                        label: item.name,
-                        value: item.id,
-                      }
-                    })}
+                  options={dropdownOptions.map((item: any) => {
+                    return {
+                      label: item.name,
+                      value: item.id,
+                    }
+                  })}
                   value={rowData.seller}
                   onChange={(_: any, v: any) => {
                     updateLineSeller(rowData.index, v)
@@ -546,14 +520,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
             )
           }
 
-          const hasStock = rowData?.sellers?.find(
-            (seller?: { availability: string; [key: string]: unknown }) =>
-              seller?.availability !== 'withoutStock'
-          )
-
-          return rowData?.sellers?.length && hasStock
-            ? rowData.sellers[0].name
-            : ''
+          return sellers.length && hasStock ? sellers[0].name : ''
         },
       }
     }
