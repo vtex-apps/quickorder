@@ -10,6 +10,9 @@ query Product($skuId: ID!) {
         sellerId
         sellerName
         sellerDefault
+        commertialOffer {
+          PriceToken
+        }
       }
       referenceId {
         Key
