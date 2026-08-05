@@ -197,7 +197,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
 
       // Signed price from the search response, forwarded on addToCart so the
       // Checkout can close the cart even while the Pricing is unavailable
-      const priceToken = defaultSeller?.commertialOffer?.PriceToken ?? null
+      const priceToken = defaultSeller?.commertialOffer?.priceToken ?? null
 
       let multiplier = 1
 
@@ -231,7 +231,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
     const newSelected = {
       ...selectedItem,
       seller: defaultSeller.sellerId,
-      priceToken: defaultSeller.commertialOffer?.PriceToken ?? null,
+      priceToken: defaultSeller.commertialOffer?.priceToken ?? null,
       value,
     }
 

@@ -400,7 +400,7 @@ const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
                             newSeller[content.itemId] = sellerId
                             newPriceTokens[content.itemId] =
-                              selectedSeller?.commertialOffer?.PriceToken ??
+                              selectedSeller?.commertialOffer?.priceToken ??
                               null
 
                             _setState({
