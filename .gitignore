@@ -6,6 +6,9 @@ node/coverage/*
 ### VS Code ###
 *.vscode
 
+### Claude Code ###
+.claude/
+
 ### OSX ###
 .DS_Store
 .AppleDouble
