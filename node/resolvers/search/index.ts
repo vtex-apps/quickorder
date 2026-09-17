@@ -47,6 +47,71 @@ const getSellers = async (context: Context, salesChannel?: string) => {
   }
 }
 
+const AVAILABILITY_WORST_FIRST: Record<string, number> = {
+  withoutStock: 0,
+  partiallyAvailable: 1,
+  '': 1,
+  available: 2,
+}
+
+const worstSimulationAvailability = (left: string, right: string) => {
+  const leftPriority = AVAILABILITY_WORST_FIRST[left] ?? 1
+  const rightPriority = AVAILABILITY_WORST_FIRST[right] ?? 1
+
+  return leftPriority <= rightPriority ? left : right
+}
+
+export const mergeSellerSimulationInfo = (
+  existing: {
+    seller: string
+    availability: string
+    unitMultiplier: number
+    quantity: number
+    priceTags: unknown[]
+  },
+  incoming: {
+    seller: string
+    availability: string
+    unitMultiplier: number
+    quantity: number
+    priceTags: unknown[]
+  }
+) => ({
+  seller: existing.seller,
+  availability: worstSimulationAvailability(
+    existing.availability,
+    incoming.availability
+  ),
+  unitMultiplier: existing.unitMultiplier ?? incoming.unitMultiplier ?? 1,
+  quantity: (existing.quantity ?? 0) + (incoming.quantity ?? 0),
+  priceTags: [...(existing.priceTags ?? []), ...(incoming.priceTags ?? [])],
+})
+
+export const mergeSkuSimulationSellers = (
+  sellers: Array<{
+    seller: string
+    availability: string
+    unitMultiplier: number
+    quantity: number
+    priceTags: unknown[]
+  }>
+) => {
+  const sellersById = new Map<string, (typeof sellers)[number]>()
+
+  sellers.forEach(sellerInfo => {
+    const existing = sellersById.get(sellerInfo.seller)
+
+    sellersById.set(
+      sellerInfo.seller,
+      existing
+        ? mergeSellerSimulationInfo(existing, sellerInfo)
+        : sellerInfo
+    )
+  })
+
+  return Array.from(sellersById.values())
+}
+
 const checkoutSimulation = async (
   { refids, orderForm, refIdSellerMap, salesChannel }: SimulateArgs,
   context: Context
@@ -79,12 +144,15 @@ const checkoutSimulation = async (
         priceTags: item.priceTags ?? [],
       }
 
+      const previousSellers = acc[item.id]?.sellers ?? []
+
       return {
         ...acc,
         [item.id]: {
-          sellers: acc[item.id]?.sellers?.length
-            ? acc[item.id].sellers.concat(sellerInfo)
-            : [sellerInfo],
+          sellers: mergeSkuSimulationSellers([
+            ...previousSellers,
+            sellerInfo,
+          ]),
         },
       }
     }, {})
