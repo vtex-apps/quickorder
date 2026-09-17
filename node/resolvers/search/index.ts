@@ -76,6 +76,7 @@ const checkoutSimulation = async (
         availability: item.availability ?? '',
         unitMultiplier: item.unitMultiplier ?? 1,
         quantity: item.quantity,
+        priceTags: item.priceTags ?? [],
       }
 
       return {
@@ -176,7 +177,24 @@ const getSkuSellers = async (
   return result
 }
 
-const getSkuSellerInfo = (simulationResults: any, result: any) => {
+const isPromotionAdjustedSimulationQuantity = (
+  simulatedQuantity: number | undefined,
+  requestedQuantity: number,
+  priceTags: unknown
+) => {
+  if (simulatedQuantity === undefined) {
+    return false
+  }
+
+  // Promotional simulations may return more units than requested (e.g. gifted items).
+  if (simulatedQuantity > requestedQuantity) {
+    return true
+  }
+
+  return Array.isArray(priceTags) && priceTags.length > 0
+}
+
+export const getSkuSellerInfo = (simulationResults: any, result: any) => {
   let items: any = []
 
   if (Object.keys(simulationResults).length !== 0) {
@@ -193,10 +211,21 @@ const getSkuSellerInfo = (simulationResults: any, result: any) => {
         const {
           availability = '',
           unitMultiplier = 1,
-          quantity: availableQuantity = undefined,
+          quantity: simulatedQuantity = undefined,
+          priceTags = [],
         } = currSeller ?? {}
 
-        const isPartiallyAvailable = availableQuantity < item.quantity
+        const requestedQuantity = item.quantity
+
+        const isPartiallyAvailable =
+          availability === 'available' &&
+          simulatedQuantity !== undefined &&
+          simulatedQuantity < requestedQuantity &&
+          !isPromotionAdjustedSimulationQuantity(
+            simulatedQuantity,
+            requestedQuantity,
+            priceTags
+          )
 
         return {
           ...seller,
@@ -204,7 +233,9 @@ const getSkuSellerInfo = (simulationResults: any, result: any) => {
             ? 'partiallyAvailable'
             : availability,
           unitMultiplier,
-          availableQuantity,
+          availableQuantity: isPartiallyAvailable
+            ? simulatedQuantity
+            : requestedQuantity,
         }
       })
 
