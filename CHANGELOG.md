@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Fetch `commertialOffer.priceToken` in the product queries and forward it as `priceToken` on the `addToCart` payload of `AutocompleteBlock` and `CategoryBlock`, so the Checkout can close the cart with the signed price while the Pricing is unavailable (Pricing Fallback V2)
+
 ## [3.16.8] - 2026-06-29
 
 ### Fixed

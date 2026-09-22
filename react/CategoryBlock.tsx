@@ -37,6 +37,8 @@ const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
     categoryItems: {},
     quantitySelected: {},
     defaultSeller: {},
+    // Signed price of the selected seller, by SKU, as returned by the search
+    priceTokens: {},
     // All the items with their respective units
     unitMultiplierList: {},
   })
@@ -52,6 +54,7 @@ const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
     categoryItems,
     quantitySelected,
     defaultSeller,
+    priceTokens,
     unitMultiplierList,
   } = state
 
@@ -274,6 +277,8 @@ const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
     if (skus?.length) {
       const items = skus.map((item: any) => {
+        const priceToken = priceTokens[item]
+
         return {
           id: parseInt(item, 10),
           quantity: calculateDivisible(
@@ -281,6 +286,7 @@ const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
             item
           ),
           seller: defaultSeller[item],
+          ...(priceToken ? { priceToken } : {}),
         }
       })
 
@@ -373,19 +379,34 @@ const CategoryBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
                             newQtd[content.itemId] = e.target.value
                             const newSeller = defaultSeller
+                            const newPriceTokens = priceTokens
                             const seller = content.sellers.find((s: any) => {
                               return s.sellerDefault === true
                             })
 
-                            newSeller[content.itemId] =
+                            const sellerId =
                               seller?.sellerId ||
                               (content.sellers.length
                                 ? content.sellers[0].sellerId
                                 : '1')
 
+                            // the token has to come from the very seller sent
+                            // on addToCart, since it signs that seller's price
+                            const selectedSeller = content.sellers.find(
+                              (s: any) => {
+                                return s.sellerId === sellerId
+                              }
+                            )
+
+                            newSeller[content.itemId] = sellerId
+                            newPriceTokens[content.itemId] =
+                              selectedSeller?.commertialOffer?.priceToken ??
+                              null
+
                             _setState({
                               quantitySelected: newQtd,
                               defaultSeller: newSeller,
+                              priceTokens: newPriceTokens,
                             })
                           }}
                           onBlur={() => {
