@@ -64,20 +64,20 @@ describe('getSkuSellerInfo', () => {
     })
   })
 
-  it('does not treat promotional price tags as stock-limited quantity', () => {
+  it('marks partial availability when simulation quantity is below request even with promotional price tags', () => {
     const items = getSkuSellerInfo(
       simulationForSeller({
         availability: 'available',
         quantity: 8,
         unitMultiplier: 1,
-        priceTags: [{ name: 'more-for-less' }],
+        priceTags: [{ name: 'progressive-discount' }],
       }),
       baseResult
     )
 
     expect(items[0].sellers[0]).toMatchObject({
-      availability: 'available',
-      availableQuantity: 10,
+      availability: 'partiallyAvailable',
+      availableQuantity: 8,
     })
   })
 

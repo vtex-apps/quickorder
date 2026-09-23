@@ -70,6 +70,44 @@ describe('getSkuSellerInfo with merged simulation sellers', () => {
     })
   })
 
+  it('marks partial stock when merged MFL quantity is below request (low inventory)', () => {
+    const items = getSkuSellerInfo(
+      {
+        '100': {
+          sellers: mergeSkuSimulationSellers([
+            {
+              seller: '1',
+              availability: 'available',
+              unitMultiplier: 1,
+              quantity: 3,
+              priceTags: [],
+            },
+            {
+              seller: '1',
+              availability: 'available',
+              unitMultiplier: 1,
+              quantity: 1,
+              priceTags: [{ name: 'more-for-less-gift' }],
+            },
+          ]),
+        },
+      },
+      [
+        {
+          sku: '100',
+          refid: '1101',
+          quantity: 6,
+          sellers: [{ id: '1', name: 'Seller 1' }],
+        },
+      ]
+    )
+
+    expect(items[0].sellers[0]).toMatchObject({
+      availability: 'partiallyAvailable',
+      availableQuantity: 4,
+    })
+  })
+
   it('marks real partial stock when a single simulation line is below request', () => {
     const items = getSkuSellerInfo(
       {

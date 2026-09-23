@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fixed Quick Order Copy/Paste and Upload validation mis-evaluating item quantities when a More for Less promotion is active (B2BTEAM-3592)
 - Fixed Quick Order treating More for Less checkout simulation split lines (paid + gift) as partial stock when the first simulated line quantity was below the requested amount (B2BTEAM-3592)
+- Fixed Quick Order Validate skipping max-quantity warnings when checkout simulation returned fewer units than requested but included promotional `priceTags` (e.g. progressive discount or More for Less with low stock) (B2BTEAM-3592)
 
 ## [3.16.9] - 2026-09-22
 

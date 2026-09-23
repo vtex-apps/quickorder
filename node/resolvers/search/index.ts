@@ -247,19 +247,14 @@ const getSkuSellers = async (
 
 const isPromotionAdjustedSimulationQuantity = (
   simulatedQuantity: number | undefined,
-  requestedQuantity: number,
-  priceTags: unknown
+  requestedQuantity: number
 ) => {
   if (simulatedQuantity === undefined) {
     return false
   }
 
   // Promotional simulations may return more units than requested (e.g. gifted items).
-  if (simulatedQuantity > requestedQuantity) {
-    return true
-  }
-
-  return Array.isArray(priceTags) && priceTags.length > 0
+  return simulatedQuantity > requestedQuantity
 }
 
 export const getSkuSellerInfo = (simulationResults: any, result: any) => {
@@ -280,7 +275,6 @@ export const getSkuSellerInfo = (simulationResults: any, result: any) => {
           availability = '',
           unitMultiplier = 1,
           quantity: simulatedQuantity = undefined,
-          priceTags = [],
         } = currSeller ?? {}
 
         const requestedQuantity = item.quantity
@@ -291,8 +285,7 @@ export const getSkuSellerInfo = (simulationResults: any, result: any) => {
           simulatedQuantity < requestedQuantity &&
           !isPromotionAdjustedSimulationQuantity(
             simulatedQuantity,
-            requestedQuantity,
-            priceTags
+            requestedQuantity
           )
 
         return {
