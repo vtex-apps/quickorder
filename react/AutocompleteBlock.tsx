@@ -187,11 +187,17 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
       const selectedSku =
         data.product.items.length === 1 ? data.product.items[0].itemId : null
 
-      const seller = selectedSku
+      const defaultSeller = selectedSku
         ? data.product.items[0].sellers.find((item: any) => {
             return item.sellerDefault === true
-          }).sellerId
+          })
         : null
+
+      const seller = selectedSku ? defaultSeller.sellerId : null
+
+      // Signed price from the search response, forwarded on addToCart so the
+      // Checkout can close the cart even while the Pricing is unavailable
+      const priceToken = defaultSeller?.commertialOffer?.priceToken ?? null
 
       let multiplier = 1
 
@@ -203,7 +209,7 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
         ...state,
         selectedItem:
           !!product && product.length
-            ? { ...product[0], value: selectedSku, seller, data }
+            ? { ...product[0], value: selectedSku, seller, priceToken, data }
             : null,
         unitMultiplier: multiplier,
         quantitySelected: multiplier,
@@ -214,23 +220,20 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
   }
 
   const selectSku = (value: string) => {
-    const seller = selectedItem.data.product.items
-      .find((item: any) => {
-        return item.itemId === value
-      })
-      .sellers.find((s: any) => {
-        return s.sellerDefault === true
-      }).sellerId
-
-    const newSelected = {
-      ...selectedItem,
-      seller,
-      value,
-    }
-
     const matchedItem = selectedItem.data.product.items.find(
       (item) => item.itemId === value
     )
+
+    const defaultSeller = matchedItem.sellers.find((s: any) => {
+      return s.sellerDefault === true
+    })
+
+    const newSelected = {
+      ...selectedItem,
+      seller: defaultSeller.sellerId,
+      priceToken: defaultSeller.commertialOffer?.priceToken ?? null,
+      value,
+    }
 
     setState({
       ...state,
@@ -262,6 +265,9 @@ const AutocompleteBlock: FunctionComponent<any & WrappedComponentProps> = ({
             unitMultiplier
           ),
           seller: selectedItem.seller,
+          ...(selectedItem.priceToken
+            ? { priceToken: selectedItem.priceToken }
+            : {}),
         },
       ]
 

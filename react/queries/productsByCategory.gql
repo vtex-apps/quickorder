@@ -10,6 +10,9 @@ query SearchByCategory($selectedFacets: [SelectedFacetInput]) {
           sellerId
           sellerName
           sellerDefault
+          commertialOffer {
+            priceToken
+          }
         }
         images(quantity: 1) {
           imageUrl
