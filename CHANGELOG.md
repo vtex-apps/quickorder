@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.16.10] - 2026-09-23
+
 ### Fixed
 
 - Fixed Quick Order Copy/Paste and Upload validation mis-evaluating item quantities when a More for Less promotion is active (B2BTEAM-3592)
