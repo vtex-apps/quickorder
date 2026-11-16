@@ -54,6 +54,7 @@
   "store/quickorder.skuNotFound": "SKU negasit",
   "store/quickorder.upload.choose": "alege fisier",
   "store/quickorder.upload.drop": "Incarca aici XLS or",
+  "store/quickorder.upload.progress": "Se adaugă produse {current}/{total}",
   "store/quickorder.valid": "Valid",
   "store/quickorder.validate": "Validare",
   "store/quickorder.withoutPriceFulfillment": "Produs fără preț",
@@ -62,6 +63,7 @@
   "store/quickorder.partiallyAvailable": "Cantitatea maximă este {quantity}. Sunt disponibile doar {totalQuantity} unități în total.",
   "store/toaster.cart.duplicated": "Articol duplicat",
   "store/toaster.cart.error": "Eroare la adaugarea produselor in cos",
+  "store/toaster.cart.partialError": "Au fost adăugate {added} din {total} produse în coș. Produsele rămase nu au fost adăugate.",
   "store/toaster.cart.seeCart": "Vezi cos",
   "store/toaster.cart.success": "Produse adaugate in cos"
 }

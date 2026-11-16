@@ -54,6 +54,7 @@
   "store/quickorder.skuNotFound": "SKU no encontrado",
   "store/quickorder.upload.choose": "selecciona un archivo",
   "store/quickorder.upload.drop": "Suelta tu XLS aquí o",
+  "store/quickorder.upload.progress": "Agregando artículos {current}/{total}",
   "store/quickorder.valid": "Válido",
   "store/quickorder.validate": "Validar",
   "store/quickorder.withoutPriceFulfillment": "Producto sin precio",
@@ -62,6 +63,7 @@
   "store/quickorder.partiallyAvailable": "La cantidad máxima es {quantity}. Solo hay {totalQuantity} unidades disponibles.",
   "store/toaster.cart.duplicated": "Elemento duplicado",
   "store/toaster.cart.error": "Error al agregar productos al carrito",
+  "store/toaster.cart.partialError": "Se agregaron {added} de {total} artículos al carrito. Los artículos restantes no se agregaron.",
   "store/toaster.cart.seeCart": "Ver el carrito",
   "store/toaster.cart.success": "Productos agregados correctamente"
 }

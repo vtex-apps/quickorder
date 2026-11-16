@@ -4,6 +4,17 @@ import { useEffect, useState } from 'react'
 import { pathOr } from 'ramda'
 
 import AppSettings from '../queries/getSettings.gql'
+import { DEFAULT_UPLOAD_CHUNK_SETTINGS } from './uploadAddToCart'
+import type { UploadChunkSettings } from './uploadAddToCart'
+
+export type AppSettings = {
+  checkoutUrl: string
+} & UploadChunkSettings
+
+export const DEFAULT_APP_SETTINGS: AppSettings = {
+  checkoutUrl: '/checkout#/cart',
+  ...DEFAULT_UPLOAD_CHUNK_SETTINGS,
+}
 
 const useAppSettings = () => {
   const { data: appSettingsData } = useQuery(AppSettings, {
@@ -13,9 +24,9 @@ const useAppSettings = () => {
     ssr: false,
   })
 
-  const [appSettings, setAppSettings] = useState({
-    checkoutUrl: '/checkout#/cart',
-  })
+  const [appSettings, setAppSettings] = useState<AppSettings>(
+    DEFAULT_APP_SETTINGS
+  )
 
   useEffect(() => {
     if (appSettingsData) {
@@ -28,7 +39,10 @@ const useAppSettings = () => {
       try {
         const parsedAppSettings = JSON.parse(settingsString)
 
-        setAppSettings(parsedAppSettings)
+        setAppSettings({
+          ...DEFAULT_APP_SETTINGS,
+          ...parsedAppSettings,
+        })
       } catch (error) {
         console.error('Error parsing app settings:', error)
       }
