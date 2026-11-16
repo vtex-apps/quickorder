@@ -52,6 +52,7 @@
   "store/quickorder.review.label.status": "Stare",
   "store/quickorder.review.label.emptyState": "Nimic de afișat.",
   "store/quickorder.skuNotFound": "SKU negasit",
+  "store/quickorder.review.error.duplicated-refid": "RefId duplicat în foaia de calcul",
   "store/quickorder.upload.choose": "alege fisier",
   "store/quickorder.upload.drop": "Incarca aici XLS or",
   "store/quickorder.upload.progress": "Se adaugă produse {current}/{total}",

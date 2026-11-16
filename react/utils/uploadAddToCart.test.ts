@@ -1,5 +1,6 @@
 import {
   addItemsToCartInSequence,
+  consolidateToastMessages,
   getGeneralMessages,
   getUploadChunkSize,
   mapChunkItemsForCart,
@@ -119,6 +120,25 @@ describe('getGeneralMessages', () => {
     expect(getGeneralMessages(result)).toEqual([{ text: 'SKU unavailable' }])
     expect(getGeneralMessages({})).toEqual([])
     expect(getGeneralMessages(undefined)).toEqual([])
+  })
+})
+
+describe('consolidateToastMessages', () => {
+  it('dedupes repeated messages and joins them with a separator', () => {
+    expect(
+      consolidateToastMessages([
+        { text: 'The item Smoke Detector has no inventory' },
+        { text: 'Freight type has changed' },
+        { text: 'The item Smoke Detector has no inventory' },
+        { text: '  ' },
+        { text: undefined },
+      ])
+    ).toBe('The item Smoke Detector has no inventory. Freight type has changed')
+  })
+
+  it('returns an empty string when there are no messages', () => {
+    expect(consolidateToastMessages([])).toBe('')
+    expect(consolidateToastMessages()).toBe('')
   })
 })
 

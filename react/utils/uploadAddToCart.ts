@@ -159,6 +159,26 @@ export const mapChunkItemsForCart = (
   })
 }
 
+export const consolidateToastMessages = (
+  messages: GeneralMessage[] = []
+): string => {
+  const seen = new Set<string>()
+  const unique: string[] = []
+
+  messages.forEach((message) => {
+    const text = typeof message?.text === 'string' ? message.text.trim() : ''
+
+    if (!text || seen.has(text)) {
+      return
+    }
+
+    seen.add(text)
+    unique.push(text.replace(/[.]+$/, ''))
+  })
+
+  return unique.join('. ')
+}
+
 export const getGeneralMessages = (
   mutationRes: AddToCartMutationResult | null | undefined
 ): GeneralMessage[] => {

@@ -19,7 +19,10 @@ import { ParseText, GetText } from './utils'
 import ReviewBlock from './components/ReviewBlock'
 import { DropzoneIcon } from './assets/DropZoneIcon'
 import getAppSettings from './utils/getAppSettings'
-import { addItemsToCartInSequence } from './utils/uploadAddToCart'
+import {
+  addItemsToCartInSequence,
+  consolidateToastMessages,
+} from './utils/uploadAddToCart'
 
 interface ItemType {
   id: string
@@ -276,9 +279,7 @@ const UploadBlock: FunctionComponent<
         setOrderForm(result.orderForm)
       }
 
-      const warningTexts = result.generalMessages
-        .map((msg) => msg.text)
-        .filter(Boolean) as string[]
+      const warningText = consolidateToastMessages(result.generalMessages)
 
       if (result.failed) {
         const pendingIds = new Set(
@@ -310,8 +311,8 @@ const UploadBlock: FunctionComponent<
         })
 
         showToast({
-          message: warningTexts.length
-            ? `${partialMessage} ${warningTexts.join(' ')}`
+          message: warningText
+            ? `${partialMessage} ${warningText}`
             : partialMessage,
           action: result.addedItems.length
             ? {
@@ -329,9 +330,9 @@ const UploadBlock: FunctionComponent<
         return showInstallPrompt
       }
 
-      if (warningTexts.length) {
+      if (warningText) {
         showToast({
-          message: warningTexts.join(' '),
+          message: warningText,
           action: undefined,
           duration: 30000,
         })

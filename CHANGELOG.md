@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixed spreadsheet upload adding items to the cart in parallel, which could drop or reorder items on large files (B2BTEAM-4308)
+- Duplicated RefId rows in Quick Order review are now flagged with a warning instead of silently multiplying quantities (B2BTEAM-4308)
 
 ## [3.16.10] - 2026-09-23
 

@@ -52,6 +52,7 @@
   "store/quickorder.review.label.status": "Estado",
   "store/quickorder.review.label.emptyState": "Nada que mostrar.",
   "store/quickorder.skuNotFound": "SKU no encontrado",
+  "store/quickorder.review.error.duplicated-refid": "RefId duplicado en la hoja de cálculo",
   "store/quickorder.upload.choose": "selecciona un archivo",
   "store/quickorder.upload.drop": "Suelta tu XLS aquí o",
   "store/quickorder.upload.progress": "Agregando artículos {current}/{total}",

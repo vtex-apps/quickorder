@@ -19,6 +19,9 @@ export const reviewMessages = defineMessages({
   skuNotFound: {
     id: `${storePrefix}skuNotFound`,
   },
+  duplicatedRefId: {
+    id: `${storePrefix}review.error.duplicated-refid`,
+  },
   partiallyAvailable: {
     id: `${storePrefix}partiallyAvailable`,
   },

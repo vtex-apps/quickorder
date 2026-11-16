@@ -52,6 +52,7 @@
   "store/quickorder.review.label.status": "Status",
   "store/quickorder.review.label.emptyState": "Tidak ada yang dapat ditampilkan.",
   "store/quickorder.skuNotFound": "SKU Tidak Ditemukan",
+  "store/quickorder.review.error.duplicated-refid": "RefId duplikat pada spreadsheet",
   "store/quickorder.upload.choose": "pilih file",
   "store/quickorder.upload.drop": "Lepaskan XLS Anda di sini atau",
   "store/quickorder.upload.progress": "Menambahkan item {current}/{total}",
