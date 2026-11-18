@@ -216,11 +216,10 @@ export const addItemsToCartInSequence = async ({
   let currentItems = initialOrderFormItems
   let lastOrderForm: AddItemsToCartResult['orderForm']
 
+  onProgress?.(0, items.length)
+
   for (let index = 0; index < chunks.length; index++) {
     const chunk = chunks[index]
-
-    onProgress?.(index + 1, chunks.length)
-
     const payload = mapChunkItemsForCart(chunk, currentItems)
 
     try {
@@ -229,6 +228,17 @@ export const addItemsToCartInSequence = async ({
       const mutationRes = await addToCart({ variables: { items: payload } })
 
       if (isMutationFailure(mutationRes)) {
+        console.error(
+          '[quickorder] upload addToCart batch returned no orderForm',
+          {
+            batch: index + 1,
+            totalBatches: chunks.length,
+            itemsInBatch: chunk.length,
+            addedSoFar: addedItems.length,
+            errors: mutationRes?.errors,
+          }
+        )
+
         return {
           orderForm: lastOrderForm,
           addedItems,
@@ -244,7 +254,16 @@ export const addItemsToCartInSequence = async ({
       currentItems = lastOrderForm?.items ?? currentItems
       generalMessages.push(...getGeneralMessages(mutationRes))
       addedItems.push(...chunk)
-    } catch {
+      onProgress?.(addedItems.length, items.length)
+    } catch (error) {
+      console.error('[quickorder] upload addToCart batch failed', {
+        batch: index + 1,
+        totalBatches: chunks.length,
+        itemsInBatch: chunk.length,
+        addedSoFar: addedItems.length,
+        error,
+      })
+
       return {
         orderForm: lastOrderForm,
         addedItems,

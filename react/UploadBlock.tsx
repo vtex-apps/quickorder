@@ -259,7 +259,7 @@ const UploadBlock: FunctionComponent<
     }
 
     setIsAdding(true)
-    setUploadProgress({ current: 1, total: 1 })
+    setUploadProgress({ current: 0, total: items.length })
 
     try {
       const result = await addItemsToCartInSequence({

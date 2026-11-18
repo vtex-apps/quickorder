@@ -143,6 +143,16 @@ describe('consolidateToastMessages', () => {
 })
 
 describe('addItemsToCartInSequence', () => {
+  let consoleErrorSpy: jest.SpyInstance
+
+  beforeEach(() => {
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore()
+  })
+
   const orderFormWith = (items: OrderFormItem[], messages: string[] = []) => ({
     data: {
       addToCart: {
@@ -241,6 +251,16 @@ describe('addItemsToCartInSequence', () => {
     )
     expect(result.completedChunks).toBe(1)
     expect(result.orderForm?.items).toHaveLength(10)
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      '[quickorder] upload addToCart batch failed',
+      expect.objectContaining({
+        batch: 2,
+        totalBatches: 3,
+        itemsInBatch: 10,
+        addedSoFar: 10,
+        error: expect.any(Error),
+      })
+    )
   })
 
   it('treats GraphQL errors as a failure and does not continue', async () => {
@@ -257,6 +277,65 @@ describe('addItemsToCartInSequence', () => {
     expect(result.failed).toBe(true)
     expect(result.addedItems).toEqual([])
     expect(result.pendingItems).toHaveLength(21)
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      '[quickorder] upload addToCart batch returned no orderForm',
+      expect.objectContaining({
+        batch: 1,
+        totalBatches: 3,
+        itemsInBatch: 10,
+        addedSoFar: 0,
+        errors: [{ message: 'failed' }],
+      })
+    )
+  })
+
+  it('reports progress in confirmed items over the total of items', async () => {
+    const addToCart: AddToCartFn = async ({ variables }) =>
+      orderFormWith(
+        variables.items.map((entry) => ({
+          id: entry.id.toString(),
+          quantity: entry.quantity,
+        }))
+      )
+
+    const onProgress = jest.fn()
+
+    await addItemsToCartInSequence({ items: range(25), addToCart, onProgress })
+
+    expect(onProgress.mock.calls).toEqual([
+      [0, 25],
+      [10, 25],
+      [20, 25],
+      [25, 25],
+    ])
+  })
+
+  it('does not advance progress for a failed batch', async () => {
+    let call = 0
+
+    const addToCart: AddToCartFn = async ({ variables }) => {
+      call += 1
+
+      if (call === 2) {
+        throw new Error('network error')
+      }
+
+      return orderFormWith(
+        variables.items.map((entry) => ({
+          id: entry.id.toString(),
+          quantity: entry.quantity,
+        }))
+      )
+    }
+
+    const onProgress = jest.fn()
+
+    await addItemsToCartInSequence({ items: range(25), addToCart, onProgress })
+
+    expect(onProgress.mock.calls).toEqual([
+      [0, 25],
+      [10, 25],
+    ])
   })
 
   it('continues after generalMessages and consolidates them', async () => {
