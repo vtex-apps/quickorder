@@ -52,8 +52,10 @@
   "store/quickorder.review.label.status": "Status",
   "store/quickorder.review.label.emptyState": "Nichts anzuzeigen.",
   "store/quickorder.skuNotFound": "SKU nicht gefunden",
+  "store/quickorder.review.error.duplicated-refid": "Doppelte RefId in der Tabelle",
   "store/quickorder.upload.choose": "Eine Datei auswählen",
   "store/quickorder.upload.drop": "Hier können Sie Ihre XLS ablegen oder",
+  "store/quickorder.upload.progress": "Artikel werden hinzugefügt {current}/{total}",
   "store/quickorder.valid": "Gültig",
   "store/quickorder.validate": "Validieren",
   "store/quickorder.withoutPriceFulfillment": "Produkt ohne Preis",
@@ -62,6 +64,7 @@
   "store/quickorder.partiallyAvailable": "Maximale Menge ist {quantity}. Insgesamt sind nur {totalQuantity} Einheiten verfügbar.",
   "store/toaster.cart.duplicated": "Element dupliziert",
   "store/toaster.cart.error": "Fehler beim Hinzufügen von Produkten zum Warenkorb",
+  "store/toaster.cart.partialError": "{added} von {total} Artikeln wurden dem Warenkorb hinzugefügt. Die übrigen Artikel wurden nicht hinzugefügt.",
   "store/toaster.cart.seeCart": "Warenkorb anzeigen",
   "store/toaster.cart.success": "Produkte erfolgreich zum Warenkorb hinzugefügt"
 }

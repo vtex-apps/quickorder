@@ -19,6 +19,10 @@ import { ParseText, GetText } from './utils'
 import ReviewBlock from './components/ReviewBlock'
 import { DropzoneIcon } from './assets/DropZoneIcon'
 import getAppSettings from './utils/getAppSettings'
+import {
+  addItemsToCartInSequence,
+  consolidateToastMessages,
+} from './utils/uploadAddToCart'
 
 interface ItemType {
   id: string
@@ -47,6 +51,11 @@ const UploadBlock: FunctionComponent<
   const checkoutUrl = appSettings?.checkoutUrl ?? '/checkout#/cart'
 
   const [showValidateButton, setShowValidateButton] = useState<boolean>(false)
+  const [isAdding, setIsAdding] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState<{
+    current: number
+    total: number
+  } | null>(null)
 
   const [refidLoading, setRefIdLoading] = useState<any>()
   const [productsQueue, setproductsQueue] = useState<any>()
@@ -228,84 +237,127 @@ const UploadBlock: FunctionComponent<
     setShowValidateButton(false)
   }
 
-  const callAddToCart = async (items: any) => {
-    const splitBy = 10
-    const tempItems = items
-    const loopCount = Math.floor(items.length / splitBy) + 1
+  const resolveCheckoutHref = () => {
+    return typeof checkoutUrl === 'string' && checkoutUrl !== ''
+      ? checkoutUrl
+      : '/checkout/#/cart'
+  }
 
-    const promises: any = []
-
-    for (let i = 0; i < loopCount; i++) {
-      const chunk = tempItems.splice(0, splitBy)
-
-      if (chunk.length) {
-        const currentItemsInCart = orderForm.orderForm.items
-
-        const mutationChunk = addToCart({
-          variables: {
-            items: chunk.map((item: ItemType) => {
-              const [existsInCurrentOrder] = currentItemsInCart.filter(
-                (el) => el.id === item.id.toString()
-              )
-
-              if (existsInCurrentOrder) {
-                item.quantity += parseInt(existsInCurrentOrder.quantity, 10)
-              }
-
-              return {
-                ...item,
-              }
-            }),
-          },
-        }).then((mutationRes: any) => {
-          mutationRes.data && setOrderForm(mutationRes.data.addToCart)
-
-          if (mutationRes?.data.addToCart?.messages?.generalMessages?.length) {
-            mutationRes.addToCart.messages.generalMessages.map((msg: any) => {
-              return showToast({
-                message: msg.text,
-                action: undefined,
-                duration: 30000,
-              })
-            })
-          } else {
-            toastMessage({ success: true, isNewItem: true })
-          }
-        })
-
-        promises.push(mutationChunk)
-      }
-    }
-
-    Promise.all(promises).catch(() => {
-      console.error(mutationError)
-      toastMessage({ success: false, isNewItem: false })
-    })
-
-    // Update OrderForm from the context
-
-    const adjustSkuItemForPixelEvent = (item: any) => {
-      return {
-        skuId: item.id,
-        quantity: item.quantity,
-      }
-    }
-
-    // Send event to pixel-manager
-    const pixelEventItems = items.map(adjustSkuItemForPixelEvent)
-
+  const pushPixelEvent = (pixelItems: any[]) => {
     push({
       event: 'addToCart',
-      items: pixelEventItems,
+      items: pixelItems.map((item: any) => ({
+        skuId: item.id,
+        quantity: item.quantity,
+      })),
     })
+  }
 
-    if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
-      showInstallPrompt()
+  const callAddToCart = async (items: any) => {
+    if (!items.length) {
+      return showInstallPrompt
     }
 
-    backList()
+    setIsAdding(true)
+    setUploadProgress({ current: 0, total: items.length })
 
-    return showInstallPrompt
+    try {
+      const result = await addItemsToCartInSequence({
+        items,
+        initialOrderFormItems: orderForm?.orderForm?.items ?? [],
+        chunkSettings: appSettings,
+        addToCart: ({ variables }) =>
+          addToCart({
+            variables: variables as { items: [] },
+          }),
+        onProgress: (current, total) => {
+          setUploadProgress({ current, total })
+        },
+      })
+
+      if (result.orderForm) {
+        setOrderForm(result.orderForm)
+      }
+
+      const warningText = consolidateToastMessages(result.generalMessages)
+
+      if (result.failed) {
+        const pendingIds = new Set(
+          result.pendingItems.map((item) => item.id.toString())
+        )
+
+        const remainingReviewItems = reviewItems.filter((item: any) => {
+          if (item.error !== null || item.vtexSku === null) {
+            return true
+          }
+
+          return pendingIds.has(String(parseInt(item.vtexSku, 10)))
+        })
+
+        setState({
+          ...state,
+          reviewState: true,
+          reviewItems: remainingReviewItems,
+          showAddToCart:
+            alwaysShowAddToCart ||
+            remainingReviewItems.some(
+              (item: any) => item.error === null && item.vtexSku !== null
+            ),
+        })
+
+        const partialMessage = intl.formatMessage(messages.partialError, {
+          added: result.addedItems.length,
+          total: items.length,
+        })
+
+        showToast({
+          message: warningText
+            ? `${partialMessage} ${warningText}`
+            : partialMessage,
+          action: result.addedItems.length
+            ? {
+                label: translateMessage(messages.seeCart),
+                href: resolveCheckoutHref(),
+              }
+            : undefined,
+          duration: 30000,
+        })
+
+        if (result.addedItems.length) {
+          pushPixelEvent(result.addedItems)
+        }
+
+        return showInstallPrompt
+      }
+
+      if (warningText) {
+        showToast({
+          message: warningText,
+          action: undefined,
+          duration: 30000,
+        })
+      } else {
+        toastMessage({ success: true, isNewItem: true })
+      }
+
+      pushPixelEvent(items)
+
+      if (promptOnCustomEvent === 'addToCart' && showInstallPrompt) {
+        showInstallPrompt()
+      }
+
+      backList()
+
+      return showInstallPrompt
+    } catch (error) {
+      console.error(error ?? mutationError)
+      toastMessage({ success: false, isNewItem: false })
+
+      return showInstallPrompt
+    } finally {
+      setIsAdding(false)
+      setUploadProgress(null)
+    }
   }
 
   const addToCartUpload = () => {
@@ -335,6 +387,10 @@ const UploadBlock: FunctionComponent<
     }
 
     const mergedItems = merge(items)
+
+    if (isAdding) {
+      return
+    }
 
     callAddToCart(mergedItems)
   }
@@ -446,24 +502,39 @@ const UploadBlock: FunctionComponent<
               <Button
                 variation="tertiary"
                 size="small"
+                disabled={isAdding}
                 onClick={() => {
                   backList()
                 }}
               >
                 <FormattedMessage id="store/quickorder.back" />
               </Button>
-              {showAddToCart && (
-                <Button
-                  variation="primary"
-                  size="small"
-                  isLoading={mutationLoading || refidLoading}
-                  onClick={() => {
-                    addToCartUpload()
-                  }}
-                >
-                  <FormattedMessage id="store/quickorder.addToCart" />
-                </Button>
-              )}
+              <div className="flex items-center">
+                {isAdding && uploadProgress && (
+                  <span className="t-small c-muted-1 mr3">
+                    <FormattedMessage
+                      id="store/quickorder.upload.progress"
+                      values={{
+                        current: uploadProgress.current,
+                        total: uploadProgress.total,
+                      }}
+                    />
+                  </span>
+                )}
+                {showAddToCart && (
+                  <Button
+                    variation="primary"
+                    size="small"
+                    isLoading={isAdding || mutationLoading || refidLoading}
+                    disabled={isAdding}
+                    onClick={() => {
+                      addToCartUpload()
+                    }}
+                  >
+                    <FormattedMessage id="store/quickorder.addToCart" />
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         )}

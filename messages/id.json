@@ -52,8 +52,10 @@
   "store/quickorder.review.label.status": "Status",
   "store/quickorder.review.label.emptyState": "Tidak ada yang dapat ditampilkan.",
   "store/quickorder.skuNotFound": "SKU Tidak Ditemukan",
+  "store/quickorder.review.error.duplicated-refid": "RefId duplikat pada spreadsheet",
   "store/quickorder.upload.choose": "pilih file",
   "store/quickorder.upload.drop": "Lepaskan XLS Anda di sini atau",
+  "store/quickorder.upload.progress": "Menambahkan item {current}/{total}",
   "store/quickorder.valid": "Valid",
   "store/quickorder.validate": "Validasi",
   "store/quickorder.withoutPriceFulfillment": "Produk tanpa harga",
@@ -62,6 +64,7 @@
   "store/quickorder.partiallyAvailable": "Max quantity is {quantity}. Only {totalQuantity} total units available.",
   "store/toaster.cart.duplicated": "Item diduplikat",
   "store/toaster.cart.error": "Terjadi kesalahan saat menambahkan produk ke troli",
+  "store/toaster.cart.partialError": "{added} dari {total} item ditambahkan ke keranjang. Item yang tersisa tidak ditambahkan.",
   "store/toaster.cart.seeCart": "Lihat troli",
   "store/toaster.cart.success": "Produk berhasil ditambahkan ke troli"
 }

@@ -52,8 +52,10 @@
   "store/quickorder.review.label.status": "store/quickorder.review.label.status",
   "store/quickorder.review.label.emptyState": "store/quickorder.review.label.emptyState",
   "store/quickorder.skuNotFound": "store/quickorder.skuNotFound",
+  "store/quickorder.review.error.duplicated-refid": "store/quickorder.review.error.duplicated-refid",
   "store/quickorder.upload.choose": "store/quickorder.upload.choose",
   "store/quickorder.upload.drop": "store/quickorder.upload.drop",
+  "store/quickorder.upload.progress": "store/quickorder.upload.progress",
   "store/quickorder.valid": "store/quickorder.valid",
   "store/quickorder.validate": "store/quickorder.validate",
   "store/quickorder.withoutPriceFulfillment": "store/quickorder.withoutPriceFulfillment",
@@ -62,6 +64,7 @@
   "store/quickorder.partiallyAvailable": "store/quickorder.partiallyAvailable",
   "store/toaster.cart.duplicated": "store/toaster.cart.duplicated",
   "store/toaster.cart.error": "store/toaster.cart.error",
+  "store/toaster.cart.partialError": "store/toaster.cart.partialError",
   "store/toaster.cart.seeCart": "store/toaster.cart.seeCart",
   "store/toaster.cart.success": "store/toaster.cart.success"
 }

@@ -18,6 +18,11 @@ import { useApolloClient, useQuery } from 'react-apollo'
 
 import { reviewMessages as messages } from '../utils/messages'
 import { ParseText, GetText } from '../utils'
+import {
+  applyDuplicatedRefIdErrors,
+  applyRefIdValidationResult,
+  buildRefIdQuantityMap,
+} from '../utils/reviewRefids'
 import getRefIdTranslation from '../queries/refids.gql'
 import OrderFormQuery from '../queries/orderForm.gql'
 
@@ -65,6 +70,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     'store/quickorder.available': messages.available,
     'store/quickorder.invalidPattern': messages.invalidPattern,
     'store/quickorder.skuNotFound': messages.skuNotFound,
+    'store/quickorder.review.error.duplicated-refid': messages.duplicatedRefId,
     'store/quickorder.partiallyAvailable': messages.partiallyAvailable,
     'store/quickorder.withoutStock': messages.withoutStock,
     'store/quickorder.withoutPriceFulfillment':
@@ -186,7 +192,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         // Final return
         return notfound
           ? 'store/quickorder.skuNotFound'
-          : (availabilityError ?? itemRestricted)
+          : availabilityError ?? itemRestricted
       }
 
       if (refIdNotFound.length || refNotAvailable.length) {
@@ -212,7 +218,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
 
         const sellerWithStock = item.seller
           ? item.seller
-          : (findFirstSellerWithStock(rowSellers)?.id ?? '')
+          : findFirstSellerWithStock(rowSellers)?.id ?? ''
 
         const selectedSeller = rowSellers.find(
           (seller: any) => seller.id === sellerWithStock
@@ -236,17 +242,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
         }
       })
 
-      const merge = (original: any) => {
-        const item = items.find((curr: any) => {
-          return original.sku === curr.sku
-        })
-
-        return item || original
-      }
-
-      const updated = reviewItems.map((item: any) => {
-        return merge(item)
-      })
+      const updated = applyRefIdValidationResult(reviewItems, items)
 
       onReviewItems(updated)
 
@@ -268,12 +264,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
     onRefidLoading(true)
     const refids = _refids.length ? Array.from(new Set(_refids)) : []
 
-    const refIdQuantityMap = reviewed.reduce((prev, item) => {
-      return {
-        ...prev,
-        [item.sku]: item.quantity,
-      }
-    }, {})
+    const refIdQuantityMap = buildRefIdQuantityMap(reviewed)
 
     const query = {
       query: getRefIdTranslation,
@@ -323,17 +314,19 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   }, [reviewItems])
 
   const removeLine = (i: number) => {
-    const items: [any] = reviewItems
-      .filter((item: any) => {
-        return item.index !== i
-      })
-      .map((item: any, index: number) => {
-        return {
-          ...item,
-          line: index,
-          index,
-        }
-      })
+    const items: any[] = applyDuplicatedRefIdErrors(
+      reviewItems
+        .filter((item: any) => {
+          return item.index !== i
+        })
+        .map((item: any, index: number) => {
+          return {
+            ...item,
+            line: index,
+            index,
+          }
+        })
+    )
 
     onReviewItems(items)
     setReviewState({
@@ -397,7 +390,10 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
   }
 
   const lineNumberCellRenderer = ({ rowData }: any) => {
-    return <div> {refidLoading ? '-' : String(Number(rowData.index) + 1)}</div>
+    const index = Number(rowData.index)
+    const lineNumber = Number.isFinite(index) ? index + 1 : 1
+
+    return <div> {refidLoading ? '-' : String(lineNumber)}</div>
   }
 
   const createSchema = (columnsToBeHidden: string[]) => {
@@ -495,6 +491,7 @@ const ReviewBlock: FunctionComponent<WrappedComponentProps & any> = ({
             (seller: { availability?: string }) =>
               seller?.availability !== 'withoutStock'
           )
+
           const willShowDropdown = sellers.length > 1
           const hasStock = sellers.find(
             (seller?: { availability: string; [key: string]: unknown }) =>

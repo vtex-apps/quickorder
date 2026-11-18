@@ -92,6 +92,42 @@
         "type": "string",
         "description": "Checkout redirect href",
         "default": "/checkout#/cart"
+      },
+      "uploadChunkSmallMaxRows": {
+        "title": "Upload chunk: small file max rows",
+        "type": "number",
+        "description": "Files with this many rows or fewer are sent in a single add-to-cart request.",
+        "default": 20
+      },
+      "uploadChunkMediumMaxRows": {
+        "title": "Upload chunk: medium file max rows",
+        "type": "number",
+        "description": "Files with more than the small max and up to this many rows use the medium chunk size.",
+        "default": 50
+      },
+      "uploadChunkLargeMaxRows": {
+        "title": "Upload chunk: large file max rows",
+        "type": "number",
+        "description": "Files with more than the medium max and up to this many rows use the large chunk size. Larger files use the extra-large chunk size.",
+        "default": 200
+      },
+      "uploadChunkMediumSize": {
+        "title": "Upload chunk size for medium files",
+        "type": "number",
+        "description": "Number of items sent in each add-to-cart request for medium files.",
+        "default": 10
+      },
+      "uploadChunkLargeSize": {
+        "title": "Upload chunk size for large files",
+        "type": "number",
+        "description": "Number of items sent in each add-to-cart request for large files.",
+        "default": 20
+      },
+      "uploadChunkXLargeSize": {
+        "title": "Upload chunk size for extra-large files",
+        "type": "number",
+        "description": "Number of items sent in each add-to-cart request for files above the large max row threshold.",
+        "default": 25
       }
     }
   },
@@ -102,9 +138,7 @@
     },
     "free": true,
     "type": "free",
-    "availableCountries": [
-      "*"
-    ]
+    "availableCountries": ["*"]
   },
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }

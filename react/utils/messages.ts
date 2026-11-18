@@ -19,6 +19,9 @@ export const reviewMessages = defineMessages({
   skuNotFound: {
     id: `${storePrefix}skuNotFound`,
   },
+  duplicatedRefId: {
+    id: `${storePrefix}review.error.duplicated-refid`,
+  },
   partiallyAvailable: {
     id: `${storePrefix}partiallyAvailable`,
   },
@@ -139,8 +142,14 @@ export const categoryMessages = defineMessages({
   error: {
     id: `${toasterPrefix}error`,
   },
+  partialError: {
+    id: `${toasterPrefix}partialError`,
+  },
   seeCart: {
     id: `${toasterPrefix}seeCart`,
+  },
+  uploadProgress: {
+    id: `${storePrefix}upload.progress`,
   },
 })
 
@@ -163,7 +172,13 @@ export const autocompleteMessages = defineMessages({
   error: {
     id: `${toasterPrefix}error`,
   },
+  partialError: {
+    id: `${toasterPrefix}partialError`,
+  },
   seeCart: {
     id: `${toasterPrefix}seeCart`,
+  },
+  uploadProgress: {
+    id: `${storePrefix}upload.progress`,
   },
 })
